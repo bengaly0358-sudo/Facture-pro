@@ -234,13 +234,33 @@
 </div>
 
 <script type="module">
-import { auth, db } from './js/firebase-config.js';
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
-    createUserWithEmailAndPassword 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    getAuth,
+    createUserWithEmailAndPassword
+} from 
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
-    doc, setDoc, serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    getFirestore,
+    doc, 
+    setDoc, 
+    serverTimestamp 
+} from 
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
+    authDomain: "facture-pro-2a843.firebaseapp.com",
+    projectId: "facture-pro-2a843",
+    storageBucket: "facture-pro-2a843.firebasestorage.app",
+    messagingSenderId: "30400911697",
+    appId: "1:30400911697:web:a5ddafe5dcc58c0a38db70"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const form = document.getElementById('registerForm');
 const message = document.getElementById('message');
@@ -254,20 +274,22 @@ form.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const confirmPassword = 
+        document.getElementById('confirmPassword').value;
 
-    // Réinitialiser le message
     message.className = 'message';
     message.style.display = 'none';
 
-    // ======= VALIDATIONS =======
     if (fullName.length < 3) {
         showMessage("❌ Le nom doit avoir au moins 3 caractères", "error");
         return;
     }
 
     if (password.length < 6) {
-        showMessage("❌ Le mot de passe doit avoir au moins 6 caractères", "error");
+        showMessage(
+            "❌ Le mot de passe doit avoir au moins 6 caractères", 
+            "error"
+        );
         return;
     }
 
@@ -276,23 +298,19 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
-    // Afficher le loading
     btnRegister.disabled = true;
     btnRegister.style.display = 'none';
     spinner.style.display = 'block';
 
     try {
-        // 1. Créer le compte
         const userCredential = await createUserWithEmailAndPassword(
             auth, email, password
         );
         const user = userCredential.user;
 
-        // 2. Calculer la date de fin d'essai (30 jours)
         const trialEnd = new Date();
         trialEnd.setDate(trialEnd.getDate() + 30);
 
-        // 3. Sauvegarder dans Firestore
         await setDoc(doc(db, "users", user.uid), {
             fullName: fullName,
             email: email,
@@ -320,9 +338,11 @@ form.addEventListener('submit', async (e) => {
             }
         });
 
-        showMessage("✅ Compte créé avec succès ! Redirection...", "success");
+        showMessage(
+            "✅ Compte créé avec succès ! Redirection...", 
+            "success"
+        );
 
-        // 4. Rediriger vers le dashboard
         setTimeout(() => {
             window.location.href = "client/dashboard.html";
         }, 2000);
@@ -340,8 +360,11 @@ form.addEventListener('submit', async (e) => {
             errorMsg = "❌ Email invalide";
         } else if (error.code === "auth/weak-password") {
             errorMsg = "❌ Mot de passe trop faible";
+        } else if (error.code === "auth/network-request-failed") {
+            errorMsg = "❌ Problème de connexion internet";
         }
 
+        console.log("Erreur complète:", error);
         showMessage(errorMsg, "error");
     }
 });
