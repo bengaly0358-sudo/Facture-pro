@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Facture - Facture Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        /* ======= SIDEBAR ======= */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4em;
+            color: #6c63ff;
+        }
+
+        .sidebar-header p {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: #6c63ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin: 0 auto 10px;
+        }
+
+        .user-info h3 {
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+
+        .user-info p {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .user-plan {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            margin-top: 5px;
+        }
+
+        .plan-gratuit {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .plan-pro {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6c63ff;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: white;
+            border-left-color: #6c63ff;
+        }
+
+        .menu-icon {
+            font-size: 1.2em;
+            width: 25px;
+            text-align: center;
+        }
+
+        .nav-separator {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 10px 20px;
+        }
+
+        .logout-btn {
+            color: #e74c3c !important;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, 0.1) !important;
+            border-left-color: #e74c3c !important;
+        }
+
+        /* ======= MAIN CONTENT ======= */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 25px;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: #6c63ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .top-bar h1 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        /* ======= BARRE NAVIGATION ======= */
+        .nav-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-nav {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            color: #555;
+        }
+
+        .btn-nav:hover {
+            background: #6c63ff;
+            color: white;
+            border-color: #6c63ff;
+        }
+
+        /* ======= BARRE D'ACTIONS ======= */
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-action {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .btn-save { background: #27ae60; color: white; }
+        .btn-print { background: #2980b9; color: white; }
+        .btn-pdf { background: #e74c3c; color: white; }
+        .btn-word { background: #2c3e50; color: white; }
+        .btn-clear { background: #e67e22; color: white; }
+
+        /* ======= FACTURE CONTAINER ======= */
+        .facture-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        /* SECTIONS */
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.15em;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            outline: none;
+            transition: border 0.3s;
+            background: #fafafa;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #6c63ff;
+            background: white;
+        }
+
+        /* ======= TABLE ARTICLES ======= */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        thead tr {
+            background: #6c63ff;
+            color: white;
+        }
+
+        th {
+            padding: 12px 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9em;
+            outline: none;
+            background: #fafafa;
+        }
+
+        tbody input:focus {
+            border-color: #6c63ff;
+            background: white;
+        }
+
+        tbody input.desc {
+            text-align: left;
+        }
+
+        .ligne-total {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .num-col {
+            width: 40px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .btn-delete-row {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+
+        .btn-delete-row:hover {
+            background: #cc0000;
+        }
+
+        .btn-add {
+            background: #6c63ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #5a52d5;
+            transform: translateY(-2px);
+        }
+
+        /* ======= CALCULS ======= */
+        .calculs-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .calculs-wrapper {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+        }
+
+        .notes-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .notes-box label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .notes-box textarea {
+            flex: 1;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 0.9em;
+            outline: none;
+            background: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .notes-box textarea:focus {
+            border-color: #6c63ff;
+        }
+
+        .totaux-box {
+            width: 320px;
+            min-width: 280px;
+        }
+
+        .calcul-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95em;
+        }
+
+        .calcul-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calcul-input input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9em;
+            outline: none;
+        }
+
+        .calcul-input input:focus {
+            border-color: #6c63ff;
+        }
+
+        .amount {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .total-row {
+            border-bottom: none;
+            border-top: 3px solid #6c63ff;
+            margin-top: 8px;
+            padding-top: 12px;
+            font-size: 1.2em;
+        }
+
+        .total-row strong {
+            color: #6c63ff;
+        }
+
+        /* ======= DEVISES ======= */
+        .devise-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .devise-selector label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .devise-selector select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9em;
+            outline: none;
+            background: white;
+        }
+
+        /* ======= SIGNATURES ======= */
+        .signatures-container {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .signature-box {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .signature-box > label {
+            font-weight: 600;
+            color: #555;
+            font-size: 1em;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fafafa;
+            cursor: crosshair;
+            height: 150px;
+        }
+
+        .canvas-wrapper canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .canvas-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ccc;
+            font-size: 1em;
+            pointer-events: none;
+        }
+
+        .signature-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-clear-sign {
+            flex: 1;
+            padding: 8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-sign:hover {
+            background: #c0392b;
+        }
+
+        .btn-save-sign {
+            flex: 1;
+            padding: 8px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .btn-save-sign:hover {
+            background: #1e8449;
+        }
+
+        .nom-signature,
+        .date-signature {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            outline: none;
+        }
+
+        .nom-signature:focus,
+        .date-signature:focus {
+            border-color: #6c63ff;
+        }
+
+        /* ======= MODAL ======= */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #e67e22;
+        }
+
+        .modal-content p {
+            margin-bottom: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .btn-confirm-clear {
+            padding: 12px 25px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .btn-confirm-clear:hover {
+            background: #c0392b;
+        }
+
+        .btn-cancel {
+            padding: 12px 25px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        /* ======= TOAST NOTIFICATION ======= */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 99999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background: #27ae60;
+        }
+
+        .toast-error {
+            background: #e74c3c;
+        }
+
+        .toast-warning {
+            background: #f39c12;
+        }
+
+        /* ======= PRINT ======= */
+        @media print {
+            .sidebar,
+            .top-bar,
+            .action-bar,
+            .btn-add,
+            .btn-delete-row,
+            .signature-actions,
+            .modal,
+            .toast,
+            .menu-toggle {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+            }
+
+            .facture-container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            .canvas-wrapper {
+                border: 1px solid #ccc !important;
+            }
+
+            @page {
+                margin: 15mm;
+            }
+        }
+
+        /* ======= RESPONSIVE ======= */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .calculs-wrapper {
+                flex-direction: column;
+            }
+
+            .totaux-box {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .signatures-container {
+                flex-direction: column;
+            }
+
+            .action-bar {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .input-group {
+                min-width: 100%;
+            }
+
+            .nav-bar {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======= SIDEBAR ======= -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🧾 Facture Pro</h2>
+            <p>Générateur de factures</p>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <h3 id="userName">Chargement...</h3>
+            <p id="userEmail">...</p>
+            <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
+        </div>
+
+        <ul class="nav-menu">
+            <li>
+                <a href="dashboard.html">
+                    <span class="menu-icon">📊</span> Tableau de bord
+                </a>
+            </li>
+            <li>
+                <a href="new-facture.html" class="active">
+                    <span class="menu-icon">➕</span> Nouvelle facture
+                </a>
+            </li>
+            <li>
+                <a href="history.html">
+                    <span class="menu-icon">📋</span> Mes factures
+                </a>
+            </li>
+            <li>
+                <a href="profile.html">
+                    <span class="menu-icon">🏢</span> Mon entreprise
+                </a>
+            </li>
+            <div class="nav-separator"></div>
+            <li>
+                <a href="payment.html">
+                    <span class="menu-icon">💳</span> Abonnement
+                </a>
+            </li>
+            <li>
+                <a href="#" id="contactWhatsapp">
+                    <span class="menu-icon">📞</span> Nous contacter
+                </a>
+            </li>
+            <div class="nav-separator"></div>
+            <li>
+                <a href="#" class="logout-btn" id="logoutBtn">
+                    <span class="menu-icon">🚪</span> Déconnexion
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ======= MAIN CONTENT ======= -->
+    <div class="main-content">
+
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <h1>➕ Nouvelle Facture</h1>
+            </div>
+            <div class="nav-bar">
+                <button class="btn-nav" id="btnBack" title="Retour">
+                    ⬅️ Retour
+                </button>
+                <button class="btn-nav" id="btnForward" title="Avant">
+                    Avant ➡️
+                </button>
+            </div>
+        </div>
+
+        <!-- BARRE D'ACTIONS -->
+        <div class="action-bar">
+            <button id="btnSave" class="btn-action btn-save">
+                💾 Sauvegarder
+            </button>
+            <button id="btnPrint" class="btn-action btn-print">
+                🖨️ Imprimer
+            </button>
+            <button id="exportPDF" class="btn-action btn-pdf">
+                📄 PDF
+            </button>
+            <button id="exportWord" class="btn-action btn-word">
+                📝 Word
+            </button>
+            <button id="btnClear" class="btn-action btn-clear">
+                🗑️ Effacer tout
+            </button>
+        </div>
+
+        <!-- FACTURE -->
+        <div class="facture-container">
+
+            <!-- INFO FACTURE -->
+            <div class="section">
+                <h2>📋 Informations de la facture</h2>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Numéro de facture</label>
+                        <input type="text" id="factureNumber" 
+                               value="FAC-001">
+                    </div>
+                    <div class="input-group">
+                        <label>Date de facture</label>
+                        <input type="date" id="factureDate">
+                    </div>
+                    <div class="input-group">
+                        <label>Date d'échéance</label>
+                        <input type="date" id="factureEcheance">
+                    </div>
+                </div>
+
+                <div class="devise-selector">
+                    <label>💱 Devise :</label>
+                    <select id="devise">
+                        <option value="$">$ - Dollar USD</option>
+                        <option value="€">€ - Euro</option>
+                        <option value="£">£ - Livre Sterling</option>
+                        <option value="FCFA">FCFA - Franc CFA</option>
+                        <option value="MAD">MAD - Dirham</option>
+                        <option value="DZD">DZD - Dinar Algérien</option>
+                        <option value="TND">TND - Dinar Tunisien</option>
+                        <option value="XOF">XOF - Franc CFA BCEAO</option>
+                        <option value="GNF">GNF - Franc Guinéen</option>
+                        <option value="CDF">CDF - Franc Congolais</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- INFO CLIENT -->
+            <div class="section">
+                <h2>👤 Informations du client</h2>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Nom du client</label>
+                        <input type="text" id="clientName" 
+                               placeholder="Nom complet ou entreprise">
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="clientEmail" 
+                               placeholder="email@exemple.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Téléphone</label>
+                        <input type="text" id="clientPhone" 
+                               placeholder="+000 00 00 00 00">
+                    </div>
+                    <div class="input-group">
+                        <label>Adresse</label>
+                        <input type="text" id="clientAddress" 
+                               placeholder="Adresse complète">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARTICLES -->
+            <div class="section">
+                <h2>📦 Articles / Services</h2>
+
+                <div class="table-wrapper">
+                    <table id="articlesTable">
+                        <thead>
+                            <tr>
+                                <th style="width:40px">#</th>
+                                <th>Description</th>
+                                <th style="width:120px">Prix Unitaire</th>
+                                <th style="width:80px">Quantité</th>
+                                <th style="width:120px">Total</th>
+                                <th style="width:60px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="articlesBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <button id="addArticle" class="btn-add">
+                    + Ajouter un article
+                </button>
+            </div>
+
+            <!-- CALCULS -->
+            <div class="section calculs-section">
+                <div class="calculs-wrapper">
+
+                    <div class="notes-box">
+                        <label>📝 Notes / Conditions de paiement</label>
+                        <textarea id="factureNotes" 
+                                  placeholder="Conditions de paiement, informations supplémentaires, coordonnées bancaires..."></textarea>
+                    </div>
+
+                    <div class="totaux-box">
+                        <div class="calcul-row">
+                            <span>Sous-total :</span>
+                            <strong id="sousTotal" class="amount">
+                                0.00
+                            </strong>
+                        </div>
+
+                        <div class="calcul-row">
+                            <span>TVA (%) :</span>
+                            <div class="calcul-input">
+                                <input type="number" id="tvaPercent" 
+                                       value="18" min="0" max="100">
+                                <span id="tvaAmount" class="amount">
+                                    0.00
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="calcul-row">
+                            <span>Réduction (%) :</span>
+                            <div class="calcul-input">
+                                <input type="number" id="reductionPercent" 
+                                       value="0" min="0" max="100">
+                                <span id="reductionAmount" class="amount">
+                                    -0.00
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="calcul-row total-row">
+                            <span>TOTAL :</span>
+                            <strong id="totalFinal">0.00</strong>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SIGNATURES -->
+            <div class="section">
+                <h2>✍️ Signatures</h2>
+
+                <div class="signatures-container">
+
+                    <!-- Signature Émetteur -->
+                    <div class="signature-box">
+                        <label>Signature de l'émetteur</label>
+                        <div class="canvas-wrapper">
+                            <canvas id="signatureEmetteur"></canvas>
+                            <div class="canvas-placeholder" 
+                                 id="placeholderEmetteur">
+                                ✍️ Signez ici
+                            </div>
+                        </div>
+                        <div class="signature-actions">
+                            <button class="btn-clear-sign" 
+                                    id="clearSignEmetteur">
+                                🗑️ Effacer
+                            </button>
+                            <button class="btn-save-sign" 
+                                    id="saveSignEmetteur">
+                                💾 Sauvegarder
+                            </button>
+                        </div>
+                        <input type="text" id="nomEmetteur" 
+                               placeholder="Nom de l'émetteur" 
+                               class="nom-signature">
+                        <input type="date" id="dateEmetteur" 
+                               class="date-signature">
+                    </div>
+
+                    <!-- Signature Client -->
+                    <div class="signature-box">
+                        <label>Signature du client</label>
+                        <div class="canvas-wrapper">
+                            <canvas id="signatureClient"></canvas>
+                            <div class="canvas-placeholder" 
+                                 id="placeholderClient">
+                                ✍️ Signez ici
+                            </div>
+                        </div>
+                        <div class="signature-actions">
+                            <button class="btn-clear-sign" 
+                                    id="clearSignClient">
+                                🗑️ Effacer
+                            </button>
+                            <button class="btn-save-sign" 
+                                    id="saveSignClient">
+                                💾 Sauvegarder
+                            </button>
+                        </div>
+                        <input type="text" id="nomClient" 
+                               placeholder="Nom du client" 
+                               class="nom-signature">
+                        <input type="date" id="dateClient" 
+                               class="date-signature">
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL EFFACER -->
+    <div id="modalClear" class="modal">
+        <div class="modal-content">
+            <h2>⚠️ Confirmation</h2>
+            <p>Voulez-vous vraiment effacer toutes les données ?</p>
+            <p style="color: #e74c3c; font-size: 0.9em;">
+                Cette action est irréversible !
+            </p>
+            <div class="modal-actions">
+                <button id="confirmClear" class="btn-confirm-clear">
+                    🗑️ Oui, effacer
+                </button>
+                <button id="cancelClear" class="btn-cancel">
+                    ❌ Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+<script type="module">
+import { auth, db } from '../js/firebase-config.js';
+import {
+    onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    doc, getDoc, collection, addDoc,
+    updateDoc, increment, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+let currentUser = null;
+let userData = null;
+let companyData = null;
+
+// ============================
+// 🔒 VÉRIFIER CONNEXION
+// ============================
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "../login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+            window.location.href = "../login.html";
+            return;
+        }
+
+        userData = userDoc.data();
+        companyData = userData.company || {};
+
+        // Afficher infos utilisateur
+        document.getElementById('userName').textContent = userData.fullName;
+        document.getElementById('userEmail').textContent = userData.email;
+        document.getElementById('userAvatar').textContent =
+            userData.fullName.charAt(0).toUpperCase();
+
+        const planEl = document.getElementById('userPlan');
+        if (userData.isPaid) {
+            planEl.textContent = "Pro ⭐";
+            planEl.className = "user-plan plan-pro";
+        }
+
+        // Pré-remplir nom émetteur
+        if (companyData.name) {
+            document.getElementById('nomEmetteur').value = companyData.name;
+        }
+
+    } catch (error) {
+        console.error("Erreur:", error);
+    }
+});
+
+// ============================
+// 📅 DATES PAR DÉFAUT
+// ============================
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('factureDate').value = today;
+document.getElementById('dateEmetteur').value = today;
+
+const echeance = new Date();
+echeance.setDate(echeance.getDate() + 30);
+document.getElementById('factureEcheance').value =
+    echeance.toISOString().split('T')[0];
+
+// ============================
+// ⬅️➡️ NAVIGATION
+// ============================
+document.getElementById('btnBack').addEventListener('click', () => {
+    window.history.back();
+});
+
+document.getElementById('btnForward').addEventListener('click', () => {
+    window.history.forward();
+});
+
+// ============================
+// 📦 GESTION DES ARTICLES
+// ============================
+const articlesBody = document.getElementById('articlesBody');
+const addArticleBtn = document.getElementById('addArticle');
+let articleCount = 0;
+
+function ajouterArticle() {
+    articleCount++;
+    const row = document.createElement('tr');
+    row.setAttribute('data-id', articleCount);
+
+    row.innerHTML = `
+        <td class="num-col">${articleCount}</td>
+        <td>
+            <input type="text" class="desc" 
+                   placeholder="Description de l'article ou service">
+        </td>
+        <td>
+            <input type="number" class="prix" 
+                   placeholder="0.00" min="0" step="0.01">
+        </td>
+        <td>
+            <input type="number" class="qty" 
+                   placeholder="1" min="1" value="1">
+        </td>
+        <td class="ligne-total">0.00</td>
+        <td>
+            <button class="btn-delete-row" 
+                    onclick="supprimerLigne(this)">🗑️</button>
+        </td>
+    `;
+
+    articlesBody.appendChild(row);
+
+    row.querySelector('.prix').addEventListener('input', calculerTotal);
+    row.querySelector('.qty').addEventListener('input', calculerTotal);
+}
+
+window.supprimerLigne = function(btn) {
+    const row = btn.closest('tr');
+    row.remove();
+    numeroterLignes();
+    calculerTotal();
+};
+
+function numeroterLignes() {
+    const rows = articlesBody.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        row.querySelector('.num-col').textContent = index + 1;
+    });
+    articleCount = rows.length;
+}
+
+ajouterArticle();
+addArticleBtn.addEventListener('click', ajouterArticle);
+
+// ============================
+// 🧮 CALCULS AUTOMATIQUES
+// ============================
+function calculerTotal() {
+    const rows = articlesBody.querySelectorAll('tr');
+    let sousTotal = 0;
+    const devise = document.getElementById('devise').value;
+
+    rows.forEach(row => {
+        const prix = parseFloat(row.querySelector('.prix').value) || 0;
+        const qty = parseInt(row.querySelector('.qty').value) || 0;
+        const ligneTotal = prix * qty;
+        row.querySelector('.ligne-total').textContent =
+            ligneTotal.toFixed(2);
+        sousTotal += ligneTotal;
+    });
+
+    const tvaPercent =
+        parseFloat(document.getElementById('tvaPercent').value) || 0;
+    const reductionPercent =
+        parseFloat(document.getElementById('reductionPercent').value) || 0;
+
+    const tvaAmount = sousTotal * (tvaPercent / 100);
+    const reductionAmount = sousTotal * (reductionPercent / 100);
+    const totalFinal = sousTotal + tvaAmount - reductionAmount;
+
+    document.getElementById('sousTotal').textContent =
+        sousTotal.toFixed(2) + ' ' + devise;
+    document.getElementById('tvaAmount').textContent =
+        tvaAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('reductionAmount').textContent =
+        '-' + reductionAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('totalFinal').textContent =
+        totalFinal.toFixed(2) + ' ' + devise;
+}
+
+document.getElementById('tvaPercent').addEventListener('input', calculerTotal);
+document.getElementById('reductionPercent').addEventListener('input', calculerTotal);
+document.getElementById('devise').addEventListener('change', calculerTotal);
+window.calculerTotal = calculerTotal;
+
+// ============================
+// 🖨️ IMPRIMER
+// ============================
+document.getElementById('btnPrint').addEventListener('click', () => {
+    window.print();
+});
+
+// ============================
+// 🗑️ EFFACER TOUT
+// ============================
+const modal = document.getElementById('modalClear');
+
+document.getElementById('btnClear').addEventListener('click', () => {
+    modal.style.display = 'flex';
+});
+
+document.getElementById('cancelClear').addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+document.getElementById('confirmClear').addEventListener('click', () => {
+    effacerTout();
+    modal.style.display = 'none';
+});
+
+function effacerTout() {
+    document.getElementById('factureNumber').value = 'FAC-001';
+    document.getElementById('factureDate').value = today;
+    document.getElementById('factureEcheance').value =
+        echeance.toISOString().split('T')[0];
+
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientEmail').value = '';
+    document.getElementById('clientPhone').value = '';
+    document.getElementById('clientAddress').value = '';
+
+    articlesBody.innerHTML = '';
+    articleCount = 0;
+    ajouterArticle();
+
+    document.getElementById('tvaPercent').value = '18';
+    document.getElementById('reductionPercent').value = '0';
+    calculerTotal();
+
+    document.getElementById('factureNotes').value = '';
+
+    clearCanvas('signatureEmetteur', 'placeholderEmetteur');
+    clearCanvas('signatureClient', 'placeholderClient');
+    document.getElementById('nomEmetteur').value = '';
+    document.getElementById('nomClient').value = '';
+    document.getElementById('dateEmetteur').value = today;
+    document.getElementById('dateClient').value = '';
+
+    showToast("✅ Facture effacée !", "success");
+}
+
+// ============================
+// 💾 SAUVEGARDER
+// ============================
+document.getElementById('btnSave').addEventListener('click', async () => {
+    if (!currentUser) return;
+
+    // Vérifier limites
+    if (userData && !userData.isPaid) {
+        const now = new Date();
+        const trialEnd = userData.trialEnd?.toDate
+            ? userData.trialEnd.toDate()
+            : new Date(userData.trialEnd);
+
+        if (now > trialEnd) {
+            showToast("⏰ Période d'essai terminée !", "warning");
+            setTimeout(() => {
+                window.location.href = "payment.html";
+            }, 2000);
+            return;
+        }
+
+        if (userData.facturesCount >= userData.maxFactures) {
+            showToast("📊 Limite atteinte ! Passez au Pro", "warning");
+            setTimeout(() => {
+                window.location.href = "payment.html";
+            }, 2000);
+            return;
+        }
+    }
+
+    // Validation
+    const clientName = document.getElementById('clientName').value.trim();
+    if (!clientName) {
+        showToast("❌ Entrez le nom du client", "error");
+        return;
+    }
+
+    const articles = [];
+    const rows = articlesBody.querySelectorAll('tr');
+
+    if (rows.length === 0) {
+        showToast("❌ Ajoutez au moins un article", "error");
+        return;
+    }
+
+    rows.forEach(row => {
+        articles.push({
+            description: row.querySelector('.desc').value,
+            prixUnitaire:
+                parseFloat(row.querySelector('.prix').value) || 0,
+            quantite:
+                parseInt(row.querySelector('.qty').value) || 0,
+            total:
+                parseFloat(
+                    row.querySelector('.ligne-total').textContent
+                ) || 0
+        });
+    });
+
+    const devise = document.getElementById('devise').value;
+
+    const facture = {
+        userId: currentUser.uid,
+        factureNumber: document.getElementById('factureNumber').value,
+        date: document.getElementById('factureDate').value,
+        echeance: document.getElementById('factureEcheance').value,
+        devise: devise,
+        client: {
+            name: clientName,
+            address: document.getElementById('clientAddress').value,
+            phone: document.getElementById('clientPhone').value,
+            email: document.getElementById('clientEmail').value
+        },
+        articles: articles,
+        sousTotal: parseFloat(
+            document.getElementById('sousTotal').textContent
+        ) || 0,
+        tvaPercent: parseFloat(
+            document.getElementById('tvaPercent').value
+        ) || 0,
+        tvaAmount: parseFloat(
+            document.getElementById('tvaAmount').textContent
+        ) || 0,
+        reductionPercent: parseFloat(
+            document.getElementById('reductionPercent').value
+        ) || 0,
+        reductionAmount: parseFloat(
+            document.getElementById('reductionAmount').textContent
+        ) || 0,
+        totalFinal: parseFloat(
+            document.getElementById('totalFinal').textContent
+        ) || 0,
+        notes: document.getElementById('factureNotes').value,
+        signatureEmetteur: document.getElementById('signatureEmetteur')
+            .toDataURL('image/png'),
+        signatureClient: document.getElementById('signatureClient')
+            .toDataURL('image/png'),
+        nomEmetteur: document.getElementById('nomEmetteur').value,
+        nomClient: document.getElementById('nomClient').value,
+        createdAt: serverTimestamp()
+    };
+
+    try {
+        await addDoc(collection(db, "factures"), facture);
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            facturesCount: increment(1)
+        });
+        showToast("✅ Facture sauvegardée !", "success");
+    } catch (error) {
+        showToast("❌ Erreur : " + error.message, "error");
+    }
+});
+
+// ============================
+// 📄 EXPORT PDF
+// ============================
+document.getElementById('exportPDF').addEventListener('click', () => {
+    const content = genererFactureHTML();
+    const container = document.createElement('div');
+    container.innerHTML = content;
+    document.body.appendChild(container);
+
+    const options = {
+        margin: 10,
+        filename: 'facture_' +
+            document.getElementById('factureNumber').value + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(options).from(container).save().then(() => {
+        document.body.removeChild(container);
+        showToast("✅ PDF exporté !", "success");
+    });
+});
+
+// ============================
+// 📝 EXPORT WORD
+// ============================
+document.getElementById('exportWord').addEventListener('click', () => {
+    const content = genererFactureHTML();
+    const blob = new Blob(['\ufeff', content], {
+        type: 'application/msword'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'facture_' +
+        document.getElementById('factureNumber').value + '.doc';
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast("✅ Word exporté !", "success");
+});
+
+// ============================
+// 📋 GÉNÉRER HTML FACTURE
+// ============================
+function genererFactureHTML() {
+    const rows = articlesBody.querySelectorAll('tr');
+    const devise = document.getElementById('devise').value;
+    let articlesHTML = '';
+
+    rows.forEach((row, index) => {
+        const desc = row.querySelector('.desc').value || '-';
+        const prix = row.querySelector('.prix').value || '0';
+        const qty = row.querySelector('.qty').value || '1';
+        const total = row.querySelector('.ligne-total').textContent;
+
+        articlesHTML += `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding:10px; text-align:center; color:#888;">
+                    ${index + 1}
+                </td>
+                <td style="padding:10px;">${desc}</td>
+                <td style="padding:10px; text-align:center;">
+                    ${parseFloat(prix).toFixed(2)} ${devise}
+                </td>
+                <td style="padding:10px; text-align:center;">${qty}</td>
+                <td style="padding:10px; text-align:right; font-weight:700;">
+                    ${parseFloat(total).toFixed(2)} ${devise}
+                </td>
+            </tr>
+        `;
+    });
+
+    const signEmetteur = document.getElementById('signatureEmetteur')
+        .toDataURL('image/png');
+    const signClient = document.getElementById('signatureClient')
+        .toDataURL('image/png');
+
+    const compName = companyData?.name || 'Mon Entreprise';
+    const compAddress = companyData?.address || '';
+    const compPhone = companyData?.phone || '';
+    const compEmail = companyData?.email || '';
+    const compLogo = companyData?.logo || '';
+
+    return `
+    <div style="font-family:Arial,sans-serif; padding:30px;
+                max-width:800px; margin:0 auto;">
+
+        <!-- EN-TÊTE -->
+        <div style="display:flex; justify-content:space-between;
+                    align-items:flex-start;
+                    border-bottom:3px solid #6c63ff;
+                    padding-bottom:20px; margin-bottom:30px;">
+            <div>
+                ${compLogo ?
+                    `<img src="${compLogo}" 
+                          style="max-height:60px; margin-bottom:10px;">` 
+                    : ''
+                }
+                <h1 style="color:#6c63ff; font-size:2.5em; margin:0;">
+                    FACTURE
+                </h1>
+                <p style="color:#666; margin:5px 0;">
+                    <strong>N°:</strong>
+                    ${document.getElementById('factureNumber').value}
+                </p>
+                <p style="color:#666; margin:5px 0;">
+                    <strong>Date:</strong>
+                    ${document.getElementById('factureDate').value}
+                </p>
+                <p style="color:#666; margin:5px 0;">
+                    <strong>Échéance:</strong>
+                    ${document.getElementById('factureEcheance').value}
+                </p>
+            </div>
+            <div style="text-align:right;">
+                <h2 style="color:#333; margin:0;">${compName}</h2>
+                <p style="color:#666; margin:5px 0;">${compAddress}</p>
+                <p style="color:#666; margin:5px 0;">${compPhone}</p>
+                <p style="color:#666; margin:5px 0;">${compEmail}</p>
+            </div>
+        </div>
+
+        <!-- CLIENT -->
+        <div style="background:#f8f9fa; padding:15px;
+                    border-radius:8px; margin-bottom:25px;">
+            <h3 style="color:#333; margin:0 0 10px 0;">Facturé à :</h3>
+            <p style="margin:3px 0;">
+                <strong>
+                    ${document.getElementById('clientName').value}
+                </strong>
+            </p>
+            <p style="margin:3px 0; color:#666;">
+                ${document.getElementById('clientAddress').value}
+            </p>
+            <p style="margin:3px 0; color:#666;">
+                📞 ${document.getElementById('clientPhone').value}
+            </p>
+            <p style="margin:3px 0; color:#666;">
+                📧 ${document.getElementById('clientEmail').value}
+            </p>
+        </div>
+
+        <!-- ARTICLES -->
+        <table style="width:100%; border-collapse:collapse;
+                      margin-bottom:25px;">
+            <thead>
+                <tr style="background:#6c63ff; color:white;">
+                    <th style="padding:12px; text-align:center;
+                              width:40px;">#</th>
+                    <th style="padding:12px; text-align:left;">
+                        Description</th>
+                    <th style="padding:12px; text-align:center;">
+                        Prix Unit.</th>
+                    <th style="padding:12px; text-align:center;">
+                        Qté</th>
+                    <th style="padding:12px; text-align:right;">
+                        Total</th>
+                </tr>
+            </thead>
+            <tbody>${articlesHTML}</tbody>
+        </table>
+
+        <!-- TOTAUX -->
+        <div style="display:flex; justify-content:flex-end;
+                    margin-bottom:30px;">
+            <div style="width:300px; background:#f8f9fa;
+                        padding:20px; border-radius:8px;">
+                <div style="display:flex; justify-content:space-between;
+                            margin-bottom:8px;">
+                    <span>Sous-total :</span>
+                    <strong>
+                        ${document.getElementById('sousTotal').textContent}
+                    </strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;
+                            margin-bottom:8px;">
+                    <span>TVA
+                        (${document.getElementById('tvaPercent').value}%) :
+                    </span>
+                    <span>
+                        ${document.getElementById('tvaAmount').textContent}
+                    </span>
+                </div>
+                <div style="display:flex; justify-content:space-between;
+                            margin-bottom:8px; color:#e74c3c;">
+                    <span>Réduction
+                        (${document.getElementById('reductionPercent').value}%) :
+                    </span>
+                    <span>
+                        ${document.getElementById('reductionAmount').textContent}
+                    </span>
+                </div>
+                <div style="display:flex; justify-content:space-between;
+                            border-top:2px solid #6c63ff;
+                            padding-top:10px; margin-top:10px;">
+                    <strong style="font-size:1.2em;">TOTAL :</strong>
+                    <strong style="font-size:1.2em; color:#6c63ff;">
+                        ${document.getElementById('totalFinal').textContent}
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTES -->
+        ${document.getElementById('factureNotes').value ? `
+        <div style="background:#fff3cd; padding:15px;
+                    border-radius:8px; margin-bottom:30px;
+                    border-left:4px solid #ffc107;">
+            <h4 style="margin:0 0 5px 0; color:#856404;">
+                📝 Notes :
+            </h4>
+            <p style="margin:0; color:#666; white-space:pre-wrap;">
+                ${document.getElementById('factureNotes').value}
+            </p>
+        </div>
+        ` : ''}
+
+        <!-- SIGNATURES -->
+        <div style="display:flex; justify-content:space-between;
+                    margin-top:50px; gap:30px;">
+            <div style="flex:1; text-align:center;
+                        border-top:2px solid #333; padding-top:15px;">
+                <p style="font-weight:bold; margin:0 0 10px 0;">
+                    Signature de l'émetteur
+                </p>
+                <img src="${signEmetteur}"
+                     style="max-width:200px; height:80px;
+                            object-fit:contain;">
+                <p style="margin:10px 0 0; color:#666;">
+                    ${document.getElementById('nomEmetteur').value}
+                </p>
+                <p style="margin:5px 0 0; color:#888; font-size:0.85em;">
+                    ${document.getElementById('dateEmetteur').value}
+                </p>
+            </div>
+            <div style="flex:1; text-align:center;
+                        border-top:2px solid #333; padding-top:15px;">
+                <p style="font-weight:bold; margin:0 0 10px 0;">
+                    Signature du client
+                </p>
+                <img src="${signClient}"
+                     style="max-width:200px; height:80px;
+                            object-fit:contain;">
+                <p style="margin:10px 0 0; color:#666;">
+                    ${document.getElementById('nomClient').value}
+                </p>
+                <p style="margin:5px 0 0; color:#888; font-size:0.85em;">
+                    ${document.getElementById('dateClient').value}
+                </p>
+            </div>
+        </div>
+
+        <!-- PIED DE PAGE -->
+        <div style="margin-top:40px; text-align:center;
+                    color:#aaa; border-top:1px solid #eee;
+                    padding-top:15px; font-size:0.85em;">
+            <p>Merci pour votre confiance ! 🙏</p>
+            <p>${compName} — ${compAddress}</p>
+        </div>
+
+    </div>
+    `;
+}
+
+// ============================
+// 🔔 TOAST
+// ============================
+function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast toast-' + type + ' show';
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// ============================
+// 🚪 DÉCONNEXION
+// ============================
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (confirm("Voulez-vous vous déconnecter ?")) {
+        await signOut(auth);
+        window.location.href = "../login.html";
+    }
+});
+
+// ============================
+// ☰ MENU MOBILE
+// ============================
+document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ============================
+// 📞 WHATSAPP
+// ============================
+document.getElementById('contactWhatsapp').addEventListener('click', (e) => {
+    e.preventDefault();
+    const phone = "000000000";
+    const msg = "Bonjour, j'utilise Facture Pro et j'ai une question.";
+    window.open(
+        `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+        '_blank'
+    );
+});
+</script>
+
+<!-- ======= SIGNATURES SCRIPT ======= -->
+<script>
+// ============================
+// ✍️ SIGNATURES
+// ============================
+function initSignature(canvasId, placeholderId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const placeholder = document.getElementById(placeholderId);
+    const wrapper = canvas.parentElement;
+
+    // Ajuster la taille du canvas
+    canvas.width = wrapper.offsetWidth;
+    canvas.height = 150;
+
+    let isDrawing = false;
+    let hasDrawn = false;
+
+    ctx.strokeStyle = '#1a1a2e';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX - rect.left) * (canvas.width / rect.width),
+            y: (e.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    function getTouchPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        return {
+            x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+            y: (touch.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    // Souris
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        if (!hasDrawn) {
+            hasDrawn = true;
+            placeholder.style.display = 'none';
+        }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isDrawing = false;
+        ctx.beginPath();
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        isDrawing = false;
+        ctx.beginPath();
+    });
+
+    // Tactile
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getTouchPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        if (!hasDrawn) {
+            hasDrawn = true;
+            placeholder.style.display = 'none';
+        }
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const pos = getTouchPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    });
+
+    canvas.addEventListener('touchend', () => {
+        isDrawing = false;
+        ctx.beginPath();
+    });
+}
+
+function clearCanvas(canvasId, placeholderId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const placeholder = document.getElementById(placeholderId);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    placeholder.style.display = 'block';
+    initSignature(canvasId, placeholderId);
+}
+
+// Init
+window.addEventListener('load', () => {
+    initSignature('signatureEmetteur', 'placeholderEmetteur');
+    initSignature('signatureClient', 'placeholderClient');
+});
+
+// Resize
+window.addEventListener('resize', () => {
+    initSignature('signatureEmetteur', 'placeholderEmetteur');
+    initSignature('signatureClient', 'placeholderClient');
+});
+
+// Boutons effacer signatures
+document.getElementById('clearSignEmetteur').addEventListener('click', () => {
+    clearCanvas('signatureEmetteur', 'placeholderEmetteur');
+});
+
+document.getElementById('clearSignClient').addEventListener('click', () => {
+    clearCanvas('signatureClient', 'placeholderClient');
+});
+
+// Boutons sauvegarder signatures
+document.getElementById('saveSignEmetteur').addEventListener('click', () => {
+    const data = document.getElementById('signatureEmetteur')
+        .toDataURL('image/png');
+    localStorage.setItem('signature_emetteur', data);
+    alert('✅ Signature émetteur sauvegardée !');
+});
+
+document.getElementById('saveSignClient').addEventListener('click', () => {
+    const data = document.getElementById('signatureClient')
+        .toDataURL('image/png');
+    localStorage.setItem('signature_client', data);
+    alert('✅ Signature client sauvegardée !');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement - Facture Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        /* ======= SIDEBAR ======= */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h2 { font-size: 1.4em; color: #6c63ff; }
+        .sidebar-header p { color: #888; font-size: 0.85em; margin-top: 5px; }
+
+        .user-info {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 60px; height: 60px;
+            background: #6c63ff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5em; margin: 0 auto 10px;
+        }
+
+        .user-info h3 { font-size: 1em; margin-bottom: 3px; }
+        .user-info p { color: #888; font-size: 0.8em; }
+
+        .user-plan {
+            display: inline-block; padding: 3px 12px;
+            border-radius: 15px; font-size: 0.75em; margin-top: 5px;
+        }
+
+        .plan-gratuit { background: rgba(231,76,60,0.2); color: #e74c3c; }
+        .plan-pro { background: rgba(108,99,255,0.2); color: #6c63ff; }
+
+        .nav-menu { list-style: none; padding: 15px 0; }
+
+        .nav-menu a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 25px; color: #aaa; text-decoration: none;
+            font-size: 0.95em; transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(108,99,255,0.1); color: white;
+            border-left-color: #6c63ff;
+        }
+
+        .menu-icon { font-size: 1.2em; width: 25px; text-align: center; }
+
+        .nav-separator {
+            height: 1px; background: rgba(255,255,255,0.1);
+            margin: 10px 20px;
+        }
+
+        .logout-btn { color: #e74c3c !important; }
+        .logout-btn:hover {
+            background: rgba(231,76,60,0.1) !important;
+            border-left-color: #e74c3c !important;
+        }
+
+        /* ======= MAIN ======= */
+        .main-content {
+            margin-left: 260px; flex: 1; padding: 25px;
+        }
+
+        .top-bar {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 25px;
+        }
+
+        .top-bar-left {
+            display: flex; align-items: center; gap: 15px;
+        }
+
+        .menu-toggle {
+            display: none; background: #6c63ff; color: white;
+            border: none; padding: 10px 15px; border-radius: 8px;
+            cursor: pointer; font-size: 1.2em;
+        }
+
+        .top-bar h1 { font-size: 1.5em; color: #333; }
+
+        /* ======= CURRENT PLAN ======= */
+        .current-plan {
+            background: white; border-radius: 15px;
+            padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px; display: flex;
+            justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 20px;
+        }
+
+        .current-plan-info h2 {
+            color: #333; font-size: 1.2em; margin-bottom: 8px;
+        }
+
+        .current-plan-info p { color: #888; font-size: 0.95em; }
+
+        .plan-badge {
+            padding: 8px 25px; border-radius: 25px;
+            font-size: 1em; font-weight: 700;
+        }
+
+        .plan-badge-free {
+            background: rgba(231,76,60,0.1); color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+
+        .plan-badge-pro {
+            background: rgba(108,99,255,0.1); color: #6c63ff;
+            border: 2px solid #6c63ff;
+        }
+
+        .plan-stats {
+            display: flex; gap: 30px; flex-wrap: wrap;
+        }
+
+        .plan-stat {
+            text-align: center;
+        }
+
+        .plan-stat h4 { color: #888; font-size: 0.8em; font-weight: 500; }
+        .plan-stat .val { font-size: 1.3em; font-weight: 700; color: #333; }
+
+        /* ======= TRIAL WARNING ======= */
+        .trial-warning {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white; padding: 20px 25px; border-radius: 12px;
+            margin-bottom: 25px; display: none;
+            text-align: center;
+        }
+
+        .trial-warning.show { display: block; }
+
+        .trial-warning h3 { margin-bottom: 8px; font-size: 1.2em; }
+        .trial-warning p { font-size: 0.95em; opacity: 0.9; }
+
+        /* ======= PRICING CARDS ======= */
+        .pricing-section h2 {
+            text-align: center; font-size: 1.8em; color: #333;
+            margin-bottom: 10px;
+        }
+
+        .pricing-subtitle {
+            text-align: center; color: #888; margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; max-width: 950px; margin: 0 auto 30px;
+        }
+
+        .pricing-card {
+            background: white; border-radius: 20px;
+            padding: 35px 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            text-align: center; position: relative;
+            transition: all 0.3s; border: 2px solid transparent;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .pricing-card.popular {
+            border-color: #6c63ff;
+            background: linear-gradient(180deg, #fafafe, white);
+        }
+
+        .pricing-card.current {
+            border-color: #27ae60;
+        }
+
+        .popular-tag {
+            position: absolute; top: -12px; left: 50%;
+            transform: translateX(-50%);
+            background: #6c63ff; color: white;
+            padding: 4px 20px; border-radius: 20px;
+            font-size: 0.8em; font-weight: 600;
+        }
+
+        .current-tag {
+            position: absolute; top: -12px; left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60; color: white;
+            padding: 4px 20px; border-radius: 20px;
+            font-size: 0.8em; font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.4em; color: #333; margin-bottom: 10px;
+        }
+
+        .pricing-price {
+            font-size: 3em; font-weight: 700; color: #6c63ff;
+            margin: 15px 0;
+        }
+
+        .pricing-price span {
+            font-size: 0.35em; color: #888; font-weight: 400;
+        }
+
+        .pricing-list {
+            list-style: none; text-align: left; margin: 20px 0;
+        }
+
+        .pricing-list li {
+            padding: 10px 0; color: #666; font-size: 0.95em;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .pricing-list li::before { content: "✅ "; margin-right: 5px; }
+
+        .pricing-list li.disabled { color: #ccc; }
+        .pricing-list li.disabled::before { content: "❌ "; }
+
+        .btn-choose-plan {
+            width: 100%; padding: 14px;
+            background: #6c63ff; color: white;
+            border: none; border-radius: 12px;
+            font-size: 1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+
+        .btn-choose-plan:hover {
+            background: #5a52d5; transform: translateY(-2px);
+        }
+
+        .btn-choose-plan.current-btn {
+            background: #27ae60;
+        }
+
+        .btn-choose-plan:disabled {
+            opacity: 0.6; cursor: not-allowed;
+        }
+
+        .btn-outline {
+            width: 100%; padding: 14px;
+            background: transparent; color: #6c63ff;
+            border: 2px solid #6c63ff; border-radius: 12px;
+            font-size: 1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #6c63ff; color: white;
+        }
+
+        /* ======= PAYMENT METHODS ======= */
+        .payment-section {
+            background: white; border-radius: 15px;
+            padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px; display: none;
+        }
+
+        .payment-section.show { display: block; }
+
+        .payment-section h2 {
+            color: #333; font-size: 1.3em; margin-bottom: 20px;
+            padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;
+        }
+
+        .selected-plan-info {
+            background: #f8f9fa; padding: 15px; border-radius: 10px;
+            margin-bottom: 20px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+
+        .selected-plan-info h3 { color: #6c63ff; }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin-bottom: 25px;
+        }
+
+        .payment-method {
+            border: 2px solid #e0e0e0; border-radius: 12px;
+            padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #6c63ff;
+            background: rgba(108,99,255,0.02);
+        }
+
+        .payment-method.selected {
+            border-color: #6c63ff;
+            background: rgba(108,99,255,0.05);
+        }
+
+        .payment-method .method-icon {
+            font-size: 2em; margin-bottom: 10px;
+        }
+
+        .payment-method h4 { color: #333; font-size: 0.95em; }
+        .payment-method p { color: #888; font-size: 0.8em; margin-top: 5px; }
+
+        /* ======= PAYMENT DETAILS ======= */
+        .payment-details {
+            display: none; margin-top: 20px;
+        }
+
+        .payment-details.show { display: block; }
+
+        .payment-info-box {
+            background: #f8f9fa; border-radius: 10px;
+            padding: 20px; margin-bottom: 20px;
+            border-left: 4px solid #6c63ff;
+        }
+
+        .payment-info-box h3 {
+            color: #333; margin-bottom: 10px; font-size: 1.05em;
+        }
+
+        .payment-info-box p {
+            color: #666; margin-bottom: 5px; font-size: 0.95em;
+        }
+
+        .payment-info-box .highlight {
+            color: #6c63ff; font-weight: 700; font-size: 1.1em;
+        }
+
+        .payment-input-group {
+            margin-bottom: 15px;
+        }
+
+        .payment-input-group label {
+            display: block; margin-bottom: 6px; color: #666;
+            font-size: 0.85em; font-weight: 600;
+        }
+
+        .payment-input-group input,
+        .payment-input-group textarea {
+            width: 100%; padding: 11px 14px;
+            border: 1px solid #e0e0e0; border-radius: 8px;
+            font-size: 0.95em; outline: none;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .payment-input-group input:focus,
+        .payment-input-group textarea:focus {
+            border-color: #6c63ff;
+        }
+
+        .payment-input-group textarea {
+            min-height: 80px; resize: vertical;
+        }
+
+        .btn-submit-payment {
+            width: 100%; padding: 15px;
+            background: #27ae60; color: white;
+            border: none; border-radius: 12px;
+            font-size: 1.1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+
+        .btn-submit-payment:hover {
+            background: #1e8449; transform: translateY(-2px);
+        }
+
+        .btn-submit-payment:disabled {
+            opacity: 0.6; cursor: not-allowed;
+        }
+
+        /* ======= CONTACT SECTION ======= */
+        .contact-section {
+            background: white; border-radius: 15px;
+            padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            color: #333; font-size: 1.3em; margin-bottom: 10px;
+        }
+
+        .contact-section p {
+            color: #888; margin-bottom: 20px;
+        }
+
+        .contact-buttons {
+            display: flex; gap: 15px; justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-whatsapp {
+            padding: 12px 30px; background: #25D366; color: white;
+            border: none; border-radius: 10px; font-size: 1em;
+            cursor: pointer; display: flex; align-items: center;
+            gap: 8px; transition: all 0.3s; text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E; transform: translateY(-2px);
+        }
+
+        .btn-call {
+            padding: 12px 30px; background: #3498db; color: white;
+            border: none; border-radius: 10px; font-size: 1em;
+            cursor: pointer; display: flex; align-items: center;
+            gap: 8px; transition: all 0.3s; text-decoration: none;
+        }
+
+        .btn-call:hover {
+            background: #2980b9; transform: translateY(-2px);
+        }
+
+        .btn-email {
+            padding: 12px 30px; background: #e67e22; color: white;
+            border: none; border-radius: 10px; font-size: 1em;
+            cursor: pointer; display: flex; align-items: center;
+            gap: 8px; transition: all 0.3s; text-decoration: none;
+        }
+
+        .btn-email:hover {
+            background: #d35400; transform: translateY(-2px);
+        }
+
+        /* ======= PAYMENT HISTORY ======= */
+        .payment-history {
+            background: white; border-radius: 15px;
+            padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-top: 25px;
+        }
+
+        .payment-history h2 {
+            color: #333; font-size: 1.15em; margin-bottom: 15px;
+            padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;
+        }
+
+        .payment-history-empty {
+            text-align: center; padding: 30px; color: #aaa;
+        }
+
+        /* ======= TOAST ======= */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            padding: 15px 25px; border-radius: 10px;
+            color: white; font-weight: 600; z-index: 99999;
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { background: #27ae60; }
+        .toast-error { background: #e74c3c; }
+        .toast-warning { background: #f39c12; }
+
+        /* ======= RESPONSIVE ======= */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .current-plan { flex-direction: column; text-align: center; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .payment-methods { grid-template-columns: 1fr; }
+            .contact-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🧾 Facture Pro</h2>
+            <p>Générateur de factures</p>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <h3 id="userName">Chargement...</h3>
+            <p id="userEmail">...</p>
+            <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="dashboard.html">
+                <span class="menu-icon">📊</span> Tableau de bord
+            </a></li>
+            <li><a href="new-facture.html">
+                <span class="menu-icon">➕</span> Nouvelle facture
+            </a></li>
+            <li><a href="history.html">
+                <span class="menu-icon">📋</span> Mes factures
+            </a></li>
+            <li><a href="profile.html">
+                <span class="menu-icon">🏢</span> Mon entreprise
+            </a></li>
+            <div class="nav-separator"></div>
+            <li><a href="payment.html" class="active">
+                <span class="menu-icon">💳</span> Abonnement
+            </a></li>
+            <li><a href="#" id="contactWhatsappSidebar">
+                <span class="menu-icon">📞</span> Nous contacter
+            </a></li>
+            <div class="nav-separator"></div>
+            <li><a href="#" class="logout-btn" id="logoutBtn">
+                <span class="menu-icon">🚪</span> Déconnexion
+            </a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <h1>💳 Abonnement</h1>
+            </div>
+        </div>
+
+        <!-- TRIAL WARNING -->
+        <div class="trial-warning" id="trialWarning">
+            <h3 id="trialTitle">⏰ Votre période d'essai se termine bientôt</h3>
+            <p id="trialText">
+                Il vous reste <strong id="trialDaysLeft">0</strong> 
+                jours d'essai. Passez au Pro pour continuer !
+            </p>
+        </div>
+
+        <!-- CURRENT PLAN -->
+        <div class="current-plan">
+            <div class="current-plan-info">
+                <h2>📋 Mon abonnement actuel</h2>
+                <p id="planDescription">
+                    Vous utilisez le plan gratuit
+                </p>
+            </div>
+            <div>
+                <span class="plan-badge plan-badge-free" id="planBadge">
+                    Gratuit
+                </span>
+            </div>
+            <div class="plan-stats">
+                <div class="plan-stat">
+                    <h4>Factures créées</h4>
+                    <div class="val" id="facturesUsed">0 / 10</div>
+                </div>
+                <div class="plan-stat">
+                    <h4>Jours restants</h4>
+                    <div class="val" id="daysLeft">30</div>
+                </div>
+                <div class="plan-stat">
+                    <h4>Statut</h4>
+                    <div class="val" id="planStatus">Actif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRICING -->
+        <div class="pricing-section">
+            <h2>🚀 Choisissez votre plan</h2>
+            <p class="pricing-subtitle">
+                Passez au Pro pour débloquer toutes les fonctionnalités
+            </p>
+
+            <div class="pricing-grid">
+
+                <!-- GRATUIT -->
+                <div class="pricing-card" id="cardFree">
+                    <h3>Gratuit</h3>
+                    <div class="pricing-price">0$ <span>/mois</span></div>
+                    <ul class="pricing-list">
+                        <li>10 factures par mois</li>
+                        <li>Export PDF</li>
+                        <li>Calcul automatique</li>
+                        <li>1 entreprise</li>
+                        <li class="disabled">Export Word</li>
+                        <li class="disabled">Signatures digitales</li>
+                        <li class="disabled">Historique illimité</li>
+                        <li class="disabled">Support prioritaire</li>
+                    </ul>
+                    <button class="btn-outline" disabled id="btnFree">
+                        Plan actuel
+                    </button>
+                </div>
+
+                <!-- PRO -->
+                <div class="pricing-card popular" id="cardPro">
+                    <div class="popular-tag">⭐ Populaire</div>
+                    <h3>Pro</h3>
+                    <div class="pricing-price">9$ <span>/mois</span></div>
+                    <ul class="pricing-list">
+                        <li>Factures illimitées</li>
+                        <li>Export PDF & Word</li>
+                        <li>Signatures digitales</li>
+                        <li>Historique illimité</li>
+                        <li>Votre logo & branding</li>
+                        <li>Calcul automatique</li>
+                        <li>Support prioritaire</li>
+                        <li class="disabled">Multi-entreprises</li>
+                    </ul>
+                    <button class="btn-choose-plan" id="btnPro"
+                            onclick="selectPlan('pro', 9)">
+                        🚀 Choisir Pro — 9$/mois
+                    </button>
+                </div>
+
+                <!-- BUSINESS -->
+                <div class="pricing-card" id="cardBusiness">
+                    <h3>Business</h3>
+                    <div class="pricing-price">19$ <span>/mois</span></div>
+                    <ul class="pricing-list">
+                        <li>Tout dans Pro</li>
+                        <li>Multi-entreprises</li>
+                        <li>Modèles personnalisés</li>
+                        <li>Statistiques avancées</li>
+                        <li>Export Excel</li>
+                        <li>API access</li>
+                        <li>Support 24/7</li>
+                        <li>Utilisateurs multiples</li>
+                    </ul>
+                    <button class="btn-choose-plan" id="btnBusiness"
+                            onclick="selectPlan('business', 19)">
+                        🏢 Choisir Business — 19$/mois
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PAYMENT SECTION -->
+        <div class="payment-section" id="paymentSection">
+            <h2>💳 Procéder au paiement</h2>
+
+            <div class="selected-plan-info">
+                <div>
+                    <p>Plan sélectionné :</p>
+                    <h3 id="selectedPlanName">Pro</h3>
+                </div>
+                <div>
+                    <h3 id="selectedPlanPrice" style="color:#6c63ff;">
+                        9$/mois
+                    </h3>
+                </div>
+            </div>
+
+            <!-- MÉTHODES DE PAIEMENT -->
+            <h3 style="margin-bottom:15px; color:#333;">
+                Choisissez votre méthode de paiement :
+            </h3>
+
+            <div class="payment-methods">
+                <div class="payment-method" 
+                     onclick="selectPaymentMethod('mobile_money')">
+                    <div class="method-icon">📱</div>
+                    <h4>Mobile Money</h4>
+                    <p>Orange, MTN, Wave, etc.</p>
+                </div>
+
+                <div class="payment-method" 
+                     onclick="selectPaymentMethod('bank_transfer')">
+                    <div class="method-icon">🏦</div>
+                    <h4>Virement bancaire</h4>
+                    <p>Transfert direct</p>
+                </div>
+
+                <div class="payment-method" 
+                     onclick="selectPaymentMethod('whatsapp')">
+                    <div class="method-icon">💬</div>
+                    <h4>Via WhatsApp</h4>
+                    <p>Contacter pour payer</p>
+                </div>
+            </div>
+
+            <!-- MOBILE MONEY -->
+            <div class="payment-details" id="details_mobile_money">
+                <div class="payment-info-box">
+                    <h3>📱 Paiement Mobile Money</h3>
+                    <p>Envoyez le montant au numéro suivant :</p>
+                    <p class="highlight">+000 00 00 00 00</p>
+                    <p>Nom : <strong>Votre Nom</strong></p>
+                    <p>Montant : <strong id="mmAmount">9$</strong></p>
+                    <p style="margin-top:10px; color:#e74c3c; font-size:0.85em;">
+                        ⚠️ Après le paiement, entrez votre numéro de 
+                        transaction ci-dessous
+                    </p>
+                </div>
+
+                <div class="payment-input-group">
+                    <label>Votre numéro de téléphone</label>
+                    <input type="text" id="mmPhone" 
+                           placeholder="+000 00 00 00 00">
+                </div>
+
+                <div class="payment-input-group">
+                    <label>Numéro de transaction</label>
+                    <input type="text" id="mmTransaction" 
+                           placeholder="Ex: TXN123456789">
+                </div>
+
+                <div class="payment-input-group">
+                    <label>Message (optionnel)</label>
+                    <textarea id="mmMessage" 
+                              placeholder="Informations supplémentaires..."></textarea>
+                </div>
+
+                <button class="btn-submit-payment" id="btnSubmitMM">
+                    ✅ Confirmer le paiement
+                </button>
+            </div>
+
+            <!-- VIREMENT BANCAIRE -->
+            <div class="payment-details" id="details_bank_transfer">
+                <div class="payment-info-box">
+                    <h3>🏦 Virement Bancaire</h3>
+                    <p>Effectuez un virement aux coordonnées suivantes :</p>
+                    <p><strong>Banque :</strong> Votre Banque</p>
+                    <p><strong>IBAN :</strong> XX00 0000 0000 0000 0000</p>
+                    <p><strong>BIC :</strong> XXXXXX</p>
+                    <p><strong>Titulaire :</strong> Votre Nom</p>
+                    <p><strong>Montant :</strong> 
+                        <span class="highlight" id="bankAmount">9$</span>
+                    </p>
+                    <p style="margin-top:10px; color:#e74c3c; font-size:0.85em;">
+                        ⚠️ Mentionnez votre email dans la référence 
+                        du virement
+                    </p>
+                </div>
+
+                <div class="payment-input-group">
+                    <label>Votre email (référence)</label>
+                    <input type="email" id="bankEmail" 
+                           placeholder="email@exemple.com">
+                </div>
+
+                <div class="payment-input-group">
+                    <label>Référence du virement</label>
+                    <input type="text" id="bankRef" 
+                           placeholder="Référence du virement">
+                </div>
+
+                <button class="btn-submit-payment" id="btnSubmitBank">
+                    ✅ Confirmer le paiement
+                </button>
+            </div>
+
+            <!-- WHATSAPP -->
+            <div class="payment-details" id="details_whatsapp">
+                <div class="payment-info-box">
+                    <h3>💬 Paiement via WhatsApp</h3>
+                    <p>Contactez-nous directement sur WhatsApp pour 
+                       effectuer votre paiement.</p>
+                    <p>Nous vous guiderons étape par étape.</p>
+                </div>
+
+                <button class="btn-submit-payment" 
+                        id="btnSubmitWhatsapp"
+                        style="background:#25D366;">
+                    💬 Contacter sur WhatsApp
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="contact-section">
+            <h2>📞 Besoin d'aide ?</h2>
+            <p>Notre équipe est disponible pour vous aider</p>
+
+            <div class="contact-buttons">
+                <a href="#" class="btn-whatsapp" id="contactWhatsapp">
+                    💬 WhatsApp
+                </a>
+                <a href="tel:+000000000" class="btn-call">
+                    📞 Appeler
+                </a>
+                <a href="mailto:support@facturepro.com" class="btn-email">
+                    📧 Email
+                </a>
+            </div>
+        </div>
+
+        <!-- PAYMENT HISTORY -->
+        <div class="payment-history">
+            <h2>📋 Historique des paiements</h2>
+            <div class="payment-history-empty" id="paymentHistoryEmpty">
+                <p>📭 Aucun paiement effectué</p>
+            </div>
+            <div id="paymentHistoryList"></div>
+        </div>
+
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+<script type="module">
+import { auth, db } from '../js/firebase-config.js';
+import {
+    onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    doc, getDoc, collection, addDoc,
+    query, where, orderBy, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+let currentUser = null;
+let userData = null;
+let selectedPlan = null;
+let selectedPrice = 0;
+let selectedMethod = null;
+
+// ============================
+// 🔒 VÉRIFIER CONNEXION
+// ============================
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "../login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+            window.location.href = "../login.html";
+            return;
+        }
+
+        userData = userDoc.data();
+
+        // Sidebar
+        document.getElementById('userName').textContent = userData.fullName;
+        document.getElementById('userEmail').textContent = userData.email;
+        document.getElementById('userAvatar').textContent =
+            userData.fullName.charAt(0).toUpperCase();
+
+        const planEl = document.getElementById('userPlan');
+        if (userData.isPaid) {
+            planEl.textContent = "Pro ⭐";
+            planEl.className = "user-plan plan-pro";
+        }
+
+        // Afficher infos plan
+        updatePlanInfo();
+
+        // Charger historique paiements
+        await chargerHistoriquePaiements();
+
+    } catch (error) {
+        console.error("Erreur:", error);
+    }
+});
+
+// ============================
+// 📋 INFO PLAN
+// ============================
+function updatePlanInfo() {
+    const badge = document.getElementById('planBadge');
+    const desc = document.getElementById('planDescription');
+    const used = document.getElementById('facturesUsed');
+    const days = document.getElementById('daysLeft');
+    const status = document.getElementById('planStatus');
+
+    if (userData.isPaid) {
+        badge.textContent = "Pro ⭐";
+        badge.className = "plan-badge plan-badge-pro";
+        desc.textContent = "Vous utilisez le plan Pro — Factures illimitées";
+        used.textContent = userData.facturesCount + " / ∞";
+        days.textContent = "∞";
+        status.textContent = "✅ Actif";
+        status.style.color = "#27ae60";
+
+        // Marquer le plan actuel
+        document.getElementById('btnPro').textContent = "✅ Plan actuel";
+        document.getElementById('btnPro').disabled = true;
+        document.getElementById('btnPro').classList.add('current-btn');
+
+    } else {
+        badge.textContent = "Gratuit";
+        badge.className = "plan-badge plan-badge-free";
+        desc.textContent = "Vous utilisez le plan gratuit — Limité";
+        used.textContent = 
+            (userData.facturesCount || 0) + " / " + 
+            (userData.maxFactures || 10);
+
+        // Trial
+        if (userData.trialEnd) {
+            const trialEnd = userData.trialEnd.toDate
+                ? userData.trialEnd.toDate()
+                : new Date(userData.trialEnd);
+            const now = new Date();
+            const daysLeft = Math.ceil(
+                (trialEnd - now) / (1000 * 60 * 60 * 24)
+            );
+
+            if (daysLeft > 0) {
+                days.textContent = daysLeft + " jours";
+                status.textContent = "⏰ Essai";
+                status.style.color = "#f39c12";
+
+                if (daysLeft <= 7) {
+                    const warning = document.getElementById('trialWarning');
+                    warning.classList.add('show');
+                    document.getElementById('trialDaysLeft').textContent =
+                        daysLeft;
+                }
+            } else {
+                days.textContent = "0";
+                status.textContent = "❌ Expiré";
+                status.style.color = "#e74c3c";
+
+                const warning = document.getElementById('trialWarning');
+                warning.classList.add('show');
+                document.getElementById('trialTitle').textContent =
+                    "⚠️ Votre période d'essai est terminée";
+                document.getElementById('trialText').innerHTML =
+                    "Passez au plan <strong>Pro</strong> pour continuer.";
+            }
+        }
+    }
+}
+
+// ============================
+// 💰 SÉLECTIONNER PLAN
+// ============================
+window.selectPlan = function(plan, price) {
+    selectedPlan = plan;
+    selectedPrice = price;
+
+    const names = { pro: 'Pro', business: 'Business' };
+    document.getElementById('selectedPlanName').textContent =
+        names[plan] || plan;
+    document.getElementById('selectedPlanPrice').textContent =
+        price + '$/mois';
+
+    document.getElementById('paymentSection').classList.add('show');
+    document.getElementById('paymentSection')
+        .scrollIntoView({ behavior: 'smooth' });
+
+    // Mettre à jour les montants
+    document.getElementById('mmAmount').textContent = price + '$';
+    document.getElementById('bankAmount').textContent = price + '$';
+
+    // Reset méthodes
+    selectedMethod = null;
+    document.querySelectorAll('.payment-method')
+        .forEach(m => m.classList.remove('selected'));
+    document.querySelectorAll('.payment-details')
+        .forEach(d => d.classList.remove('show'));
+};
+
+// ============================
+// 💳 SÉLECTIONNER MÉTHODE
+// ============================
+window.selectPaymentMethod = function(method) {
+    selectedMethod = method;
+
+    // Highlight
+    document.querySelectorAll('.payment-method')
+        .forEach(m => m.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+
+    // Afficher détails
+    document.querySelectorAll('.payment-details')
+        .forEach(d => d.classList.remove('show'));
+    document.getElementById('details_' + method).classList.add('show');
+};
+
+// ============================
+// ✅ SOUMETTRE PAIEMENT MOBILE MONEY
+// ============================
+document.getElementById('btnSubmitMM').addEventListener('click', 
+    async () => {
+    const phone = document.getElementById('mmPhone').value.trim();
+    const transaction = document.getElementById('mmTransaction').value.trim();
+    const message = document.getElementById('mmMessage').value.trim();
+
+    if (!phone || !transaction) {
+        showToast("❌ Remplissez tous les champs obligatoires", "error");
+        return;
+    }
+
+    await soumettrePayment({
+        method: 'mobile_money',
+        phone: phone,
+        transactionId: transaction,
+        message: message
+    });
+});
+
+// ============================
+// ✅ SOUMETTRE PAIEMENT BANCAIRE
+// ============================
+document.getElementById('btnSubmitBank').addEventListener('click', 
+    async () => {
+    const email = document.getElementById('bankEmail').value.trim();
+    const ref = document.getElementById('bankRef').value.trim();
+
+    if (!email || !ref) {
+        showToast("❌ Remplissez tous les champs", "error");
+        return;
+    }
+
+    await soumettrePayment({
+        method: 'bank_transfer',
+        email: email,
+        reference: ref
+    });
+});
+
+// ============================
+// ✅ SOUMETTRE PAIEMENT WHATSAPP
+// ============================
+document.getElementById('btnSubmitWhatsapp').addEventListener('click', 
+    () => {
+    const phone = "000000000"; // Ton numéro
+    const msg = `Bonjour, je souhaite souscrire au plan ${selectedPlan} ` +
+        `(${selectedPrice}$/mois) sur Facture Pro.\n` +
+        `Email: ${userData?.email}\n` +
+        `Nom: ${userData?.fullName}`;
+    window.open(
+        `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+        '_blank'
+    );
+});
+
+// ============================
+// 💾 SOUMETTRE PAIEMENT (Firebase)
+// ============================
+async function soumettrePayment(details) {
+    if (!currentUser) return;
+
+    const btn = event.currentTarget;
+    btn.disabled = true;
+    btn.textContent = '⏳ Envoi en cours...';
+
+    try {
+        await addDoc(collection(db, "payments"), {
+            userId: currentUser.uid,
+            userEmail: userData.email,
+            userName: userData.fullName,
+            plan: selectedPlan,
+            amount: selectedPrice,
+            currency: 'USD',
+            method: details.method,
+            details: details,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        });
+
+        showToast(
+            "✅ Demande de paiement envoyée ! " +
+            "Nous vérifierons et activerons votre compte sous 24h.",
+            "success"
+        );
+
+        // Reset
+        document.getElementById('paymentSection').classList.remove('show');
+
+        // Recharger historique
+        await chargerHistoriquePaiements();
+
+    } catch (error) {
+        showToast("❌ Erreur : " + error.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✅ Confirmer le paiement';
+}
+
+// ============================
+// 📋 HISTORIQUE PAIEMENTS
+// ============================
+async function chargerHistoriquePaiements() {
+    try {
+        const q = query(
+            collection(db, "payments"),
+            where("userId", "==", currentUser.uid),
+            orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            document.getElementById('paymentHistoryEmpty')
+                .style.display = 'block';
+            return;
+        }
+
+        document.getElementById('paymentHistoryEmpty')
+            .style.display = 'none';
+
+        const list = document.getElementById('paymentHistoryList');
+        list.innerHTML = '';
+
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const date = p.createdAt?.toDate
+                ? p.createdAt.toDate().toLocaleDateString('fr-FR')
+                : 'N/A';
+
+            let statusBadge = '';
+            switch (p.status) {
+                case 'pending':
+                    statusBadge = '<span style="color:#f39c12;' +
+                        'font-weight:600;">⏳ En attente</span>';
+                    break;
+                case 'approved':
+                    statusBadge = '<span style="color:#27ae60;' +
+                        'font-weight:600;">✅ Approuvé</span>';
+                    break;
+                case 'rejected':
+                    statusBadge = '<span style="color:#e74c3c;' +
+                        'font-weight:600;">❌ Rejeté</span>';
+                    break;
+            }
+
+            const item = document.createElement('div');
+            item.style.cssText = 'display:flex; justify-content:' +
+                'space-between; align-items:center; padding:12px 0;' +
+                ' border-bottom:1px solid #f0f0f0;';
+            item.innerHTML = `
+                <div>
+                    <strong>Plan ${p.plan || ''}</strong>
+                    <span style="color:#888; font-size:0.85em;">
+                        — ${p.method || ''}
+                    </span>
+                </div>
+                <div style="text-align:right;">
+                    <strong>${p.amount || 0}$</strong><br>
+                    <span style="font-size:0.8em; color:#888;">
+                        ${date}
+                    </span><br>
+                    ${statusBadge}
+                </div>
+            `;
+            list.appendChild(item);
+        });
+
+    } catch (error) {
+        console.error("Erreur paiements:", error);
+    }
+}
+
+// ============================
+// 🔔 TOAST
+// ============================
+function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast toast-' + type + ' show';
+    setTimeout(() => { toast.classList.remove('show'); }, 4000);
+}
+
+// ============================
+// 🚪 DÉCONNEXION
+// ============================
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (confirm("Voulez-vous vous déconnecter ?")) {
+        await signOut(auth);
+        window.location.href = "../login.html";
+    }
+});
+
+// ============================
+// ☰ MENU MOBILE
+// ============================
+document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ============================
+// 📞 WHATSAPP
+// ============================
+function openWhatsapp() {
+    const phone = "000000000";
+    const msg = "Bonjour, j'utilise Facture Pro.";
+    window.open(
+        `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+        '_blank'
+    );
+}
+
+document.getElementById('contactWhatsapp')
+    .addEventListener('click', (e) => {
+    e.preventDefault();
+    openWhatsapp();
+});
+
+document.getElementById('contactWhatsappSidebar')
+    .addEventListener('click', (e) => {
+    e.preventDefault();
+    openWhatsapp();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Facture Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px 35px;
+            color: white;
+        }
+
+        .auth-card h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #a0a0ff;
+            font-weight: 400;
+            font-size: 1.1em;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 1em;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #6c63ff;
+        }
+
+        .input-group input::placeholder {
+            color: #777;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6c63ff, #3f3d9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        .auth-link a {
+            color: #6c63ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .message.success {
+            display: block;
+            background: rgba(39, 174, 96, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+
+        .message.error {
+            display: block;
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .back-home a:hover {
+            color: white;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        .forgot-password a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .forgot-password a:hover {
+            color: #6c63ff;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h1>🧾 Facture Pro</h1>
+        <h2>Connectez-vous à votre compte</h2>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>📧 Adresse email</label>
+                <input type="email" id="loginEmail" 
+                       placeholder="email@exemple.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>🔒 Mot de passe</label>
+                <input type="password" id="loginPassword" 
+                       placeholder="Votre mot de passe" required>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordBtn">
+                    Mot de passe oublié ?
+                </a>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btnLogin">
+                🔐 Se connecter
+            </button>
+
+            <div class="loading-spinner" id="spinner"></div>
+
+            <p class="auth-link">
+                Pas encore de compte ? 
+                <a href="register.html">S'inscrire gratuitement</a>
+            </p>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="back-home">
+            <a href="index.html">← Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { auth, db } from './js/firebase-config.js';
+import { 
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+    doc, getDoc, updateDoc, serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const form = document.getElementById('loginForm');
+const message = document.getElementById('message');
+const spinner = document.getElementById('spinner');
+const btnLogin = document.getElementById('btnLogin');
+
+// ======= CONNEXION =======
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    message.className = 'message';
+    message.style.display = 'none';
+
+    btnLogin.disabled = true;
+    btnLogin.style.display = 'none';
+    spinner.style.display = 'block';
+
+    try {
+        // 1. Connecter l'utilisateur
+        const userCredential = await signInWithEmailAndPassword(
+            auth, email, password
+        );
+        const user = userCredential.user;
+
+        // 2. Récupérer les données de l'utilisateur
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        if (!userDoc.exists()) {
+            showMessage("❌ Compte introuvable", "error");
+            resetButton();
+            return;
+        }
+
+        const userData = userDoc.data();
+
+        // 3. Vérifier si le compte est actif
+        if (userData.isActive === false) {
+            showMessage("❌ Votre compte a été désactivé. Contactez le support.", "error");
+            resetButton();
+            return;
+        }
+
+        // 4. Mettre à jour la dernière connexion
+        await updateDoc(doc(db, "users", user.uid), {
+            lastLogin: serverTimestamp()
+        });
+
+        showMessage("✅ Connexion réussie ! Redirection...", "success");
+
+        // 5. Rediriger selon le rôle
+        setTimeout(() => {
+            if (userData.role === "admin") {
+                window.location.href = "admin/dashboard.html";
+            } else {
+                window.location.href = "client/dashboard.html";
+            }
+        }, 1500);
+
+    } catch (error) {
+        resetButton();
+
+        let errorMsg = "❌ Erreur de connexion";
+
+        if (error.code === "auth/user-not-found") {
+            errorMsg = "❌ Aucun compte trouvé avec cet email";
+        } else if (error.code === "auth/wrong-password") {
+            errorMsg = "❌ Mot de passe incorrect";
+        } else if (error.code === "auth/invalid-email") {
+            errorMsg = "❌ Email invalide";
+        } else if (error.code === "auth/too-many-requests") {
+            errorMsg = "❌ Trop de tentatives. Réessayez plus tard";
+        } else if (error.code === "auth/invalid-credential") {
+            errorMsg = "❌ Email ou mot de passe incorrect";
+        }
+
+        showMessage(errorMsg, "error");
+    }
+});
+
+// ======= MOT DE PASSE OUBLIÉ =======
+document.getElementById('forgotPasswordBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value.trim();
+
+    if (!email) {
+        showMessage("⚠️ Entrez votre email d'abord", "error");
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showMessage("✅ Email de réinitialisation envoyé ! Vérifiez votre boîte mail.", "success");
+    } catch (error) {
+        showMessage("❌ Impossible d'envoyer l'email. Vérifiez l'adresse.", "error");
+    }
+});
+
+function showMessage(text, type) {
+    message.textContent = text;
+    message.className = 'message ' + type;
+    message.style.display = 'block';
+}
+
+function resetButton() {
+    spinner.style.display = 'none';
+    btnLogin.style.display = 'block';
+    btnLogin.disabled = false;
+}
+</script>
+
+</body>
+</html>
