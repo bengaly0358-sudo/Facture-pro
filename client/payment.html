@@ -884,7 +884,45 @@ onAuthStateChanged(auth, async (user) => {
 // ============================
 // 📋 INFO PLAN
 // ============================
-function updatePlanInfo() {
+async function updatePlanInfo() {
+    // Charger settings
+    const settingsDoc = await getDoc(
+        doc(db, "settings", "global")
+    );
+    const settings = settingsDoc.exists()
+        ? settingsDoc.data()
+        : {};
+
+    const pricePro = settings.pricePro || 9;
+    const priceSymbol = settings.priceProSymbol || '$';
+    const maxFactures = settings.maxFactures || 10;
+    const devise = settings.devise || '$';
+    const freeDesc = settings.freeDesc ||
+        '10 factures par mois';
+    const proDesc = settings.proDesc ||
+        'Factures illimitées';
+
+    // Mettre à jour les prix affichés
+    document.querySelector(
+        '#cardPro .pricing-price'
+    ).innerHTML =
+        `${pricePro}${priceSymbol} <span>/mois</span>`;
+
+    document.getElementById('btnPro').textContent =
+        `🚀 Choisir Pro — ${pricePro}${priceSymbol}/mois`;
+
+    // Mettre à jour descriptions
+    const freeLi = document.querySelector(
+        '#cardFree .pricing-list li:first-child'
+    );
+    if (freeLi) freeLi.textContent = freeDesc;
+
+    const proLi = document.querySelector(
+        '#cardPro .pricing-list li:first-child'
+    );
+    if (proLi) proLi.textContent = proDesc;
+
+    // Plan actuel
     const badge = document.getElementById('planBadge');
     const desc = document.getElementById('planDescription');
     const used = document.getElementById('facturesUsed');
@@ -894,26 +932,28 @@ function updatePlanInfo() {
     if (userData.isPaid) {
         badge.textContent = "Pro ⭐";
         badge.className = "plan-badge plan-badge-pro";
-        desc.textContent = "Vous utilisez le plan Pro — Factures illimitées";
+        desc.textContent =
+            "Vous utilisez le plan Pro — " + proDesc;
         used.textContent = userData.facturesCount + " / ∞";
         days.textContent = "∞";
         status.textContent = "✅ Actif";
         status.style.color = "#27ae60";
 
-        // Marquer le plan actuel
-        document.getElementById('btnPro').textContent = "✅ Plan actuel";
+        document.getElementById('btnPro').textContent =
+            "✅ Plan actuel";
         document.getElementById('btnPro').disabled = true;
-        document.getElementById('btnPro').classList.add('current-btn');
+        document.getElementById('btnPro')
+            .classList.add('current-btn');
 
     } else {
         badge.textContent = "Gratuit";
         badge.className = "plan-badge plan-badge-free";
-        desc.textContent = "Vous utilisez le plan gratuit — Limité";
-        used.textContent = 
-            (userData.facturesCount || 0) + " / " + 
-            (userData.maxFactures || 10);
+        desc.textContent =
+            "Vous utilisez le plan gratuit — " + freeDesc;
+        used.textContent =
+            (userData.facturesCount || 0) +
+            " / " + maxFactures;
 
-        // Trial
         if (userData.trialEnd) {
             const trialEnd = userData.trialEnd.toDate
                 ? userData.trialEnd.toDate()
@@ -929,27 +969,74 @@ function updatePlanInfo() {
                 status.style.color = "#f39c12";
 
                 if (daysLeft <= 7) {
-                    const warning = document.getElementById('trialWarning');
-                    warning.classList.add('show');
-                    document.getElementById('trialDaysLeft').textContent =
-                        daysLeft;
+                    document.getElementById('trialWarning')
+                        .classList.add('show');
+                    document.getElementById('trialDaysLeft')
+                        .textContent = daysLeft;
                 }
             } else {
                 days.textContent = "0";
                 status.textContent = "❌ Expiré";
                 status.style.color = "#e74c3c";
-
-                const warning = document.getElementById('trialWarning');
-                warning.classList.add('show');
-                document.getElementById('trialTitle').textContent =
+                document.getElementById('trialWarning')
+                    .classList.add('show');
+                document.getElementById('trialTitle')
+                    .textContent =
                     "⚠️ Votre période d'essai est terminée";
-                document.getElementById('trialText').innerHTML =
-                    "Passez au plan <strong>Pro</strong> pour continuer.";
             }
         }
     }
-}
 
+    // WhatsApp depuis settings
+    const whatsappNum = settings.whatsapp || "000000000";
+    const whatsappMsg = settings.whatsappMessage ||
+        "Bonjour, j'utilise Facture Pro.";
+
+    document.getElementById('contactWhatsapp')
+        .addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open(
+            `https://wa.me/${whatsappNum}` +
+            `?text=${encodeURIComponent(whatsappMsg)}`,
+            '_blank'
+        );
+    });
+
+    // Mobile Money depuis settings
+    const mmNumber = settings.mobileMoney || "000000000";
+    const mmName = settings.mobileMoneyName || "Mobile Money";
+
+    document.querySelector(
+        '#details_mobile_money .payment-info-box p:nth-child(2)'
+    ).innerHTML =
+        `Envoyez le montant au numéro suivant :`;
+
+    document.querySelector(
+        '#details_mobile_money .highlight'
+    ).textContent = mmNumber;
+
+    // Mettre à jour selectPlan
+    window.selectPlan = function(plan, price) {
+        selectedPlan = plan;
+        selectedPrice = price;
+
+        const names = { pro: 'Pro' };
+        document.getElementById('selectedPlanName').textContent =
+            names[plan] || plan;
+        document.getElementById('selectedPlanPrice').textContent =
+            price + priceSymbol + '/mois';
+
+        document.getElementById('paymentSection')
+            .classList.add('show');
+        document.getElementById('paymentSection')
+            .scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('mmAmount').textContent =
+            price + priceSymbol;
+        document.getElementById('bankAmount').textContent =
+            price + priceSymbol;
+    };
+}
 // ============================
 // 💰 SÉLECTIONNER PLAN
 // ============================

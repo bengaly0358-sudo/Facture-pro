@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nouvelle Facture - Facture Pro</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') {
+                document.documentElement
+                    .setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="../css/darkmode.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
@@ -38,16 +48,8 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .sidebar-header h2 {
-            font-size: 1.4em;
-            color: #6c63ff;
-        }
-
-        .sidebar-header p {
-            color: #888;
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
+        .sidebar-header h2 { font-size: 1.4em; color: #6c63ff; }
+        .sidebar-header p { color: #888; font-size: 0.85em; margin-top: 5px; }
 
         .user-info {
             text-align: center;
@@ -56,74 +58,40 @@
         }
 
         .user-avatar {
-            width: 60px;
-            height: 60px;
-            background: #6c63ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
+            width: 60px; height: 60px;
+            background: #6c63ff; border-radius: 50%;
+            display: flex; align-items: center;
             justify-content: center;
-            font-size: 1.5em;
-            margin: 0 auto 10px;
+            font-size: 1.5em; margin: 0 auto 10px;
         }
 
-        .user-info h3 {
-            font-size: 1em;
-            margin-bottom: 3px;
-        }
-
-        .user-info p {
-            color: #888;
-            font-size: 0.8em;
-        }
+        .user-info h3 { font-size: 1em; margin-bottom: 3px; }
+        .user-info p { color: #888; font-size: 0.8em; }
 
         .user-plan {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 15px;
-            font-size: 0.75em;
-            margin-top: 5px;
+            display: inline-block; padding: 3px 12px;
+            border-radius: 15px; font-size: 0.75em; margin-top: 5px;
         }
 
-        .plan-gratuit {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-        }
+        .plan-gratuit { background: rgba(231,76,60,0.2); color: #e74c3c; }
+        .plan-pro { background: rgba(108,99,255,0.2); color: #6c63ff; }
 
-        .plan-pro {
-            background: rgba(108, 99, 255, 0.2);
-            color: #6c63ff;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 15px 0;
-        }
+        .nav-menu { list-style: none; padding: 15px 0; }
 
         .nav-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 25px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 0.95em;
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 25px; color: #aaa;
+            text-decoration: none; font-size: 0.95em;
             transition: all 0.3s;
             border-left: 3px solid transparent;
         }
 
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            background: rgba(108, 99, 255, 0.1);
-            color: white;
-            border-left-color: #6c63ff;
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(108,99,255,0.1);
+            color: white; border-left-color: #6c63ff;
         }
 
-        .menu-icon {
-            font-size: 1.2em;
-            width: 25px;
-            text-align: center;
-        }
+        .menu-icon { font-size: 1.2em; width: 25px; text-align: center; }
 
         .nav-separator {
             height: 1px;
@@ -131,23 +99,19 @@
             margin: 10px 20px;
         }
 
-        .logout-btn {
-            color: #e74c3c !important;
-        }
-
+        .logout-btn { color: #e74c3c !important; }
         .logout-btn:hover {
-            background: rgba(231, 76, 60, 0.1) !important;
+            background: rgba(231,76,60,0.1) !important;
             border-left-color: #e74c3c !important;
         }
 
-        /* ======= MAIN CONTENT ======= */
+        /* ======= MAIN ======= */
         .main-content {
             margin-left: 260px;
             flex: 1;
             padding: 25px;
         }
 
-        /* TOP BAR */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -163,72 +127,75 @@
 
         .menu-toggle {
             display: none;
-            background: #6c63ff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
+            background: #6c63ff; color: white;
+            border: none; padding: 10px 15px;
+            border-radius: 8px; cursor: pointer;
             font-size: 1.2em;
         }
 
-        .top-bar h1 {
-            font-size: 1.5em;
-            color: #333;
-        }
+        .top-bar h1 { font-size: 1.5em; color: #333; }
 
-        /* ======= BARRE NAVIGATION ======= */
-        .nav-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .nav-bar { display: flex; gap: 10px; }
 
         .btn-nav {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
-            color: #555;
+            background: white; border: 1px solid #ddd;
+            padding: 8px 15px; border-radius: 8px;
+            cursor: pointer; font-size: 0.9em;
+            transition: all 0.2s; color: #555;
         }
 
         .btn-nav:hover {
-            background: #6c63ff;
-            color: white;
+            background: #6c63ff; color: white;
             border-color: #6c63ff;
         }
 
-        /* ======= BARRE D'ACTIONS ======= */
+        /* ======= MODELES ======= */
+        .modeles-bar {
+            background: white; border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            display: flex; gap: 10px;
+            align-items: center; flex-wrap: wrap;
+        }
+
+        .modeles-bar label {
+            font-weight: 600; color: #555;
+            font-size: 0.9em;
+        }
+
+        .modele-btn {
+            padding: 8px 15px; border: 2px solid #e0e0e0;
+            border-radius: 8px; cursor: pointer;
+            font-size: 0.85em; background: white;
+            transition: all 0.2s; color: #555;
+        }
+
+        .modele-btn:hover { border-color: #6c63ff; color: #6c63ff; }
+
+        .modele-btn.active {
+            border-color: #6c63ff;
+            background: #6c63ff; color: white;
+        }
+
+        /* ======= ACTION BAR ======= */
         .action-bar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 12px;
+            display: flex; gap: 10px; flex-wrap: wrap;
+            margin-bottom: 20px; padding: 15px;
+            background: white; border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .btn-action {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
+            padding: 10px 18px; border: none;
+            border-radius: 8px; cursor: pointer;
+            font-size: 0.9em; font-weight: 600;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            display: flex; align-items: center; gap: 6px;
         }
 
         .btn-action:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
+            transform: translateY(-2px); opacity: 0.9;
         }
 
         .btn-save { background: #27ae60; color: white; }
@@ -237,492 +204,308 @@
         .btn-word { background: #2c3e50; color: white; }
         .btn-clear { background: #e67e22; color: white; }
 
-        /* ======= FACTURE CONTAINER ======= */
+        /* ======= FACTURE ======= */
         .facture-container {
-            background: white;
-            border-radius: 15px;
+            background: white; border-radius: 15px;
             padding: 30px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
         }
 
-        /* SECTIONS */
-        .section {
-            margin-bottom: 25px;
-        }
+        .section { margin-bottom: 25px; }
 
         .section h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.15em;
-            padding-bottom: 8px;
+            color: #333; margin-bottom: 15px;
+            font-size: 1.1em; padding-bottom: 8px;
             border-bottom: 2px solid #f0f0f0;
         }
 
         .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
+            display: flex; gap: 15px;
+            margin-bottom: 12px; flex-wrap: wrap;
         }
 
-        .input-group {
-            flex: 1;
-            min-width: 200px;
-        }
+        .input-group { flex: 1; min-width: 200px; }
 
         .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-            font-size: 0.85em;
-            font-weight: 600;
+            display: block; margin-bottom: 5px;
+            color: #666; font-size: 0.85em; font-weight: 600;
         }
 
         .input-group input,
         .input-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95em;
-            outline: none;
-            transition: border 0.3s;
-            background: #fafafa;
+            width: 100%; padding: 10px 12px;
+            border: 1px solid #e0e0e0; border-radius: 8px;
+            font-size: 0.95em; outline: none;
+            transition: border 0.3s; background: #fafafa;
         }
 
         .input-group input:focus,
         .input-group select:focus {
-            border-color: #6c63ff;
-            background: white;
+            border-color: #6c63ff; background: white;
         }
 
         /* ======= TABLE ARTICLES ======= */
-        .table-wrapper {
-            overflow-x: auto;
-        }
+        .table-wrapper { overflow-x: auto; }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
+            table-layout: fixed;
         }
 
-        thead tr {
-            background: #6c63ff;
-            color: white;
-        }
+        thead tr { background: #6c63ff; color: white; }
 
         th {
             padding: 12px 10px;
-            font-size: 0.85em;
-            font-weight: 600;
-            text-transform: uppercase;
-            text-align: center;
+            font-size: 0.85em; font-weight: 600;
+            text-transform: uppercase; text-align: center;
         }
+
+        th:nth-child(1) { width: 40px; }
+        th:nth-child(2) { width: auto; }
+        th:nth-child(3) { width: 130px; }
+        th:nth-child(4) { width: 80px; }
+        th:nth-child(5) { width: 120px; }
+        th:nth-child(6) { width: 60px; }
 
         td {
-            padding: 8px;
-            text-align: center;
+            padding: 8px; text-align: center;
             border-bottom: 1px solid #f0f0f0;
+            word-break: break-word;
         }
 
+        tbody tr:hover { background: #fafafa; }
+
         tbody input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.9em;
-            outline: none;
-            background: #fafafa;
+            width: 100%; padding: 7px;
+            border: 1px solid #e0e0e0; border-radius: 6px;
+            text-align: center; font-size: 0.9em;
+            outline: none; background: #fafafa;
+            box-sizing: border-box;
         }
 
         tbody input:focus {
-            border-color: #6c63ff;
-            background: white;
+            border-color: #6c63ff; background: white;
         }
 
-        tbody input.desc {
-            text-align: left;
-        }
+        tbody input.desc { text-align: left; }
 
         .ligne-total {
-            font-weight: 700;
-            color: #333;
+            font-weight: 700; color: #333;
         }
 
-        .num-col {
-            width: 40px;
-            color: #888;
-            font-weight: 600;
-        }
+        .num-col { width: 40px; color: #888; font-weight: 600; }
 
         .btn-delete-row {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: background 0.2s;
+            background: #ff4444; color: white;
+            border: none; padding: 5px 9px;
+            border-radius: 6px; cursor: pointer;
+            font-size: 0.8em;
         }
 
-        .btn-delete-row:hover {
-            background: #cc0000;
-        }
+        .btn-delete-row:hover { background: #cc0000; }
 
         .btn-add {
-            background: #6c63ff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
+            background: #6c63ff; color: white;
+            border: none; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer;
+            font-size: 0.9em; transition: all 0.2s;
         }
 
         .btn-add:hover {
-            background: #5a52d5;
-            transform: translateY(-2px);
+            background: #5a52d5; transform: translateY(-2px);
         }
 
         /* ======= CALCULS ======= */
         .calculs-section {
-            background: #f8f9fa;
-            border-radius: 12px;
+            background: #f8f9fa; border-radius: 12px;
             padding: 20px;
         }
 
         .calculs-wrapper {
-            display: flex;
-            gap: 30px;
+            display: flex; gap: 30px;
             justify-content: space-between;
         }
 
         .notes-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            flex: 1; display: flex;
+            flex-direction: column; gap: 8px;
         }
 
         .notes-box label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9em;
+            font-weight: 600; color: #555; font-size: 0.9em;
         }
 
         .notes-box textarea {
-            flex: 1;
-            min-height: 120px;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            resize: vertical;
-            font-size: 0.9em;
-            outline: none;
+            flex: 1; min-height: 100px; padding: 12px;
+            border: 1px solid #e0e0e0; border-radius: 8px;
+            resize: vertical; font-size: 0.9em; outline: none;
             background: white;
             font-family: 'Segoe UI', sans-serif;
         }
 
-        .notes-box textarea:focus {
-            border-color: #6c63ff;
-        }
+        .notes-box textarea:focus { border-color: #6c63ff; }
 
-        .totaux-box {
-            width: 320px;
-            min-width: 280px;
-        }
+        .totaux-box { width: 320px; min-width: 280px; }
 
         .calcul-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95em;
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 8px 0;
+            border-bottom: 1px solid #eee; font-size: 0.95em;
         }
 
         .calcul-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: flex; align-items: center; gap: 8px;
         }
 
         .calcul-input input {
-            width: 60px;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 0.9em;
-            outline: none;
+            width: 60px; padding: 5px;
+            border: 1px solid #ddd; border-radius: 5px;
+            text-align: center; font-size: 0.9em; outline: none;
         }
 
-        .calcul-input input:focus {
-            border-color: #6c63ff;
-        }
+        .calcul-input input:focus { border-color: #6c63ff; }
 
         .amount {
-            min-width: 80px;
-            text-align: right;
-            font-weight: 600;
-            color: #333;
+            min-width: 90px; text-align: right;
+            font-weight: 600; color: #333;
         }
 
         .total-row {
             border-bottom: none;
             border-top: 3px solid #6c63ff;
-            margin-top: 8px;
-            padding-top: 12px;
+            margin-top: 8px; padding-top: 12px;
             font-size: 1.2em;
         }
 
-        .total-row strong {
-            color: #6c63ff;
-        }
+        .total-row strong { color: #6c63ff; }
 
-        /* ======= DEVISES ======= */
+        /* ======= DEVISE ======= */
         .devise-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            display: flex; align-items: center;
+            gap: 10px; margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
         .devise-selector label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9em;
+            font-weight: 600; color: #555; font-size: 0.9em;
         }
 
         .devise-selector select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9em;
-            outline: none;
-            background: white;
+            padding: 8px 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 0.9em;
+            outline: none; background: white;
         }
 
         /* ======= SIGNATURES ======= */
         .signatures-container {
-            display: flex;
-            gap: 30px;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            display: flex; gap: 30px;
+            justify-content: space-between; flex-wrap: wrap;
         }
 
         .signature-box {
-            flex: 1;
-            min-width: 280px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex: 1; min-width: 280px;
+            display: flex; flex-direction: column; gap: 10px;
         }
 
         .signature-box > label {
-            font-weight: 600;
-            color: #555;
-            font-size: 1em;
+            font-weight: 600; color: #555; font-size: 1em;
         }
 
         .canvas-wrapper {
             position: relative;
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #fafafa;
-            cursor: crosshair;
-            height: 150px;
+            border: 2px dashed #ccc; border-radius: 10px;
+            overflow: hidden; background: #fafafa;
+            cursor: crosshair; height: 150px;
         }
 
         .canvas-wrapper canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+            display: block; width: 100%; height: 100%;
         }
 
         .canvas-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: #ccc;
-            font-size: 1em;
-            pointer-events: none;
+            color: #ccc; font-size: 1em; pointer-events: none;
         }
 
-        .signature-actions {
-            display: flex;
-            gap: 10px;
-        }
+        .signature-actions { display: flex; gap: 10px; }
 
         .btn-clear-sign {
-            flex: 1;
-            padding: 8px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.2s;
-        }
-
-        .btn-clear-sign:hover {
-            background: #c0392b;
+            flex: 1; padding: 8px; background: #e74c3c;
+            color: white; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 0.85em;
         }
 
         .btn-save-sign {
-            flex: 1;
-            padding: 8px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.2s;
+            flex: 1; padding: 8px; background: #27ae60;
+            color: white; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 0.85em;
         }
 
-        .btn-save-sign:hover {
-            background: #1e8449;
-        }
-
-        .nom-signature,
-        .date-signature {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.9em;
-            outline: none;
-        }
-
-        .nom-signature:focus,
-        .date-signature:focus {
-            border-color: #6c63ff;
+        .nom-signature, .date-signature {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #e0e0e0; border-radius: 8px;
+            font-size: 0.9em; outline: none;
         }
 
         /* ======= MODAL ======= */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center; align-items: center;
             z-index: 9999;
         }
 
         .modal-content {
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: white; padding: 35px;
+            border-radius: 15px; text-align: center;
+            max-width: 420px; width: 90%;
         }
 
-        .modal-content h2 {
-            margin-bottom: 15px;
-            color: #e67e22;
-        }
-
-        .modal-content p {
-            margin-bottom: 10px;
-            color: #666;
-            line-height: 1.5;
-        }
+        .modal-content h2 { margin-bottom: 15px; color: #e67e22; }
+        .modal-content p { margin-bottom: 10px; color: #666; }
 
         .modal-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            justify-content: center;
+            display: flex; gap: 15px;
+            margin-top: 25px; justify-content: center;
         }
 
         .btn-confirm-clear {
-            padding: 12px 25px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            padding: 12px 25px; background: #e74c3c;
+            color: white; border: none; border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
-            transition: all 0.2s;
-        }
-
-        .btn-confirm-clear:hover {
-            background: #c0392b;
         }
 
         .btn-cancel {
-            padding: 12px 25px;
-            background: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            padding: 12px 25px; background: #95a5a6;
+            color: white; border: none; border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
-            transition: all 0.2s;
         }
 
-        .btn-cancel:hover {
-            background: #7f8c8d;
-        }
-
-        /* ======= TOAST NOTIFICATION ======= */
+        /* ======= TOAST ======= */
         .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            z-index: 99999;
-            transform: translateY(100px);
-            opacity: 0;
+            position: fixed; bottom: 30px; right: 30px;
+            padding: 15px 25px; border-radius: 10px;
+            color: white; font-weight: 600; z-index: 99999;
+            transform: translateY(100px); opacity: 0;
             transition: all 0.4s ease;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
 
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { background: #27ae60; }
+        .toast-error { background: #e74c3c; }
+        .toast-warning { background: #f39c12; }
 
-        .toast-success {
-            background: #27ae60;
-        }
-
-        .toast-error {
-            background: #e74c3c;
-        }
-
-        .toast-warning {
-            background: #f39c12;
-        }
-
-        /* ======= PRINT ======= */
+        /* ======= IMPRESSION ======= */
         @media print {
-            .sidebar,
-            .top-bar,
-            .action-bar,
-            .btn-add,
-            .btn-delete-row,
-            .signature-actions,
-            .modal,
-            .toast,
-            .menu-toggle {
+            .sidebar, .top-bar, .action-bar,
+            .modeles-bar, .btn-add, .btn-delete-row,
+            .signature-actions, .modal, .toast,
+            .menu-toggle, .devise-selector {
                 display: none !important;
             }
 
@@ -738,74 +521,61 @@
             .facture-container {
                 box-shadow: none !important;
                 border-radius: 0 !important;
+                padding: 15px !important;
+            }
+
+            /* Forcer sur une seule page */
+            .facture-container {
+                page-break-inside: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+                font-size: 0.85em;
+            }
+
+            .section {
+                margin-bottom: 10px !important;
+            }
+
+            .calculs-section {
+                padding: 10px !important;
+            }
+
+            .signatures-container {
+                margin-top: 20px;
             }
 
             .canvas-wrapper {
                 border: 1px solid #ccc !important;
+                height: 80px !important;
             }
 
             @page {
-                margin: 15mm;
+                margin: 10mm;
+                size: A4;
             }
         }
 
         /* ======= RESPONSIVE ======= */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .calculs-wrapper {
-                flex-direction: column;
-            }
-
-            .totaux-box {
-                width: 100%;
-                min-width: auto;
-            }
-
-            .signatures-container {
-                flex-direction: column;
-            }
-
-            .action-bar {
-                flex-direction: column;
-            }
-
-            .btn-action {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .form-row {
-                flex-direction: column;
-            }
-
-            .input-group {
-                min-width: 100%;
-            }
-
-            .nav-bar {
-                flex-wrap: wrap;
-            }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .calculs-wrapper { flex-direction: column; }
+            .totaux-box { width: 100%; min-width: auto; }
+            .signatures-container { flex-direction: column; }
+            .action-bar { flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; }
+            .form-row { flex-direction: column; }
+            .input-group { min-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ======= SIDEBAR ======= -->
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2>🧾 Facture Pro</h2>
@@ -816,51 +586,57 @@
             <div class="user-avatar" id="userAvatar">👤</div>
             <h3 id="userName">Chargement...</h3>
             <p id="userEmail">...</p>
-            <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
+            <span class="user-plan plan-gratuit" id="userPlan">
+                Gratuit
+            </span>
         </div>
 
         <ul class="nav-menu">
-            <li>
-                <a href="dashboard.html">
-                    <span class="menu-icon">📊</span> Tableau de bord
-                </a>
-            </li>
-            <li>
-                <a href="new-facture.html" class="active">
-                    <span class="menu-icon">➕</span> Nouvelle facture
-                </a>
-            </li>
-            <li>
-                <a href="history.html">
-                    <span class="menu-icon">📋</span> Mes factures
-                </a>
-            </li>
-            <li>
-                <a href="profile.html">
-                    <span class="menu-icon">🏢</span> Mon entreprise
-                </a>
-            </li>
+            <li><a href="dashboard.html">
+                <span class="menu-icon">📊</span> Tableau de bord
+            </a></li>
+            <li><a href="new-facture.html" class="active">
+                <span class="menu-icon">➕</span> Nouvelle facture
+            </a></li>
+            <li><a href="history.html">
+                <span class="menu-icon">📋</span> Mes factures
+            </a></li>
+            <li><a href="profile.html">
+                <span class="menu-icon">🏢</span> Mon entreprise
+            </a></li>
             <div class="nav-separator"></div>
-            <li>
-                <a href="payment.html">
-                    <span class="menu-icon">💳</span> Abonnement
-                </a>
-            </li>
-            <li>
-                <a href="#" id="contactWhatsapp">
-                    <span class="menu-icon">📞</span> Nous contacter
-                </a>
-            </li>
+            <li><a href="payment.html">
+                <span class="menu-icon">💳</span> Abonnement
+            </a></li>
+            <li><a href="#" id="contactWhatsapp">
+                <span class="menu-icon">📞</span> Nous contacter
+            </a></li>
             <div class="nav-separator"></div>
-            <li>
-                <a href="#" class="logout-btn" id="logoutBtn">
-                    <span class="menu-icon">🚪</span> Déconnexion
-                </a>
-            </li>
+
+            <div style="padding: 5px 15px; margin-bottom: 5px;">
+                <button
+                    onclick="DarkMode.toggle(); updateDarkBtn()"
+                    id="darkModeBtn"
+                    style="width:100%; padding:10px 15px;
+                    background:rgba(255,255,255,0.05);
+                    border:1px solid rgba(255,255,255,0.1);
+                    color:white; border-radius:10px; cursor:pointer;
+                    font-size:0.9em; display:flex;
+                    align-items:center; gap:10px;">
+                    <span id="darkModeIcon">🌙</span>
+                    <span id="darkModeText">Mode sombre</span>
+                </button>
+            </div>
+
+            <div class="nav-separator"></div>
+
+            <li><a href="#" class="logout-btn" id="logoutBtn">
+                <span class="menu-icon">🚪</span> Déconnexion
+            </a></li>
         </ul>
     </div>
 
-    <!-- ======= MAIN CONTENT ======= -->
+    <!-- MAIN -->
     <div class="main-content">
 
         <!-- TOP BAR -->
@@ -870,16 +646,33 @@
                 <h1>➕ Nouvelle Facture</h1>
             </div>
             <div class="nav-bar">
-                <button class="btn-nav" id="btnBack" title="Retour">
-                    ⬅️ Retour
-                </button>
-                <button class="btn-nav" id="btnForward" title="Avant">
-                    Avant ➡️
-                </button>
+                <button class="btn-nav" id="btnBack">⬅️ Retour</button>
+                <button class="btn-nav" id="btnForward">Avant ➡️</button>
             </div>
         </div>
 
-        <!-- BARRE D'ACTIONS -->
+        <!-- MODELES -->
+        <div class="modeles-bar">
+            <label>📋 Modèle :</label>
+            <button class="modele-btn active"
+                    onclick="changerModele('classique', this)">
+                📄 Classique
+            </button>
+            <button class="modele-btn"
+                    onclick="changerModele('moderne', this)">
+                🎨 Moderne
+            </button>
+            <button class="modele-btn"
+                    onclick="changerModele('minimal', this)">
+                ✨ Minimal
+            </button>
+            <button class="modele-btn"
+                    onclick="changerModele('professionnel', this)">
+                💼 Professionnel
+            </button>
+        </div>
+
+        <!-- ACTION BAR -->
         <div class="action-bar">
             <button id="btnSave" class="btn-action btn-save">
                 💾 Sauvegarder
@@ -899,7 +692,7 @@
         </div>
 
         <!-- FACTURE -->
-        <div class="facture-container">
+        <div class="facture-container" id="factureContainer">
 
             <!-- INFO FACTURE -->
             <div class="section">
@@ -907,15 +700,15 @@
                 <div class="form-row">
                     <div class="input-group">
                         <label>Numéro de facture</label>
-                        <input type="text" id="factureNumber" 
+                        <input type="text" id="factureNumber"
                                value="FAC-001">
                     </div>
                     <div class="input-group">
-                        <label>Date de facture</label>
+                        <label>Date</label>
                         <input type="date" id="factureDate">
                     </div>
                     <div class="input-group">
-                        <label>Date d'échéance</label>
+                        <label>Échéance</label>
                         <input type="date" id="factureEcheance">
                     </div>
                 </div>
@@ -930,7 +723,6 @@
                         <option value="MAD">MAD - Dirham</option>
                         <option value="DZD">DZD - Dinar Algérien</option>
                         <option value="TND">TND - Dinar Tunisien</option>
-                        <option value="XOF">XOF - Franc CFA BCEAO</option>
                         <option value="GNF">GNF - Franc Guinéen</option>
                         <option value="CDF">CDF - Franc Congolais</option>
                     </select>
@@ -943,24 +735,24 @@
                 <div class="form-row">
                     <div class="input-group">
                         <label>Nom du client</label>
-                        <input type="text" id="clientName" 
-                               placeholder="Nom complet ou entreprise">
+                        <input type="text" id="clientName"
+                               placeholder="Nom ou entreprise">
                     </div>
                     <div class="input-group">
                         <label>Email</label>
-                        <input type="email" id="clientEmail" 
+                        <input type="email" id="clientEmail"
                                placeholder="email@exemple.com">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="input-group">
                         <label>Téléphone</label>
-                        <input type="text" id="clientPhone" 
+                        <input type="text" id="clientPhone"
                                placeholder="+000 00 00 00 00">
                     </div>
                     <div class="input-group">
                         <label>Adresse</label>
-                        <input type="text" id="clientAddress" 
+                        <input type="text" id="clientAddress"
                                placeholder="Adresse complète">
                     </div>
                 </div>
@@ -969,24 +761,21 @@
             <!-- ARTICLES -->
             <div class="section">
                 <h2>📦 Articles / Services</h2>
-
                 <div class="table-wrapper">
                     <table id="articlesTable">
                         <thead>
                             <tr>
-                                <th style="width:40px">#</th>
+                                <th>#</th>
                                 <th>Description</th>
-                                <th style="width:120px">Prix Unitaire</th>
-                                <th style="width:80px">Quantité</th>
-                                <th style="width:120px">Total</th>
-                                <th style="width:60px">Action</th>
+                                <th>Prix Unitaire</th>
+                                <th>Qté</th>
+                                <th>Total</th>
+                                <th>❌</th>
                             </tr>
                         </thead>
-                        <tbody id="articlesBody">
-                        </tbody>
+                        <tbody id="articlesBody"></tbody>
                     </table>
                 </div>
-
                 <button id="addArticle" class="btn-add">
                     + Ajouter un article
                 </button>
@@ -995,11 +784,10 @@
             <!-- CALCULS -->
             <div class="section calculs-section">
                 <div class="calculs-wrapper">
-
                     <div class="notes-box">
-                        <label>📝 Notes / Conditions de paiement</label>
-                        <textarea id="factureNotes" 
-                                  placeholder="Conditions de paiement, informations supplémentaires, coordonnées bancaires..."></textarea>
+                        <label>📝 Notes / Conditions</label>
+                        <textarea id="factureNotes"
+                                  placeholder="Conditions de paiement, notes..."></textarea>
                     </div>
 
                     <div class="totaux-box">
@@ -1009,95 +797,89 @@
                                 0.00
                             </strong>
                         </div>
-
                         <div class="calcul-row">
                             <span>TVA (%) :</span>
                             <div class="calcul-input">
-                                <input type="number" id="tvaPercent" 
+                                <input type="number" id="tvaPercent"
                                        value="18" min="0" max="100">
                                 <span id="tvaAmount" class="amount">
                                     0.00
                                 </span>
                             </div>
                         </div>
-
                         <div class="calcul-row">
                             <span>Réduction (%) :</span>
                             <div class="calcul-input">
-                                <input type="number" id="reductionPercent" 
+                                <input type="number"
+                                       id="reductionPercent"
                                        value="0" min="0" max="100">
                                 <span id="reductionAmount" class="amount">
                                     -0.00
                                 </span>
                             </div>
                         </div>
-
                         <div class="calcul-row total-row">
                             <span>TOTAL :</span>
                             <strong id="totalFinal">0.00</strong>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <!-- SIGNATURES -->
             <div class="section">
                 <h2>✍️ Signatures</h2>
-
                 <div class="signatures-container">
 
-                    <!-- Signature Émetteur -->
                     <div class="signature-box">
                         <label>Signature de l'émetteur</label>
                         <div class="canvas-wrapper">
                             <canvas id="signatureEmetteur"></canvas>
-                            <div class="canvas-placeholder" 
+                            <div class="canvas-placeholder"
                                  id="placeholderEmetteur">
                                 ✍️ Signez ici
                             </div>
                         </div>
                         <div class="signature-actions">
-                            <button class="btn-clear-sign" 
+                            <button class="btn-clear-sign"
                                     id="clearSignEmetteur">
                                 🗑️ Effacer
                             </button>
-                            <button class="btn-save-sign" 
+                            <button class="btn-save-sign"
                                     id="saveSignEmetteur">
                                 💾 Sauvegarder
                             </button>
                         </div>
-                        <input type="text" id="nomEmetteur" 
-                               placeholder="Nom de l'émetteur" 
+                        <input type="text" id="nomEmetteur"
+                               placeholder="Nom de l'émetteur"
                                class="nom-signature">
-                        <input type="date" id="dateEmetteur" 
+                        <input type="date" id="dateEmetteur"
                                class="date-signature">
                     </div>
 
-                    <!-- Signature Client -->
                     <div class="signature-box">
                         <label>Signature du client</label>
                         <div class="canvas-wrapper">
                             <canvas id="signatureClient"></canvas>
-                            <div class="canvas-placeholder" 
+                            <div class="canvas-placeholder"
                                  id="placeholderClient">
                                 ✍️ Signez ici
                             </div>
                         </div>
                         <div class="signature-actions">
-                            <button class="btn-clear-sign" 
+                            <button class="btn-clear-sign"
                                     id="clearSignClient">
                                 🗑️ Effacer
                             </button>
-                            <button class="btn-save-sign" 
+                            <button class="btn-save-sign"
                                     id="saveSignClient">
                                 💾 Sauvegarder
                             </button>
                         </div>
-                        <input type="text" id="nomClient" 
-                               placeholder="Nom du client" 
+                        <input type="text" id="nomClient"
+                               placeholder="Nom du client"
                                class="nom-signature">
-                        <input type="date" id="dateClient" 
+                        <input type="date" id="dateClient"
                                class="date-signature">
                     </div>
 
@@ -1112,7 +894,7 @@
         <div class="modal-content">
             <h2>⚠️ Confirmation</h2>
             <p>Voulez-vous vraiment effacer toutes les données ?</p>
-            <p style="color: #e74c3c; font-size: 0.9em;">
+            <p style="color:#e74c3c; font-size:0.9em;">
                 Cette action est irréversible !
             </p>
             <div class="modal-actions">
@@ -1130,18 +912,37 @@
     <div id="toast" class="toast"></div>
 
 <script type="module">
-import { auth, db } from '../js/firebase-config.js';
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-    onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    getAuth, onAuthStateChanged, signOut
+} from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-    doc, getDoc, collection, addDoc,
-    updateDoc, increment, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    getFirestore, doc, getDoc,
+    collection, addDoc, updateDoc,
+    increment, serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
+    authDomain: "facture-pro-2a843.firebaseapp.com",
+    projectId: "facture-pro-2a843",
+    storageBucket: "facture-pro-2a843.firebasestorage.app",
+    messagingSenderId: "30400911697",
+    appId: "1:30400911697:web:a5ddafe5dcc58c0a38db70"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 let currentUser = null;
 let userData = null;
 let companyData = null;
+let settings = {};
+let modeleActuel = 'classique';
 
 // ============================
 // 🔒 VÉRIFIER CONNEXION
@@ -1164,9 +965,17 @@ onAuthStateChanged(auth, async (user) => {
         userData = userDoc.data();
         companyData = userData.company || {};
 
-        // Afficher infos utilisateur
-        document.getElementById('userName').textContent = userData.fullName;
-        document.getElementById('userEmail').textContent = userData.email;
+        // Charger settings
+        const settingsDoc = await getDoc(
+            doc(db, "settings", "global")
+        );
+        settings = settingsDoc.exists() ? settingsDoc.data() : {};
+
+        // Sidebar
+        document.getElementById('userName').textContent =
+            userData.fullName;
+        document.getElementById('userEmail').textContent =
+            userData.email;
         document.getElementById('userAvatar').textContent =
             userData.fullName.charAt(0).toUpperCase();
 
@@ -1176,10 +985,35 @@ onAuthStateChanged(auth, async (user) => {
             planEl.className = "user-plan plan-pro";
         }
 
+        // Devise par défaut depuis settings
+        const deviseDefault = settings.devise || '$';
+        const deviseSelect = document.getElementById('devise');
+        deviseSelect.value = deviseDefault;
+
+        // TVA par défaut depuis settings
+        const tvaDefault = settings.tva || 18;
+        document.getElementById('tvaPercent').value = tvaDefault;
+
         // Pré-remplir nom émetteur
         if (companyData.name) {
-            document.getElementById('nomEmetteur').value = companyData.name;
+            document.getElementById('nomEmetteur').value =
+                companyData.name;
         }
+
+        // WhatsApp
+        const whatsappNum = settings.whatsapp || "000000000";
+        const whatsappMsg = settings.whatsappMessage ||
+            "Bonjour, j'utilise Facture Pro.";
+
+        document.getElementById('contactWhatsapp')
+            .addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open(
+                `https://wa.me/${whatsappNum}` +
+                `?text=${encodeURIComponent(whatsappMsg)}`,
+                '_blank'
+            );
+        });
 
     } catch (error) {
         console.error("Erreur:", error);
@@ -1187,7 +1021,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ============================
-// 📅 DATES PAR DÉFAUT
+// 📅 DATES
 // ============================
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('factureDate').value = today;
@@ -1197,6 +1031,88 @@ const echeance = new Date();
 echeance.setDate(echeance.getDate() + 30);
 document.getElementById('factureEcheance').value =
     echeance.toISOString().split('T')[0];
+
+// ============================
+// 🎨 MODÈLES DE FACTURES
+// ============================
+window.changerModele = function(modele, btn) {
+    modeleActuel = modele;
+
+    // Mettre à jour boutons
+    document.querySelectorAll('.modele-btn')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const container = document.getElementById('factureContainer');
+
+    // Réinitialiser styles
+    container.style.cssText = '';
+
+    switch(modele) {
+        case 'classique':
+            container.style.background = 'white';
+            container.style.borderTop = '5px solid #6c63ff';
+            break;
+
+        case 'moderne':
+            container.style.background =
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            container.style.color = 'white';
+            container.style.padding = '30px';
+
+            // Adapter les inputs
+            container.querySelectorAll('input, textarea, select')
+                .forEach(el => {
+                el.style.background = 'rgba(255,255,255,0.2)';
+                el.style.color = 'white';
+                el.style.border = '1px solid rgba(255,255,255,0.3)';
+            });
+
+            // Adapter thead
+            container.querySelectorAll('thead tr')
+                .forEach(el => {
+                el.style.background = 'rgba(255,255,255,0.2)';
+            });
+            break;
+
+        case 'minimal':
+            container.style.background = 'white';
+            container.style.border = '1px solid #eee';
+            container.style.borderRadius = '5px';
+
+            // Headers minimaux
+            container.querySelectorAll('.section h2')
+                .forEach(el => {
+                el.style.borderBottom = '1px solid #eee';
+                el.style.color = '#999';
+                el.style.fontSize = '0.8em';
+                el.style.letterSpacing = '2px';
+                el.style.textTransform = 'uppercase';
+            });
+            break;
+
+        case 'professionnel':
+            container.style.background = 'white';
+            container.style.borderLeft = '8px solid #2c3e50';
+
+            container.querySelectorAll('thead tr')
+                .forEach(el => {
+                el.style.background = '#2c3e50';
+            });
+
+            container.querySelectorAll('.section h2')
+                .forEach(el => {
+                el.style.color = '#2c3e50';
+                el.style.borderBottomColor = '#2c3e50';
+            });
+
+            document.querySelector('.total-row strong')
+                .style.color = '#2c3e50';
+            break;
+    }
+
+    showToast(`✅ Modèle "${modele}" appliqué !`, "success");
+};
 
 // ============================
 // ⬅️➡️ NAVIGATION
@@ -1210,10 +1126,9 @@ document.getElementById('btnForward').addEventListener('click', () => {
 });
 
 // ============================
-// 📦 GESTION DES ARTICLES
+// 📦 ARTICLES
 // ============================
 const articlesBody = document.getElementById('articlesBody');
-const addArticleBtn = document.getElementById('addArticle');
 let articleCount = 0;
 
 function ajouterArticle() {
@@ -1224,20 +1139,20 @@ function ajouterArticle() {
     row.innerHTML = `
         <td class="num-col">${articleCount}</td>
         <td>
-            <input type="text" class="desc" 
-                   placeholder="Description de l'article ou service">
+            <input type="text" class="desc"
+                   placeholder="Description">
         </td>
         <td>
-            <input type="number" class="prix" 
+            <input type="number" class="prix"
                    placeholder="0.00" min="0" step="0.01">
         </td>
         <td>
-            <input type="number" class="qty" 
+            <input type="number" class="qty"
                    placeholder="1" min="1" value="1">
         </td>
         <td class="ligne-total">0.00</td>
         <td>
-            <button class="btn-delete-row" 
+            <button class="btn-delete-row"
                     onclick="supprimerLigne(this)">🗑️</button>
         </td>
     `;
@@ -1249,47 +1164,53 @@ function ajouterArticle() {
 }
 
 window.supprimerLigne = function(btn) {
-    const row = btn.closest('tr');
-    row.remove();
+    btn.closest('tr').remove();
     numeroterLignes();
     calculerTotal();
 };
 
 function numeroterLignes() {
-    const rows = articlesBody.querySelectorAll('tr');
-    rows.forEach((row, index) => {
-        row.querySelector('.num-col').textContent = index + 1;
+    articlesBody.querySelectorAll('tr').forEach((row, i) => {
+        row.querySelector('.num-col').textContent = i + 1;
     });
-    articleCount = rows.length;
+    articleCount = articlesBody.querySelectorAll('tr').length;
 }
 
 ajouterArticle();
-addArticleBtn.addEventListener('click', ajouterArticle);
+
+document.getElementById('addArticle')
+    .addEventListener('click', ajouterArticle);
 
 // ============================
-// 🧮 CALCULS AUTOMATIQUES
+// 🧮 CALCULS
 // ============================
 function calculerTotal() {
     const rows = articlesBody.querySelectorAll('tr');
-    let sousTotal = 0;
     const devise = document.getElementById('devise').value;
+    let sousTotal = 0;
 
     rows.forEach(row => {
-        const prix = parseFloat(row.querySelector('.prix').value) || 0;
-        const qty = parseInt(row.querySelector('.qty').value) || 0;
+        const prix = parseFloat(
+            row.querySelector('.prix').value
+        ) || 0;
+        const qty = parseInt(
+            row.querySelector('.qty').value
+        ) || 0;
         const ligneTotal = prix * qty;
         row.querySelector('.ligne-total').textContent =
             ligneTotal.toFixed(2);
         sousTotal += ligneTotal;
     });
 
-    const tvaPercent =
-        parseFloat(document.getElementById('tvaPercent').value) || 0;
-    const reductionPercent =
-        parseFloat(document.getElementById('reductionPercent').value) || 0;
+    const tva = parseFloat(
+        document.getElementById('tvaPercent').value
+    ) || 0;
+    const reduction = parseFloat(
+        document.getElementById('reductionPercent').value
+    ) || 0;
 
-    const tvaAmount = sousTotal * (tvaPercent / 100);
-    const reductionAmount = sousTotal * (reductionPercent / 100);
+    const tvaAmount = sousTotal * (tva / 100);
+    const reductionAmount = sousTotal * (reduction / 100);
     const totalFinal = sousTotal + tvaAmount - reductionAmount;
 
     document.getElementById('sousTotal').textContent =
@@ -1302,10 +1223,12 @@ function calculerTotal() {
         totalFinal.toFixed(2) + ' ' + devise;
 }
 
-document.getElementById('tvaPercent').addEventListener('input', calculerTotal);
-document.getElementById('reductionPercent').addEventListener('input', calculerTotal);
-document.getElementById('devise').addEventListener('change', calculerTotal);
-window.calculerTotal = calculerTotal;
+document.getElementById('tvaPercent')
+    .addEventListener('input', calculerTotal);
+document.getElementById('reductionPercent')
+    .addEventListener('input', calculerTotal);
+document.getElementById('devise')
+    .addEventListener('change', calculerTotal);
 
 // ============================
 // 🖨️ IMPRIMER
@@ -1315,7 +1238,7 @@ document.getElementById('btnPrint').addEventListener('click', () => {
 });
 
 // ============================
-// 🗑️ EFFACER TOUT
+// 🗑️ EFFACER
 // ============================
 const modal = document.getElementById('modalClear');
 
@@ -1335,31 +1258,22 @@ document.getElementById('confirmClear').addEventListener('click', () => {
 function effacerTout() {
     document.getElementById('factureNumber').value = 'FAC-001';
     document.getElementById('factureDate').value = today;
-    document.getElementById('factureEcheance').value =
-        echeance.toISOString().split('T')[0];
-
     document.getElementById('clientName').value = '';
     document.getElementById('clientEmail').value = '';
     document.getElementById('clientPhone').value = '';
     document.getElementById('clientAddress').value = '';
-
     articlesBody.innerHTML = '';
     articleCount = 0;
     ajouterArticle();
-
-    document.getElementById('tvaPercent').value = '18';
+    document.getElementById('tvaPercent').value =
+        settings.tva || 18;
     document.getElementById('reductionPercent').value = '0';
     calculerTotal();
-
     document.getElementById('factureNotes').value = '';
-
     clearCanvas('signatureEmetteur', 'placeholderEmetteur');
     clearCanvas('signatureClient', 'placeholderClient');
-    document.getElementById('nomEmetteur').value = '';
     document.getElementById('nomClient').value = '';
-    document.getElementById('dateEmetteur').value = today;
     document.getElementById('dateClient').value = '';
-
     showToast("✅ Facture effacée !", "success");
 }
 
@@ -1384,8 +1298,12 @@ document.getElementById('btnSave').addEventListener('click', async () => {
             return;
         }
 
-        if (userData.facturesCount >= userData.maxFactures) {
-            showToast("📊 Limite atteinte ! Passez au Pro", "warning");
+        const maxF = settings.maxFactures || 10;
+        if ((userData.facturesCount || 0) >= maxF) {
+            showToast(
+                "📊 Limite atteinte ! Passez au Pro",
+                "warning"
+            );
             setTimeout(() => {
                 window.location.href = "payment.html";
             }, 2000);
@@ -1393,22 +1311,15 @@ document.getElementById('btnSave').addEventListener('click', async () => {
         }
     }
 
-    // Validation
-    const clientName = document.getElementById('clientName').value.trim();
+    const clientName =
+        document.getElementById('clientName').value.trim();
     if (!clientName) {
         showToast("❌ Entrez le nom du client", "error");
         return;
     }
 
     const articles = [];
-    const rows = articlesBody.querySelectorAll('tr');
-
-    if (rows.length === 0) {
-        showToast("❌ Ajoutez au moins un article", "error");
-        return;
-    }
-
-    rows.forEach(row => {
+    articlesBody.querySelectorAll('tr').forEach(row => {
         articles.push({
             description: row.querySelector('.desc').value,
             prixUnitaire:
@@ -1426,42 +1337,46 @@ document.getElementById('btnSave').addEventListener('click', async () => {
 
     const facture = {
         userId: currentUser.uid,
-        factureNumber: document.getElementById('factureNumber').value,
+        factureNumber:
+            document.getElementById('factureNumber').value,
         date: document.getElementById('factureDate').value,
-        echeance: document.getElementById('factureEcheance').value,
+        echeance:
+            document.getElementById('factureEcheance').value,
         devise: devise,
+        modele: modeleActuel,
         client: {
             name: clientName,
-            address: document.getElementById('clientAddress').value,
-            phone: document.getElementById('clientPhone').value,
-            email: document.getElementById('clientEmail').value
+            address:
+                document.getElementById('clientAddress').value,
+            phone:
+                document.getElementById('clientPhone').value,
+            email:
+                document.getElementById('clientEmail').value
         },
         articles: articles,
         sousTotal: parseFloat(
-            document.getElementById('sousTotal').textContent
+            document.getElementById('sousTotal')
+                .textContent.split(' ')[0]
         ) || 0,
         tvaPercent: parseFloat(
             document.getElementById('tvaPercent').value
         ) || 0,
         tvaAmount: parseFloat(
-            document.getElementById('tvaAmount').textContent
+            document.getElementById('tvaAmount')
+                .textContent.split(' ')[0]
         ) || 0,
         reductionPercent: parseFloat(
             document.getElementById('reductionPercent').value
         ) || 0,
         reductionAmount: parseFloat(
-            document.getElementById('reductionAmount').textContent
+            document.getElementById('reductionAmount')
+                .textContent.replace('-', '').split(' ')[0]
         ) || 0,
         totalFinal: parseFloat(
-            document.getElementById('totalFinal').textContent
+            document.getElementById('totalFinal')
+                .textContent.split(' ')[0]
         ) || 0,
         notes: document.getElementById('factureNotes').value,
-        signatureEmetteur: document.getElementById('signatureEmetteur')
-            .toDataURL('image/png'),
-        signatureClient: document.getElementById('signatureClient')
-            .toDataURL('image/png'),
-        nomEmetteur: document.getElementById('nomEmetteur').value,
-        nomClient: document.getElementById('nomClient').value,
         createdAt: serverTimestamp()
     };
 
@@ -1486,12 +1401,17 @@ document.getElementById('exportPDF').addEventListener('click', () => {
     document.body.appendChild(container);
 
     const options = {
-        margin: 10,
+        margin: [8, 8, 8, 8],
         filename: 'facture_' +
-            document.getElementById('factureNumber').value + '.pdf',
+            document.getElementById('factureNumber').value +
+            '.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: {
+            unit: 'mm', format: 'a4',
+            orientation: 'portrait'
+        },
+        pagebreak: { mode: 'avoid-all' }
     };
 
     html2pdf().set(options).from(container).save().then(() => {
@@ -1526,114 +1446,156 @@ function genererFactureHTML() {
     const devise = document.getElementById('devise').value;
     let articlesHTML = '';
 
-    rows.forEach((row, index) => {
+    rows.forEach((row, i) => {
         const desc = row.querySelector('.desc').value || '-';
         const prix = row.querySelector('.prix').value || '0';
         const qty = row.querySelector('.qty').value || '1';
         const total = row.querySelector('.ligne-total').textContent;
 
         articlesHTML += `
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding:10px; text-align:center; color:#888;">
-                    ${index + 1}
-                </td>
-                <td style="padding:10px;">${desc}</td>
-                <td style="padding:10px; text-align:center;">
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:8px; text-align:center;
+                           color:#888;">${i + 1}</td>
+                <td style="padding:8px;">${desc}</td>
+                <td style="padding:8px; text-align:center;">
                     ${parseFloat(prix).toFixed(2)} ${devise}
                 </td>
-                <td style="padding:10px; text-align:center;">${qty}</td>
-                <td style="padding:10px; text-align:right; font-weight:700;">
+                <td style="padding:8px; text-align:center;">
+                    ${qty}
+                </td>
+                <td style="padding:8px; text-align:right;
+                           font-weight:700;">
                     ${parseFloat(total).toFixed(2)} ${devise}
                 </td>
             </tr>
         `;
     });
 
-    const signEmetteur = document.getElementById('signatureEmetteur')
-        .toDataURL('image/png');
-    const signClient = document.getElementById('signatureClient')
-        .toDataURL('image/png');
+    // Couleurs selon modèle
+    let headerColor = '#6c63ff';
+    let headerTextColor = 'white';
+    let borderColor = '#6c63ff';
+    let bgColor = 'white';
+
+    switch(modeleActuel) {
+        case 'moderne':
+            headerColor = '#764ba2';
+            borderColor = '#764ba2';
+            break;
+        case 'minimal':
+            headerColor = '#f8f9fa';
+            headerTextColor = '#333';
+            borderColor = '#eee';
+            break;
+        case 'professionnel':
+            headerColor = '#2c3e50';
+            borderColor = '#2c3e50';
+            break;
+    }
 
     const compName = companyData?.name || 'Mon Entreprise';
     const compAddress = companyData?.address || '';
     const compPhone = companyData?.phone || '';
     const compEmail = companyData?.email || '';
     const compLogo = companyData?.logo || '';
+    const footerText = settings.footer ||
+        'Merci pour votre confiance !';
+    const mentions = settings.mentions || '';
+
+    const signEmetteur =
+        document.getElementById('signatureEmetteur')
+            .toDataURL('image/png');
+    const signClient =
+        document.getElementById('signatureClient')
+            .toDataURL('image/png');
 
     return `
-    <div style="font-family:Arial,sans-serif; padding:30px;
-                max-width:800px; margin:0 auto;">
+    <div style="font-family:Arial,sans-serif; padding:20px;
+                max-width:800px; margin:0 auto;
+                background:${bgColor};">
 
         <!-- EN-TÊTE -->
         <div style="display:flex; justify-content:space-between;
                     align-items:flex-start;
-                    border-bottom:3px solid #6c63ff;
-                    padding-bottom:20px; margin-bottom:30px;">
+                    border-bottom:3px solid ${borderColor};
+                    padding-bottom:15px; margin-bottom:20px;">
             <div>
-                ${compLogo ?
-                    `<img src="${compLogo}" 
-                          style="max-height:60px; margin-bottom:10px;">` 
+                ${compLogo
+                    ? `<img src="${compLogo}"
+                            style="max-height:50px;
+                            margin-bottom:8px; display:block;">`
                     : ''
                 }
-                <h1 style="color:#6c63ff; font-size:2.5em; margin:0;">
+                <h1 style="color:${borderColor};
+                           font-size:2em; margin:0;">
                     FACTURE
                 </h1>
-                <p style="color:#666; margin:5px 0;">
+                <p style="color:#666; margin:3px 0; font-size:0.9em;">
                     <strong>N°:</strong>
                     ${document.getElementById('factureNumber').value}
                 </p>
-                <p style="color:#666; margin:5px 0;">
+                <p style="color:#666; margin:3px 0; font-size:0.9em;">
                     <strong>Date:</strong>
                     ${document.getElementById('factureDate').value}
                 </p>
-                <p style="color:#666; margin:5px 0;">
+                <p style="color:#666; margin:3px 0; font-size:0.9em;">
                     <strong>Échéance:</strong>
                     ${document.getElementById('factureEcheance').value}
                 </p>
             </div>
             <div style="text-align:right;">
-                <h2 style="color:#333; margin:0;">${compName}</h2>
-                <p style="color:#666; margin:5px 0;">${compAddress}</p>
-                <p style="color:#666; margin:5px 0;">${compPhone}</p>
-                <p style="color:#666; margin:5px 0;">${compEmail}</p>
+                <h2 style="color:#333; margin:0; font-size:1.2em;">
+                    ${compName}
+                </h2>
+                <p style="color:#666; margin:3px 0; font-size:0.85em;">
+                    ${compAddress}
+                </p>
+                <p style="color:#666; margin:3px 0; font-size:0.85em;">
+                    📞 ${compPhone}
+                </p>
+                <p style="color:#666; margin:3px 0; font-size:0.85em;">
+                    📧 ${compEmail}
+                </p>
             </div>
         </div>
 
         <!-- CLIENT -->
-        <div style="background:#f8f9fa; padding:15px;
-                    border-radius:8px; margin-bottom:25px;">
-            <h3 style="color:#333; margin:0 0 10px 0;">Facturé à :</h3>
-            <p style="margin:3px 0;">
-                <strong>
-                    ${document.getElementById('clientName').value}
-                </strong>
+        <div style="background:#f8f9fa; padding:12px;
+                    border-radius:8px; margin-bottom:15px;">
+            <h3 style="color:#333; margin:0 0 8px 0;
+                       font-size:0.95em;">
+                Facturé à :
+            </h3>
+            <p style="margin:2px 0; font-weight:700;">
+                ${document.getElementById('clientName').value}
             </p>
-            <p style="margin:3px 0; color:#666;">
+            <p style="margin:2px 0; color:#666; font-size:0.85em;">
                 ${document.getElementById('clientAddress').value}
             </p>
-            <p style="margin:3px 0; color:#666;">
+            <p style="margin:2px 0; color:#666; font-size:0.85em;">
                 📞 ${document.getElementById('clientPhone').value}
             </p>
-            <p style="margin:3px 0; color:#666;">
+            <p style="margin:2px 0; color:#666; font-size:0.85em;">
                 📧 ${document.getElementById('clientEmail').value}
             </p>
         </div>
 
         <!-- ARTICLES -->
         <table style="width:100%; border-collapse:collapse;
-                      margin-bottom:25px;">
+                      margin-bottom:15px; font-size:0.9em;">
             <thead>
-                <tr style="background:#6c63ff; color:white;">
-                    <th style="padding:12px; text-align:center;
-                              width:40px;">#</th>
-                    <th style="padding:12px; text-align:left;">
+                <tr style="background:${headerColor};
+                           color:${headerTextColor};">
+                    <th style="padding:10px; text-align:center;
+                               width:40px;">#</th>
+                    <th style="padding:10px; text-align:left;">
                         Description</th>
-                    <th style="padding:12px; text-align:center;">
-                        Prix Unit.</th>
-                    <th style="padding:12px; text-align:center;">
-                        Qté</th>
-                    <th style="padding:12px; text-align:right;">
-                        Total</th>
+                    <th style="padding:10px; text-align:center;
+                               width:120px;">Prix Unit.</th>
+                    <th style="padding:10px; text-align:center;
+                               width:60px;">Qté</th>
+                    <th style="padding:10px; text-align:right;
+                               width:120px;">Total</th>
                 </tr>
             </thead>
             <tbody>${articlesHTML}</tbody>
@@ -1641,40 +1603,50 @@ function genererFactureHTML() {
 
         <!-- TOTAUX -->
         <div style="display:flex; justify-content:flex-end;
-                    margin-bottom:30px;">
-            <div style="width:300px; background:#f8f9fa;
-                        padding:20px; border-radius:8px;">
-                <div style="display:flex; justify-content:space-between;
-                            margin-bottom:8px;">
+                    margin-bottom:15px;">
+            <div style="width:280px; background:#f8f9fa;
+                        padding:15px; border-radius:8px;
+                        font-size:0.9em;">
+                <div style="display:flex;
+                            justify-content:space-between;
+                            margin-bottom:6px;">
                     <span>Sous-total :</span>
                     <strong>
-                        ${document.getElementById('sousTotal').textContent}
+                        ${document.getElementById('sousTotal')
+                            .textContent}
                     </strong>
                 </div>
-                <div style="display:flex; justify-content:space-between;
-                            margin-bottom:8px;">
+                <div style="display:flex;
+                            justify-content:space-between;
+                            margin-bottom:6px;">
                     <span>TVA
-                        (${document.getElementById('tvaPercent').value}%) :
-                    </span>
+                        (${document.getElementById('tvaPercent')
+                            .value}%) :</span>
                     <span>
-                        ${document.getElementById('tvaAmount').textContent}
+                        ${document.getElementById('tvaAmount')
+                            .textContent}
                     </span>
                 </div>
-                <div style="display:flex; justify-content:space-between;
-                            margin-bottom:8px; color:#e74c3c;">
+                <div style="display:flex;
+                            justify-content:space-between;
+                            margin-bottom:6px; color:#e74c3c;">
                     <span>Réduction
-                        (${document.getElementById('reductionPercent').value}%) :
-                    </span>
+                        (${document.getElementById('reductionPercent')
+                            .value}%) :</span>
                     <span>
-                        ${document.getElementById('reductionAmount').textContent}
+                        ${document.getElementById('reductionAmount')
+                            .textContent}
                     </span>
                 </div>
-                <div style="display:flex; justify-content:space-between;
-                            border-top:2px solid #6c63ff;
-                            padding-top:10px; margin-top:10px;">
-                    <strong style="font-size:1.2em;">TOTAL :</strong>
-                    <strong style="font-size:1.2em; color:#6c63ff;">
-                        ${document.getElementById('totalFinal').textContent}
+                <div style="display:flex;
+                            justify-content:space-between;
+                            border-top:2px solid ${borderColor};
+                            padding-top:8px; margin-top:8px;">
+                    <strong style="font-size:1.1em;">TOTAL :</strong>
+                    <strong style="font-size:1.1em;
+                                   color:${borderColor};">
+                        ${document.getElementById('totalFinal')
+                            .textContent}
                     </strong>
                 </div>
             </div>
@@ -1682,59 +1654,77 @@ function genererFactureHTML() {
 
         <!-- NOTES -->
         ${document.getElementById('factureNotes').value ? `
-        <div style="background:#fff3cd; padding:15px;
-                    border-radius:8px; margin-bottom:30px;
-                    border-left:4px solid #ffc107;">
-            <h4 style="margin:0 0 5px 0; color:#856404;">
-                📝 Notes :
-            </h4>
-            <p style="margin:0; color:#666; white-space:pre-wrap;">
+        <div style="background:#fff3cd; padding:12px;
+                    border-radius:8px; margin-bottom:15px;
+                    border-left:4px solid #ffc107;
+                    font-size:0.85em;">
+            <strong>📝 Notes :</strong>
+            <p style="margin:5px 0; white-space:pre-wrap;">
                 ${document.getElementById('factureNotes').value}
             </p>
         </div>
         ` : ''}
 
+        <!-- MENTIONS -->
+        ${mentions ? `
+        <div style="font-size:0.8em; color:#888;
+                    margin-bottom:15px;">
+            ${mentions}
+        </div>
+        ` : ''}
+
         <!-- SIGNATURES -->
         <div style="display:flex; justify-content:space-between;
-                    margin-top:50px; gap:30px;">
+                    margin-top:20px; gap:20px;">
             <div style="flex:1; text-align:center;
-                        border-top:2px solid #333; padding-top:15px;">
-                <p style="font-weight:bold; margin:0 0 10px 0;">
-                    Signature de l'émetteur
+                        border-top:2px solid #333;
+                        padding-top:10px;">
+                <p style="font-weight:bold; margin:0 0 5px;
+                          font-size:0.85em;">
+                    Signature émetteur
                 </p>
                 <img src="${signEmetteur}"
-                     style="max-width:200px; height:80px;
+                     style="max-width:150px; height:60px;
                             object-fit:contain;">
-                <p style="margin:10px 0 0; color:#666;">
+                <p style="margin:5px 0 0; color:#666;
+                          font-size:0.8em;">
                     ${document.getElementById('nomEmetteur').value}
                 </p>
-                <p style="margin:5px 0 0; color:#888; font-size:0.85em;">
+                <p style="margin:2px 0 0; color:#888;
+                          font-size:0.75em;">
                     ${document.getElementById('dateEmetteur').value}
                 </p>
             </div>
             <div style="flex:1; text-align:center;
-                        border-top:2px solid #333; padding-top:15px;">
-                <p style="font-weight:bold; margin:0 0 10px 0;">
-                    Signature du client
+                        border-top:2px solid #333;
+                        padding-top:10px;">
+                <p style="font-weight:bold; margin:0 0 5px;
+                          font-size:0.85em;">
+                    Signature client
                 </p>
                 <img src="${signClient}"
-                     style="max-width:200px; height:80px;
+                     style="max-width:150px; height:60px;
                             object-fit:contain;">
-                <p style="margin:10px 0 0; color:#666;">
+                <p style="margin:5px 0 0; color:#666;
+                          font-size:0.8em;">
                     ${document.getElementById('nomClient').value}
                 </p>
-                <p style="margin:5px 0 0; color:#888; font-size:0.85em;">
+                <p style="margin:2px 0 0; color:#888;
+                          font-size:0.75em;">
                     ${document.getElementById('dateClient').value}
                 </p>
             </div>
         </div>
 
         <!-- PIED DE PAGE -->
-        <div style="margin-top:40px; text-align:center;
+        <div style="margin-top:20px; text-align:center;
                     color:#aaa; border-top:1px solid #eee;
-                    padding-top:15px; font-size:0.85em;">
-            <p>Merci pour votre confiance ! 🙏</p>
-            <p>${compName} — ${compAddress}</p>
+                    padding-top:10px; font-size:0.8em;">
+            <p>${footerText}</p>
+            <p>${compName}
+                ${compAddress ? '— ' + compAddress : ''}
+                ${compPhone ? '— ' + compPhone : ''}
+            </p>
         </div>
 
     </div>
@@ -1748,16 +1738,14 @@ function showToast(message, type) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.className = 'toast toast-' + type + ' show';
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
 // ============================
 // 🚪 DÉCONNEXION
 // ============================
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+document.getElementById('logoutBtn')
+    .addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
         await signOut(auth);
@@ -1771,34 +1759,17 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
 document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
 });
-
-// ============================
-// 📞 WHATSAPP
-// ============================
-document.getElementById('contactWhatsapp').addEventListener('click', (e) => {
-    e.preventDefault();
-    const phone = "000000000";
-    const msg = "Bonjour, j'utilise Facture Pro et j'ai une question.";
-    window.open(
-        `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
-        '_blank'
-    );
-});
 </script>
 
-<!-- ======= SIGNATURES SCRIPT ======= -->
+<!-- SIGNATURES -->
 <script>
-// ============================
-// ✍️ SIGNATURES
-// ============================
 function initSignature(canvasId, placeholderId) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
     const placeholder = document.getElementById(placeholderId);
     const wrapper = canvas.parentElement;
 
-    // Ajuster la taille du canvas
-    canvas.width = wrapper.offsetWidth;
+    canvas.width = wrapper.offsetWidth || 300;
     canvas.height = 150;
 
     let isDrawing = false;
@@ -1812,8 +1783,10 @@ function initSignature(canvasId, placeholderId) {
     function getPos(e) {
         const rect = canvas.getBoundingClientRect();
         return {
-            x: (e.clientX - rect.left) * (canvas.width / rect.width),
-            y: (e.clientY - rect.top) * (canvas.height / rect.height)
+            x: (e.clientX - rect.left) *
+                (canvas.width / rect.width),
+            y: (e.clientY - rect.top) *
+                (canvas.height / rect.height)
         };
     }
 
@@ -1821,12 +1794,13 @@ function initSignature(canvasId, placeholderId) {
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         return {
-            x: (touch.clientX - rect.left) * (canvas.width / rect.width),
-            y: (touch.clientY - rect.top) * (canvas.height / rect.height)
+            x: (touch.clientX - rect.left) *
+                (canvas.width / rect.width),
+            y: (touch.clientY - rect.top) *
+                (canvas.height / rect.height)
         };
     }
 
-    // Souris
     canvas.addEventListener('mousedown', (e) => {
         isDrawing = true;
         const pos = getPos(e);
@@ -1855,7 +1829,6 @@ function initSignature(canvasId, placeholderId) {
         ctx.beginPath();
     });
 
-    // Tactile
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         isDrawing = true;
@@ -1866,7 +1839,7 @@ function initSignature(canvasId, placeholderId) {
             hasDrawn = true;
             placeholder.style.display = 'none';
         }
-    });
+    }, { passive: false });
 
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
@@ -1874,7 +1847,7 @@ function initSignature(canvasId, placeholderId) {
         const pos = getTouchPos(e);
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
-    });
+    }, { passive: false });
 
     canvas.addEventListener('touchend', () => {
         isDrawing = false;
@@ -1891,41 +1864,55 @@ function clearCanvas(canvasId, placeholderId) {
     initSignature(canvasId, placeholderId);
 }
 
-// Init
 window.addEventListener('load', () => {
     initSignature('signatureEmetteur', 'placeholderEmetteur');
     initSignature('signatureClient', 'placeholderClient');
 });
 
-// Resize
 window.addEventListener('resize', () => {
     initSignature('signatureEmetteur', 'placeholderEmetteur');
     initSignature('signatureClient', 'placeholderClient');
 });
 
-// Boutons effacer signatures
-document.getElementById('clearSignEmetteur').addEventListener('click', () => {
+document.getElementById('clearSignEmetteur')
+    .addEventListener('click', () => {
     clearCanvas('signatureEmetteur', 'placeholderEmetteur');
 });
 
-document.getElementById('clearSignClient').addEventListener('click', () => {
+document.getElementById('clearSignClient')
+    .addEventListener('click', () => {
     clearCanvas('signatureClient', 'placeholderClient');
 });
 
-// Boutons sauvegarder signatures
-document.getElementById('saveSignEmetteur').addEventListener('click', () => {
+document.getElementById('saveSignEmetteur')
+    .addEventListener('click', () => {
     const data = document.getElementById('signatureEmetteur')
         .toDataURL('image/png');
     localStorage.setItem('signature_emetteur', data);
-    alert('✅ Signature émetteur sauvegardée !');
+    alert('✅ Signature sauvegardée !');
 });
 
-document.getElementById('saveSignClient').addEventListener('click', () => {
+document.getElementById('saveSignClient')
+    .addEventListener('click', () => {
     const data = document.getElementById('signatureClient')
         .toDataURL('image/png');
     localStorage.setItem('signature_client', data);
-    alert('✅ Signature client sauvegardée !');
+    alert('✅ Signature sauvegardée !');
 });
+</script>
+
+<!-- Dark Mode -->
+<script src="../js/darkmode.js"></script>
+<script>
+    function updateDarkBtn() {
+        const isDark = DarkMode.isDark();
+        const icon = document.getElementById('darkModeIcon');
+        const text = document.getElementById('darkModeText');
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+        if (text) text.textContent = isDark
+            ? 'Mode clair' : 'Mode sombre';
+    }
+    window.addEventListener('load', updateDarkBtn);
 </script>
 
 </body>

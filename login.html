@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Facture Pro</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') {
+                document.documentElement
+                    .setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/darkmode.css">
     <style>
         * {
             margin: 0;
@@ -51,6 +61,7 @@
 
         .input-group {
             margin-bottom: 18px;
+            position: relative;
         }
 
         .input-group label {
@@ -80,6 +91,23 @@
             color: #777;
         }
 
+        .input-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Bouton voir mot de passe */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -93,13 +121,92 @@
             margin-top: 10px;
         }
 
-        .btn-primary:hover {
-            transform: scale(1.02);
-        }
+        .btn-primary:hover { transform: scale(1.02); }
 
         .btn-primary:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Tentatives restantes */
+        .attempts-bar {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .attempts-text {
+            font-size: 0.85em;
+            color: #f39c12;
+            margin-bottom: 5px;
+        }
+
+        .attempts-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .attempts-bar-fill {
+            height: 100%;
+            background: #f39c12;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        /* Blocage */
+        .blocked-box {
+            display: none;
+            background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .blocked-box h3 {
+            color: #e74c3c;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .blocked-box p {
+            color: #aaa;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+
+        /* Captcha */
+        .captcha-box {
+            display: none;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .captcha-question {
+            color: #ccc;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .captcha-input {
+            width: 100px !important;
+            text-align: center;
+            margin: 0 auto !important;
+            display: block !important;
         }
 
         .auth-link {
@@ -114,6 +221,20 @@
             font-weight: 600;
         }
 
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        .forgot-password a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .forgot-password a:hover { color: #6c63ff; }
+
         .message {
             text-align: center;
             margin-top: 15px;
@@ -125,16 +246,23 @@
 
         .message.success {
             display: block;
-            background: rgba(39, 174, 96, 0.2);
+            background: rgba(39,174,96,0.2);
             color: #2ecc71;
-            border: 1px solid rgba(39, 174, 96, 0.3);
+            border: 1px solid rgba(39,174,96,0.3);
         }
 
         .message.error {
             display: block;
-            background: rgba(231, 76, 60, 0.2);
+            background: rgba(231,76,60,0.2);
             color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            border: 1px solid rgba(231,76,60,0.3);
+        }
+
+        .message.warning {
+            display: block;
+            background: rgba(243,156,18,0.2);
+            color: #f39c12;
+            border: 1px solid rgba(243,156,18,0.3);
         }
 
         .back-home {
@@ -148,10 +276,6 @@
             font-size: 0.9em;
         }
 
-        .back-home a:hover {
-            color: white;
-        }
-
         .loading-spinner {
             display: none;
             width: 20px;
@@ -160,30 +284,24 @@
             border-top-color: white;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto;
+            margin: 10px auto;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Indicateur force mot de passe */
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.8em;
+            color: #27ae60;
         }
 
-        .forgot-password {
-            text-align: right;
-            margin-top: -10px;
-            margin-bottom: 15px;
-        }
-
-        .forgot-password a {
-            color: #888;
-            text-decoration: none;
-            font-size: 0.85em;
-        }
-
-        .forgot-password a:hover {
-            color: #6c63ff;
-        }
+        .security-info.warning { color: #f39c12; }
+        .security-info.danger { color: #e74c3c; }
     </style>
-
 </head>
 <body>
 
@@ -192,17 +310,25 @@
         <h1>🧾 Facture Pro</h1>
         <h2>Connectez-vous à votre compte</h2>
 
-        <form id="loginForm">
+        <!-- SÉCURITÉ : Indicateur -->
+        <div class="security-info" id="securityInfo">
+            🔒 Connexion sécurisée
+        </div>
+
+        <form id="loginForm" style="margin-top: 20px;">
+
             <div class="input-group">
                 <label>📧 Adresse email</label>
-                <input type="email" id="loginEmail" 
+                <input type="email" id="loginEmail"
                        placeholder="email@exemple.com" required>
             </div>
 
             <div class="input-group">
                 <label>🔒 Mot de passe</label>
-                <input type="password" id="loginPassword" 
+                <input type="password" id="loginPassword"
                        placeholder="Votre mot de passe" required>
+                <button type="button" class="toggle-password"
+                        id="togglePassword">👁️</button>
             </div>
 
             <div class="forgot-password">
@@ -211,14 +337,53 @@
                 </a>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnLogin">
+            <!-- CAPTCHA après 3 tentatives -->
+            <div class="captcha-box" id="captchaBox">
+                <p class="captcha-question" id="captchaQuestion">
+                    Combien font 3 + 4 ?
+                </p>
+                <input type="number"
+                       class="captcha-input"
+                       id="captchaInput"
+                       placeholder="?">
+            </div>
+
+            <!-- Barre tentatives -->
+            <div class="attempts-bar" id="attemptsBar">
+                <p class="attempts-text" id="attemptsText">
+                    ⚠️ 4 tentatives restantes
+                </p>
+                <div class="attempts-progress">
+                    <div class="attempts-bar-fill"
+                         id="attemptsBarFill"
+                         style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="btn-primary"
+                    id="btnLogin">
                 🔐 Se connecter
             </button>
 
             <div class="loading-spinner" id="spinner"></div>
 
+            <!-- BLOCAGE -->
+            <div class="blocked-box" id="blockedBox">
+                <h3>🚫 Compte temporairement bloqué</h3>
+                <p>
+                    Trop de tentatives échouées.
+                    Réessayez dans :
+                </p>
+                <div class="countdown" id="countdown">15:00</div>
+                <p style="margin-top: 8px;">
+                    ou réinitialisez votre mot de passe
+                </p>
+            </div>
+
             <p class="auth-link">
-                Pas encore de compte ? 
+                Pas encore de compte ?
                 <a href="register.html">S'inscrire gratuitement</a>
             </p>
         </form>
@@ -232,23 +397,232 @@
 </div>
 
 <script type="module">
-import { auth, db } from './js/firebase-config.js';
-import { 
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getAuth,
     signInWithEmailAndPassword,
     sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { 
-    doc, getDoc, updateDoc, serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+} from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    updateDoc,
+    setDoc,
+    serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
+    authDomain: "facture-pro-2a843.firebaseapp.com",
+    projectId: "facture-pro-2a843",
+    storageBucket: "facture-pro-2a843.firebasestorage.app",
+    messagingSenderId: "30400911697",
+    appId: "1:30400911697:web:a5ddafe5dcc58c0a38db70"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ============================
+// 🔐 VARIABLES SÉCURITÉ
+// ============================
+const MAX_ATTEMPTS = 5;
+const BLOCK_DURATION = 15 * 60 * 1000; // 15 minutes
+const CAPTCHA_AFTER = 3; // Afficher captcha après 3 tentatives
+
+let attempts = 0;
+let isBlocked = false;
+let blockTimer = null;
+let captchaAnswer = 0;
+
+// Récupérer tentatives depuis localStorage
+function getAttempts() {
+    const data = localStorage.getItem('loginAttempts');
+    if (!data) return { count: 0, blockedUntil: null };
+    return JSON.parse(data);
+}
+
+// Sauvegarder tentatives
+function saveAttempts(count, blockedUntil = null) {
+    localStorage.setItem('loginAttempts', JSON.stringify({
+        count: count,
+        blockedUntil: blockedUntil
+    }));
+}
+
+// Réinitialiser tentatives
+function resetAttempts() {
+    localStorage.removeItem('loginAttempts');
+    attempts = 0;
+    isBlocked = false;
+    updateAttemptsUI();
+}
+
+// ============================
+// 🔢 CAPTCHA SIMPLE
+// ============================
+function generateCaptcha() {
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    captchaAnswer = a + b;
+    document.getElementById('captchaQuestion').textContent =
+        `🤖 Anti-robot : Combien font ${a} + ${b} ?`;
+}
+
+function showCaptcha() {
+    const captchaBox = document.getElementById('captchaBox');
+    captchaBox.style.display = 'block';
+    generateCaptcha();
+}
+
+function verifyCaptcha() {
+    const input = parseInt(
+        document.getElementById('captchaInput').value
+    );
+    return input === captchaAnswer;
+}
+
+// ============================
+// 📊 UI TENTATIVES
+// ============================
+function updateAttemptsUI() {
+    const attemptsBar = document.getElementById('attemptsBar');
+    const attemptsText = document.getElementById('attemptsText');
+    const attemptsBarFill = document.getElementById('attemptsBarFill');
+    const btnLogin = document.getElementById('btnLogin');
+    const blockedBox = document.getElementById('blockedBox');
+
+    if (isBlocked) {
+        attemptsBar.style.display = 'none';
+        blockedBox.style.display = 'block';
+        btnLogin.disabled = true;
+        document.getElementById('loginEmail').disabled = true;
+        document.getElementById('loginPassword').disabled = true;
+        return;
+    }
+
+    if (attempts === 0) {
+        attemptsBar.style.display = 'none';
+        blockedBox.style.display = 'none';
+        btnLogin.disabled = false;
+        document.getElementById('loginEmail').disabled = false;
+        document.getElementById('loginPassword').disabled = false;
+        return;
+    }
+
+    const remaining = MAX_ATTEMPTS - attempts;
+    const percent = (remaining / MAX_ATTEMPTS) * 100;
+
+    attemptsBar.style.display = 'block';
+    attemptsText.textContent =
+        `⚠️ ${remaining} tentative(s) restante(s) avant blocage`;
+
+    attemptsBarFill.style.width = percent + '%';
+
+    // Couleur selon tentatives
+    if (remaining <= 1) {
+        attemptsBarFill.style.background = '#e74c3c';
+    } else if (remaining <= 2) {
+        attemptsBarFill.style.background = '#f39c12';
+    } else {
+        attemptsBarFill.style.background = '#6c63ff';
+    }
+
+    // Afficher captcha après 3 tentatives
+    if (attempts >= CAPTCHA_AFTER) {
+        showCaptcha();
+    }
+}
+
+// ============================
+// ⏱️ MINUTERIE BLOCAGE
+// ============================
+function startBlockTimer(blockedUntil) {
+    isBlocked = true;
+    updateAttemptsUI();
+
+    const interval = setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = blockedUntil - now;
+
+        if (remaining <= 0) {
+            clearInterval(interval);
+            resetAttempts();
+            document.getElementById('blockedBox')
+                .style.display = 'none';
+            document.getElementById('btnLogin').disabled = false;
+            document.getElementById('loginEmail').disabled = false;
+            document.getElementById('loginPassword').disabled = false;
+            showMessage(
+                "✅ Vous pouvez réessayer maintenant",
+                "success"
+            );
+            return;
+        }
+
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        document.getElementById('countdown').textContent =
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    }, 1000);
+}
+
+// ============================
+// 🔍 VÉRIFIER BLOCAGE AU CHARGEMENT
+// ============================
+window.addEventListener('load', () => {
+    const data = getAttempts();
+    attempts = data.count || 0;
+
+    if (data.blockedUntil) {
+        const now = new Date().getTime();
+        if (data.blockedUntil > now) {
+            startBlockTimer(data.blockedUntil);
+        } else {
+            resetAttempts();
+        }
+    } else {
+        updateAttemptsUI();
+    }
+});
+
+// ============================
+// 🔐 CONNEXION
+// ============================
 const form = document.getElementById('loginForm');
 const message = document.getElementById('message');
 const spinner = document.getElementById('spinner');
 const btnLogin = document.getElementById('btnLogin');
 
-// ======= CONNEXION =======
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (isBlocked) {
+        showMessage(
+            "🚫 Compte bloqué. Attendez la fin du minuteur.",
+            "error"
+        );
+        return;
+    }
+
+    // Vérifier captcha si affiché
+    if (attempts >= CAPTCHA_AFTER) {
+        if (!verifyCaptcha()) {
+            showMessage(
+                "❌ Réponse incorrecte au captcha",
+                "error"
+            );
+            generateCaptcha();
+            document.getElementById('captchaInput').value = '';
+            return;
+        }
+    }
 
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -261,13 +635,11 @@ form.addEventListener('submit', async (e) => {
     spinner.style.display = 'block';
 
     try {
-        // 1. Connecter l'utilisateur
         const userCredential = await signInWithEmailAndPassword(
             auth, email, password
         );
         const user = userCredential.user;
 
-        // 2. Récupérer les données de l'utilisateur
         const userDoc = await getDoc(doc(db, "users", user.uid));
 
         if (!userDoc.exists()) {
@@ -278,21 +650,35 @@ form.addEventListener('submit', async (e) => {
 
         const userData = userDoc.data();
 
-        // 3. Vérifier si le compte est actif
         if (userData.isActive === false) {
-            showMessage("❌ Votre compte a été désactivé. Contactez le support.", "error");
+            showMessage(
+                "❌ Votre compte a été désactivé.",
+                "error"
+            );
             resetButton();
             return;
         }
 
-        // 4. Mettre à jour la dernière connexion
-        await updateDoc(doc(db, "users", user.uid), {
-            lastLogin: serverTimestamp()
-        });
+        // Connexion réussie → Reset tentatives
+        resetAttempts();
 
-        showMessage("✅ Connexion réussie ! Redirection...", "success");
+        // Enregistrer connexion suspecte si beaucoup de tentatives
+        if (attempts > 2) {
+            await updateDoc(doc(db, "users", user.uid), {
+                lastLogin: serverTimestamp(),
+                suspiciousLogin: true,
+                loginAttempts: attempts
+            });
+        } else {
+            await updateDoc(doc(db, "users", user.uid), {
+                lastLogin: serverTimestamp(),
+                suspiciousLogin: false,
+                loginAttempts: 0
+            });
+        }
 
-        // 5. Rediriger selon le rôle
+        showMessage("✅ Connexion réussie !", "success");
+
         setTimeout(() => {
             if (userData.role === "admin") {
                 window.location.href = "admin/dashboard.html";
@@ -304,43 +690,113 @@ form.addEventListener('submit', async (e) => {
     } catch (error) {
         resetButton();
 
-        let errorMsg = "❌ Erreur de connexion";
+        // Incrémenter tentatives
+        attempts++;
+        saveAttempts(attempts);
+
+        // Bloquer si max atteint
+        if (attempts >= MAX_ATTEMPTS) {
+            const blockedUntil = new Date().getTime() + BLOCK_DURATION;
+            saveAttempts(attempts, blockedUntil);
+
+            // Enregistrer tentative suspecte dans Firestore
+            try {
+                await setDoc(
+                    doc(db, "security_logs", Date.now().toString()),
+                    {
+                        email: email,
+                        attempts: attempts,
+                        blockedAt: serverTimestamp(),
+                        ip: "unknown",
+                        type: "brute_force"
+                    }
+                );
+            } catch (e) {
+                console.log("Log error:", e);
+            }
+
+            startBlockTimer(blockedUntil);
+            showMessage(
+                "🚫 Trop de tentatives ! Compte bloqué 15 minutes.",
+                "error"
+            );
+            return;
+        }
+
+        updateAttemptsUI();
+
+        let errorMsg = "❌ Email ou mot de passe incorrect";
 
         if (error.code === "auth/user-not-found") {
             errorMsg = "❌ Aucun compte trouvé avec cet email";
         } else if (error.code === "auth/wrong-password") {
             errorMsg = "❌ Mot de passe incorrect";
-        } else if (error.code === "auth/invalid-email") {
-            errorMsg = "❌ Email invalide";
-        } else if (error.code === "auth/too-many-requests") {
-            errorMsg = "❌ Trop de tentatives. Réessayez plus tard";
         } else if (error.code === "auth/invalid-credential") {
             errorMsg = "❌ Email ou mot de passe incorrect";
+        } else if (error.code === "auth/too-many-requests") {
+            errorMsg = "❌ Trop de tentatives. Réessayez plus tard";
+        } else if (error.code === "auth/invalid-email") {
+            errorMsg = "❌ Email invalide";
+        }
+
+        const remaining = MAX_ATTEMPTS - attempts;
+        if (remaining > 0) {
+            errorMsg += ` (${remaining} tentative(s) restante(s))`;
         }
 
         showMessage(errorMsg, "error");
     }
 });
 
-// ======= MOT DE PASSE OUBLIÉ =======
-document.getElementById('forgotPasswordBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
+// ============================
+// 👁️ VOIR MOT DE PASSE
+// ============================
+document.getElementById('togglePassword')
+    .addEventListener('click', () => {
+    const pwd = document.getElementById('loginPassword');
+    const btn = document.getElementById('togglePassword');
+    if (pwd.type === 'password') {
+        pwd.type = 'text';
+        btn.textContent = '🙈';
+    } else {
+        pwd.type = 'password';
+        btn.textContent = '👁️';
+    }
+});
 
+// ============================
+// 🔑 MOT DE PASSE OUBLIÉ
+// ============================
+document.getElementById('forgotPasswordBtn')
+    .addEventListener('click', async (e) => {
+    e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
 
     if (!email) {
-        showMessage("⚠️ Entrez votre email d'abord", "error");
+        showMessage(
+            "⚠️ Entrez votre email d'abord",
+            "warning"
+        );
         return;
     }
 
     try {
         await sendPasswordResetEmail(auth, email);
-        showMessage("✅ Email de réinitialisation envoyé ! Vérifiez votre boîte mail.", "success");
+        showMessage(
+            "✅ Email de réinitialisation envoyé !",
+            "success"
+        );
     } catch (error) {
-        showMessage("❌ Impossible d'envoyer l'email. Vérifiez l'adresse.", "error");
+        showMessage(
+            "❌ Impossible d'envoyer l'email",
+            "error"
+        );
     }
 });
 
+// ============================
+// 🔔 MESSAGES
+// ============================
 function showMessage(text, type) {
     message.textContent = text;
     message.className = 'message ' + type;
@@ -350,7 +806,7 @@ function showMessage(text, type) {
 function resetButton() {
     spinner.style.display = 'none';
     btnLogin.style.display = 'block';
-    btnLogin.disabled = false;
+    if (!isBlocked) btnLogin.disabled = false;
 }
 </script>
 
