@@ -129,7 +129,6 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h2>🧾 Facture Pro</h2>
@@ -156,9 +155,7 @@
     </ul>
 </div>
 
-<!-- MAIN -->
 <div class="main-content">
-
     <div class="top-bar">
         <div class="top-bar-left">
             <button class="menu-toggle" id="menuToggle">☰</button>
@@ -167,7 +164,6 @@
         <div class="admin-time" id="adminTime"></div>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
         <button class="tab active" id="tab-overview" onclick="switchTab('overview')">📊 Vue d'ensemble</button>
         <button class="tab" id="tab-users" onclick="switchTab('users')">👥 Utilisateurs <span class="tab-badge" id="tabUsersCount">0</span></button>
@@ -203,33 +199,13 @@
             <div class="card-header"><h2>👥 Gestion des utilisateurs</h2><span class="card-count" id="usersCount">0 utilisateur(s)</span></div>
             <div class="search-bar">
                 <input type="text" id="searchUsers" placeholder="🔍 Nom ou email">
-                <select id="filterRole">
-                    <option value="">Tous les rôles</option>
-                    <option value="client">Clients</option>
-                    <option value="admin">Admins</option>
-                </select>
-                <select id="filterPlan">
-                    <option value="">Tous les plans</option>
-                    <option value="free">Gratuit</option>
-                    <option value="pro">Pro</option>
-                </select>
+                <select id="filterRole"><option value="">Tous les rôles</option><option value="client">Clients</option><option value="admin">Admins</option></select>
+                <select id="filterPlan"><option value="">Tous les plans</option><option value="free">Gratuit</option><option value="pro">Pro</option></select>
                 <button class="btn-search" onclick="filterUsers()">🔍</button>
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Rôle</th>
-                            <th>Plan</th>
-                            <th>Factures</th>
-                            <th>Inscrit le</th>
-                            <th>Dernière connexion</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Plan</th><th>Factures</th><th>Inscrit le</th><th>Dernière connexion</th><th>Statut</th><th>Actions</th></tr></thead>
                     <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
@@ -243,28 +219,12 @@
             <div class="card-header"><h2>💳 Gestion des paiements</h2><span class="card-count" id="paymentsCount">0 paiement(s)</span></div>
             <div class="search-bar">
                 <input type="text" id="searchPayments" placeholder="🔍 Nom ou email">
-                <select id="filterPaymentStatus">
-                    <option value="">Tous les statuts</option>
-                    <option value="pending">En attente</option>
-                    <option value="approved">Approuvés</option>
-                    <option value="rejected">Rejetés</option>
-                </select>
+                <select id="filterPaymentStatus"><option value="">Tous les statuts</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select>
                 <button class="btn-search" onclick="filterPayments()">🔍</button>
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Utilisateur</th>
-                            <th>Email</th>
-                            <th>Plan</th>
-                            <th>Montant</th>
-                            <th>Méthode</th>
-                            <th>Date</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Utilisateur</th><th>Email</th><th>Plan</th><th>Montant</th><th>Méthode</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
                     <tbody id="paymentsTableBody"></tbody>
                 </table>
             </div>
@@ -282,16 +242,7 @@
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>N° Facture</th>
-                            <th>Créateur</th>
-                            <th>Client</th>
-                            <th>Date</th>
-                            <th>Modèle</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>N° Facture</th><th>Créateur</th><th>Client</th><th>Date</th><th>Modèle</th><th>Total</th></tr></thead>
                     <tbody id="facturesTableBody"></tbody>
                 </table>
             </div>
@@ -301,7 +252,6 @@
 
     <!-- SETTINGS -->
     <div class="tab-content" id="content-settings">
-
         <div class="settings-card">
             <h2>👤 Informations du propriétaire</h2>
             <div class="settings-row">
@@ -309,7 +259,6 @@
                 <div class="settings-group"><label>Email principal</label><input type="email" id="settingsOwnerEmail" placeholder="votre@email.com"></div>
             </div>
         </div>
-
         <div class="settings-card">
             <h2>📞 Contact & Communication</h2>
             <div class="settings-row">
@@ -321,7 +270,6 @@
                 <div class="settings-group"><label>💬 Message WhatsApp par défaut</label><input type="text" id="settingsWhatsappMsg" placeholder="Bonjour, j'utilise Facture Pro..."></div>
             </div>
         </div>
-
         <div class="settings-card">
             <h2>💱 Devise & Prix des plans</h2>
             <div class="settings-row">
@@ -346,7 +294,6 @@
                 <div class="settings-group"><label>Symbole prix Pro <small style="color:#888;">Ex: $, €, FCFA, F</small></label><input type="text" id="settingsPriceProSymbol" placeholder="Ex: $ € £ FCFA F"></div>
             </div>
         </div>
-
         <div class="settings-card">
             <h2>📊 Limites & Plans</h2>
             <div class="settings-row">
@@ -358,7 +305,6 @@
                 <div class="settings-group"><label>Description plan Pro</label><input type="text" id="settingsProDesc" placeholder="Ex: Factures illimitées"></div>
             </div>
         </div>
-
         <div class="settings-card">
             <h2>💳 Méthodes de paiement</h2>
             <div class="settings-row">
@@ -370,7 +316,6 @@
                 <div class="settings-group"><label>Nom titulaire</label><input type="text" id="settingsBankName" placeholder="Nom du titulaire"></div>
             </div>
         </div>
-
         <div class="settings-card">
             <h2>🧾 Paramètres des factures</h2>
             <div class="settings-row">
@@ -381,11 +326,8 @@
                 <div class="settings-group"><label>Pied de page des factures</label><input type="text" id="settingsFooter" placeholder="Ex: Facture Pro — Votre partenaire"></div>
             </div>
         </div>
-
         <button class="btn-save-settings" id="btnSaveSettings">💾 Sauvegarder tous les paramètres</button>
-
     </div>
-
 </div>
 
 <!-- MODAL USER -->
@@ -396,13 +338,12 @@
     </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
@@ -457,9 +398,8 @@ onAuthStateChanged(auth, async (user) => {
 
 // Horloge
 function updateTime() {
-    const now = new Date();
     const el = document.getElementById('adminTime');
-    if (el) el.textContent = now.toLocaleDateString('fr-FR') + ' — ' + now.toLocaleTimeString('fr-FR');
+    if (el) el.textContent = new Date().toLocaleDateString('fr-FR') + ' — ' + new Date().toLocaleTimeString('fr-FR');
 }
 updateTime();
 setInterval(updateTime, 1000);
@@ -469,12 +409,6 @@ setInterval(updateTime, 1000);
 // ============================
 async function chargerUsers() {
     try {
-        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        allUsers = [];
-        snapshot.forEach(d => { allUsers.push({ id: d.id, ...d.data() }); });
-    } catch (e) {
-        // Sans orderBy si erreur index
         const snapshot = await getDocs(collection(db, "users"));
         allUsers = [];
         snapshot.forEach(d => { allUsers.push({ id: d.id, ...d.data() }); });
@@ -483,7 +417,7 @@ async function chargerUsers() {
             const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
             return dB - dA;
         });
-    }
+    } catch (e) { console.error("Erreur users:", e); }
 
     filteredUsersData = [...allUsers];
     afficherUsers();
@@ -496,10 +430,7 @@ function afficherUsers() {
     tbody.innerHTML = '';
     document.getElementById('usersCount').textContent = filteredUsersData.length + ' utilisateur(s)';
 
-    if (filteredUsersData.length === 0) {
-        document.getElementById('usersEmpty').style.display = 'block';
-        return;
-    }
+    if (filteredUsersData.length === 0) { document.getElementById('usersEmpty').style.display = 'block'; return; }
     document.getElementById('usersEmpty').style.display = 'none';
 
     filteredUsersData.forEach(u => {
@@ -522,14 +453,14 @@ function afficherUsers() {
             <td>
                 <div style="display:flex; flex-wrap:wrap; gap:3px;">
                     ${u.isActive !== false
-                        ? `<button class="btn-sm btn-deactivate" onclick="toggleUser('${u.id}', false)" title="Désactiver">❌</button>`
-                        : `<button class="btn-sm btn-activate" onclick="toggleUser('${u.id}', true)" title="Activer">✅</button>`
+                        ? `<button class="btn-sm btn-deactivate" onclick="toggleUser('${u.id}', false)">❌</button>`
+                        : `<button class="btn-sm btn-activate" onclick="toggleUser('${u.id}', true)">✅</button>`
                     }
                     ${!u.isPaid
-                        ? `<button class="btn-sm btn-make-pro" onclick="makeUserPro('${u.id}')" title="Activer Pro">⭐</button>`
-                        : `<button class="btn-sm btn-remove-pro" onclick="removeUserPro('${u.id}')" title="Retirer Pro">🔄</button>`
+                        ? `<button class="btn-sm btn-make-pro" onclick="makeUserPro('${u.id}')">⭐</button>`
+                        : `<button class="btn-sm btn-remove-pro" onclick="removeUserPro('${u.id}')">🔄</button>`
                     }
-                    <button class="btn-sm btn-view-admin" onclick="viewUser('${u.id}')" title="Voir détails">👁️</button>
+                    <button class="btn-sm btn-view-admin" onclick="viewUser('${u.id}')">👁️</button>
                 </div>
             </td>
         `;
@@ -558,42 +489,40 @@ window.filterUsers = function() {
 window.toggleUser = async function(userId, activate) {
     try {
         await updateDoc(doc(db, "users", userId), { isActive: activate });
+        // Vider cache de cet utilisateur
+        Cache.remove('userData_' + userId);
         showToast(activate ? "✅ Utilisateur activé" : "❌ Utilisateur désactivé", "success");
         await chargerUsers();
         updateStats();
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 };
 
 window.makeUserPro = async function(userId) {
     if (!confirm("Activer le plan Pro pour cet utilisateur ?")) return;
     try {
         await updateDoc(doc(db, "users", userId), { isPaid: true, plan: "pro", maxFactures: 999999 });
+        Cache.remove('userData_' + userId);
         showToast("✅ Plan Pro activé !", "success");
         await chargerUsers();
         updateStats();
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 };
 
 window.removeUserPro = async function(userId) {
     if (!confirm("Retirer le plan Pro de cet utilisateur ?")) return;
     try {
         await updateDoc(doc(db, "users", userId), { isPaid: false, plan: "gratuit", maxFactures: settings.maxFactures || 10 });
+        Cache.remove('userData_' + userId);
         showToast("✅ Plan Pro retiré", "success");
         await chargerUsers();
         updateStats();
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 };
 
 window.viewUser = function(userId) {
     const u = allUsers.find(x => x.id === userId);
     if (!u) return;
-    const content = `
+    document.getElementById('userModalContent').innerHTML = `
         <h2 style="color:#e94560; margin-bottom:20px;">👤 ${u.fullName || 'N/A'}</h2>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
             <div>
@@ -619,7 +548,6 @@ window.viewUser = function(userId) {
             <p><strong>Adresse :</strong> ${u.company?.address || 'N/A'}, ${u.company?.city || ''}, ${u.company?.country || ''}</p>
         </div>
     `;
-    document.getElementById('userModalContent').innerHTML = content;
     document.getElementById('userModal').classList.add('show');
 };
 
@@ -632,11 +560,6 @@ document.getElementById('closeUserModal').addEventListener('click', () => {
 // ============================
 async function chargerPayments() {
     try {
-        const q = query(collection(db, "payments"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        allPayments = [];
-        snapshot.forEach(d => { allPayments.push({ id: d.id, ...d.data() }); });
-    } catch (e) {
         const snapshot = await getDocs(collection(db, "payments"));
         allPayments = [];
         snapshot.forEach(d => { allPayments.push({ id: d.id, ...d.data() }); });
@@ -645,7 +568,7 @@ async function chargerPayments() {
             const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
             return dB - dA;
         });
-    }
+    } catch (e) { console.error("Erreur payments:", e); }
 
     filteredPaymentsData = [...allPayments];
     afficherPayments();
@@ -659,10 +582,7 @@ function afficherPayments() {
     tbody.innerHTML = '';
     document.getElementById('paymentsCount').textContent = filteredPaymentsData.length + ' paiement(s)';
 
-    if (filteredPaymentsData.length === 0) {
-        document.getElementById('paymentsEmpty').style.display = 'block';
-        return;
-    }
+    if (filteredPaymentsData.length === 0) { document.getElementById('paymentsEmpty').style.display = 'block'; return; }
     document.getElementById('paymentsEmpty').style.display = 'none';
 
     const priceSymbol = settings.priceProSymbol || settings.devise || '$';
@@ -718,13 +638,13 @@ window.approvePayment = async function(paymentId, userId) {
     try {
         await updateDoc(doc(db, "payments", paymentId), { status: 'approved' });
         await updateDoc(doc(db, "users", userId), { isPaid: true, plan: "pro", maxFactures: 999999 });
+        // Vider cache de cet utilisateur
+        Cache.remove('userData_' + userId);
         showToast("✅ Paiement approuvé ! Plan Pro activé.", "success");
         await chargerPayments();
         await chargerUsers();
         updateStats();
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 };
 
 window.rejectPayment = async function(paymentId) {
@@ -733,9 +653,7 @@ window.rejectPayment = async function(paymentId) {
         await updateDoc(doc(db, "payments", paymentId), { status: 'rejected' });
         showToast("✅ Paiement rejeté", "success");
         await chargerPayments();
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 };
 
 // ============================
@@ -743,11 +661,6 @@ window.rejectPayment = async function(paymentId) {
 // ============================
 async function chargerAllFactures() {
     try {
-        const q = query(collection(db, "factures"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        allFactures = [];
-        snapshot.forEach(d => { allFactures.push({ id: d.id, ...d.data() }); });
-    } catch (e) {
         const snapshot = await getDocs(collection(db, "factures"));
         allFactures = [];
         snapshot.forEach(d => { allFactures.push({ id: d.id, ...d.data() }); });
@@ -756,7 +669,7 @@ async function chargerAllFactures() {
             const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
             return dB - dA;
         });
-    }
+    } catch (e) { console.error("Erreur factures:", e); }
 
     filteredFacturesData = [...allFactures];
     afficherAllFactures();
@@ -769,10 +682,7 @@ function afficherAllFactures() {
     tbody.innerHTML = '';
     document.getElementById('facturesCount').textContent = filteredFacturesData.length + ' facture(s)';
 
-    if (filteredFacturesData.length === 0) {
-        document.getElementById('facturesEmpty').style.display = 'block';
-        return;
-    }
+    if (filteredFacturesData.length === 0) { document.getElementById('facturesEmpty').style.display = 'block'; return; }
     document.getElementById('facturesEmpty').style.display = 'none';
 
     const modeles = { classique: '📄 Classique', moderne: '🎨 Moderne', minimal: '✨ Minimal', professionnel: '💼 Pro' };
@@ -836,50 +746,28 @@ function updateStats() {
 function afficherActivitesRecentes() {
     const container = document.getElementById('recentActivities');
     container.innerHTML = '';
-    const activites = [];
     const priceSymbol = settings.priceProSymbol || settings.devise || '$';
+    const activites = [];
 
     allUsers.slice(0, 3).forEach(u => {
-        activites.push({
-            icon: '👤', bg: 'rgba(52,152,219,0.1)',
-            title: `Nouvel utilisateur : ${u.fullName}`,
-            desc: u.email,
-            time: u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A'
-        });
+        activites.push({ icon: '👤', bg: 'rgba(52,152,219,0.1)', title: `Nouvel utilisateur : ${u.fullName}`, desc: u.email, time: u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A' });
     });
 
     allPayments.slice(0, 3).forEach(p => {
-        activites.push({
-            icon: '💳', bg: 'rgba(39,174,96,0.1)',
-            title: `Paiement ${p.status} : ${p.userName}`,
-            desc: `${p.amount}${priceSymbol} — Plan ${p.plan}`,
-            time: p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A'
-        });
+        activites.push({ icon: '💳', bg: 'rgba(39,174,96,0.1)', title: `Paiement ${p.status} : ${p.userName}`, desc: `${p.amount}${priceSymbol} — Plan ${p.plan}`, time: p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A' });
     });
 
     allFactures.slice(0, 3).forEach(f => {
         const creator = allUsers.find(u => u.id === f.userId);
-        activites.push({
-            icon: '📄', bg: 'rgba(108,99,255,0.1)',
-            title: `Facture créée : ${f.factureNumber}`,
-            desc: `Par ${creator?.fullName || 'N/A'} — Client : ${f.client?.name || 'N/A'}`,
-            time: f.date || 'N/A'
-        });
+        activites.push({ icon: '📄', bg: 'rgba(108,99,255,0.1)', title: `Facture créée : ${f.factureNumber}`, desc: `Par ${creator?.fullName || 'N/A'} — Client : ${f.client?.name || 'N/A'}`, time: f.date || 'N/A' });
     });
 
-    if (activites.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p>Aucune activité</p></div>';
-        return;
-    }
+    if (activites.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucune activité</p></div>'; return; }
 
     activites.forEach(a => {
         const item = document.createElement('div');
         item.className = 'activity-item';
-        item.innerHTML = `
-            <div class="activity-icon" style="background:${a.bg};">${a.icon}</div>
-            <div class="activity-info"><h4>${a.title}</h4><p>${a.desc}</p></div>
-            <div class="activity-time">${a.time}</div>
-        `;
+        item.innerHTML = `<div class="activity-icon" style="background:${a.bg};">${a.icon}</div><div class="activity-info"><h4>${a.title}</h4><p>${a.desc}</p></div><div class="activity-time">${a.time}</div>`;
         container.appendChild(item);
     });
 }
@@ -889,35 +777,38 @@ function afficherActivitesRecentes() {
 // ============================
 async function chargerSettings() {
     try {
-        const settingsDoc = await getDoc(doc(db, "settings", "global"));
-        if (settingsDoc.exists()) {
-            settings = settingsDoc.data();
-            devise = settings.devise || '$';
-            document.getElementById('settingsOwnerName').value = settings.ownerName || '';
-            document.getElementById('settingsOwnerEmail').value = settings.ownerEmail || '';
-            document.getElementById('settingsWhatsapp').value = settings.whatsapp || '';
-            document.getElementById('settingsPhone').value = settings.phone || '';
-            document.getElementById('settingsEmail').value = settings.email || '';
-            document.getElementById('settingsWhatsappMsg').value = settings.whatsappMessage || '';
-            document.getElementById('settingsDevise').value = settings.devise || '$';
-            document.getElementById('settingsDeviseCustom').value = settings.deviseCustom || '';
-            document.getElementById('settingsPricePro').value = settings.pricePro || 9;
-            document.getElementById('settingsPriceProSymbol').value = settings.priceProSymbol || '$';
-            document.getElementById('settingsMaxFactures').value = settings.maxFactures || 10;
-            document.getElementById('settingsTrialDays').value = settings.trialDays || 30;
-            document.getElementById('settingsFreeDesc').value = settings.freeDesc || '';
-            document.getElementById('settingsProDesc').value = settings.proDesc || '';
-            document.getElementById('settingsMobileMoney').value = settings.mobileMoney || '';
-            document.getElementById('settingsMobileMoneyName').value = settings.mobileMoneyName || '';
-            document.getElementById('settingsIban').value = settings.iban || '';
-            document.getElementById('settingsBankName').value = settings.bankName || '';
-            document.getElementById('settingsTva').value = settings.tva || 18;
-            document.getElementById('settingsMentions').value = settings.mentions || '';
-            document.getElementById('settingsFooter').value = settings.footer || '';
+        // ✅ Vérifier cache settings
+        let cached = Cache.get('settings');
+        if (!cached) {
+            const settingsDoc = await getDoc(doc(db, "settings", "global"));
+            cached = settingsDoc.exists() ? settingsDoc.data() : {};
+            Cache.set('settings', cached);
         }
-    } catch (error) {
-        console.error("Erreur settings:", error);
-    }
+        settings = cached;
+        devise = settings.devise || '$';
+
+        document.getElementById('settingsOwnerName').value = settings.ownerName || '';
+        document.getElementById('settingsOwnerEmail').value = settings.ownerEmail || '';
+        document.getElementById('settingsWhatsapp').value = settings.whatsapp || '';
+        document.getElementById('settingsPhone').value = settings.phone || '';
+        document.getElementById('settingsEmail').value = settings.email || '';
+        document.getElementById('settingsWhatsappMsg').value = settings.whatsappMessage || '';
+        document.getElementById('settingsDevise').value = settings.devise || '$';
+        document.getElementById('settingsDeviseCustom').value = settings.deviseCustom || '';
+        document.getElementById('settingsPricePro').value = settings.pricePro || 9;
+        document.getElementById('settingsPriceProSymbol').value = settings.priceProSymbol || '$';
+        document.getElementById('settingsMaxFactures').value = settings.maxFactures || 10;
+        document.getElementById('settingsTrialDays').value = settings.trialDays || 30;
+        document.getElementById('settingsFreeDesc').value = settings.freeDesc || '';
+        document.getElementById('settingsProDesc').value = settings.proDesc || '';
+        document.getElementById('settingsMobileMoney').value = settings.mobileMoney || '';
+        document.getElementById('settingsMobileMoneyName').value = settings.mobileMoneyName || '';
+        document.getElementById('settingsIban').value = settings.iban || '';
+        document.getElementById('settingsBankName').value = settings.bankName || '';
+        document.getElementById('settingsTva').value = settings.tva || 18;
+        document.getElementById('settingsMentions').value = settings.mentions || '';
+        document.getElementById('settingsFooter').value = settings.footer || '';
+    } catch (error) { console.error("Erreur settings:", error); }
 }
 
 document.getElementById('btnSaveSettings').addEventListener('click', async () => {
@@ -955,13 +846,15 @@ document.getElementById('btnSaveSettings').addEventListener('click', async () =>
         };
 
         await setDoc(doc(db, "settings", "global"), settings);
+
+        // ✅ Vider cache settings
+        Cache.remove('settings');
+
         devise = deviseValue;
         updateStats();
         showToast("✅ Paramètres sauvegardés !", "success");
 
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
+    } catch (error) { showToast("❌ Erreur : " + error.message, "error"); }
 
     btn.disabled = false;
     btn.textContent = '💾 Sauvegarder tous les paramètres';
@@ -995,6 +888,7 @@ function showToast(message, type) {
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
+        Cache.clear();
         await signOut(auth);
         window.location.href = "../login.html";
     }
@@ -1008,6 +902,7 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 });
 </script>
 
+<script src="../js/cache.js"></script>
 <script src="../js/darkmode.js"></script>
 <script>
     function updateDarkBtn() {

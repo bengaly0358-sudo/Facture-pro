@@ -4,452 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Entreprise - Facture Pro</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="../css/darkmode.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background: #f0f2f5;
-        }
-
-        /* ======= SIDEBAR ======= */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            color: white;
-            padding: 25px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            padding: 0 20px 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.4em;
-            color: #6c63ff;
-        }
-
-        .sidebar-header p {
-            color: #888;
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
-
-        .user-info {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            background: #6c63ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            margin: 0 auto 10px;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; min-height: 100vh; background: #f0f2f5; }
+        .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a2e, #16213e); color: white; padding: 25px 0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: all 0.3s; }
+        .sidebar-header { text-align: center; padding: 0 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { font-size: 1.4em; color: #6c63ff; }
+        .sidebar-header p { color: #888; font-size: 0.85em; margin-top: 5px; }
+        .user-info { text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .user-avatar { width: 60px; height: 60px; background: #6c63ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; margin: 0 auto 10px; }
         .user-info h3 { font-size: 1em; margin-bottom: 3px; }
         .user-info p { color: #888; font-size: 0.8em; }
-
-        .user-plan {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 15px;
-            font-size: 0.75em;
-            margin-top: 5px;
-        }
-
-        .plan-gratuit {
-            background: rgba(231,76,60,0.2);
-            color: #e74c3c;
-        }
-
-        .plan-pro {
-            background: rgba(108,99,255,0.2);
-            color: #6c63ff;
-        }
-
+        .user-plan { display: inline-block; padding: 3px 12px; border-radius: 15px; font-size: 0.75em; margin-top: 5px; }
+        .plan-gratuit { background: rgba(231,76,60,0.2); color: #e74c3c; }
+        .plan-pro { background: rgba(108,99,255,0.2); color: #6c63ff; }
         .nav-menu { list-style: none; padding: 15px 0; }
-
-        .nav-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 25px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 0.95em;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            background: rgba(108,99,255,0.1);
-            color: white;
-            border-left-color: #6c63ff;
-        }
-
+        .nav-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: #aaa; text-decoration: none; font-size: 0.95em; transition: all 0.3s; border-left: 3px solid transparent; }
+        .nav-menu a:hover, .nav-menu a.active { background: rgba(108,99,255,0.1); color: white; border-left-color: #6c63ff; }
         .menu-icon { font-size: 1.2em; width: 25px; text-align: center; }
-
-        .nav-separator {
-            height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 10px 20px;
-        }
-
+        .nav-separator { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 20px; }
         .logout-btn { color: #e74c3c !important; }
-
-        .logout-btn:hover {
-            background: rgba(231,76,60,0.1) !important;
-            border-left-color: #e74c3c !important;
-        }
-
-        /* ======= MAIN CONTENT ======= */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 25px;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: #6c63ff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-
-        .top-bar h1 {
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        /* ======= PROFILE CARD ======= */
-        .profile-container {
-            max-width: 800px;
-        }
-
-        .profile-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
-        }
-
-        .profile-card h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-            font-size: 1.15em;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .input-group {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #666;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95em;
-            outline: none;
-            transition: border 0.3s;
-            background: #fafafa;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            border-color: #6c63ff;
-            background: white;
-        }
-
-        .input-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        /* ======= LOGO UPLOAD ======= */
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .logo-preview {
-            width: 120px;
-            height: 120px;
-            border: 2px dashed #ccc;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #fafafa;
-            position: relative;
-        }
-
-        .logo-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .logo-preview .placeholder-text {
-            color: #ccc;
-            font-size: 0.85em;
-            text-align: center;
-        }
-
-        .logo-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .logo-actions label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .btn-upload {
-            padding: 10px 20px;
-            background: #6c63ff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
-        }
-
-        .btn-upload:hover {
-            background: #5a52d5;
-            transform: translateY(-2px);
-        }
-
-        .btn-remove-logo {
-            padding: 10px 20px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
-        }
-
-        .btn-remove-logo:hover {
-            background: #c0392b;
-        }
-
-        #logoInput {
-            display: none;
-        }
-
-        .upload-info {
-            color: #888;
-            font-size: 0.8em;
-            margin-top: 5px;
-        }
-
-        .upload-progress {
-            width: 100%;
-            height: 6px;
-            background: #eee;
-            border-radius: 3px;
-            overflow: hidden;
-            display: none;
-            margin-top: 10px;
-        }
-
-        .upload-progress-bar {
-            height: 100%;
-            background: #6c63ff;
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 3px;
-        }
-
-        /* ======= EN-TÊTE / PIED DE PAGE ======= */
-        .header-footer-preview {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 15px;
-        }
-
-        .preview-label {
-            color: #888;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-
-        .preview-header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .preview-logo {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-        }
-
-        .preview-header-right {
-            text-align: right;
-            font-size: 0.85em;
-            color: #666;
-        }
-
-        .preview-footer {
-            text-align: center;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #eee;
-            margin-top: 10px;
-            font-size: 0.85em;
-            color: #888;
-        }
-
-        /* ======= BOUTONS ======= */
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-save-profile {
-            padding: 12px 30px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-save-profile:hover {
-            background: #1e8449;
-            transform: translateY(-2px);
-        }
-
-        .btn-save-profile:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-reset {
-            padding: 12px 30px;
-            background: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: all 0.2s;
-        }
-
-        .btn-reset:hover {
-            background: #7f8c8d;
-        }
-
-        /* ======= TOAST ======= */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            z-index: 99999;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
+        .logout-btn:hover { background: rgba(231,76,60,0.1) !important; border-left-color: #e74c3c !important; }
+        .main-content { margin-left: 260px; flex: 1; padding: 25px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .top-bar-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { display: none; background: #6c63ff; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1.2em; }
+        .top-bar h1 { font-size: 1.5em; color: #333; }
+        .profile-container { max-width: 800px; }
+        .profile-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
+        .profile-card h2 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; font-size: 1.15em; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .input-group { flex: 1; min-width: 250px; }
+        .input-group label { display: block; margin-bottom: 6px; color: #666; font-size: 0.85em; font-weight: 600; }
+        .input-group input, .input-group textarea { width: 100%; padding: 11px 14px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.95em; outline: none; transition: border 0.3s; background: #fafafa; font-family: 'Segoe UI', sans-serif; }
+        .input-group input:focus, .input-group textarea:focus { border-color: #6c63ff; background: white; }
+        .input-group textarea { min-height: 80px; resize: vertical; }
+        .logo-section { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; }
+        .logo-preview { width: 120px; height: 120px; border: 2px dashed #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fafafa; }
+        .logo-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .logo-preview .placeholder-text { color: #ccc; font-size: 0.85em; text-align: center; }
+        .logo-actions { display: flex; flex-direction: column; gap: 10px; }
+        .logo-actions label { display: block; margin-bottom: 5px; color: #666; font-size: 0.85em; font-weight: 600; }
+        .btn-upload { padding: 10px 20px; background: #6c63ff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s; }
+        .btn-upload:hover { background: #5a52d5; transform: translateY(-2px); }
+        .btn-remove-logo { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s; }
+        .btn-remove-logo:hover { background: #c0392b; }
+        #logoInput { display: none; }
+        .upload-info { color: #888; font-size: 0.8em; margin-top: 5px; }
+        .upload-progress { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; display: none; margin-top: 10px; }
+        .upload-progress-bar { height: 100%; background: #6c63ff; width: 0%; transition: width 0.3s; border-radius: 3px; }
+        .header-footer-preview { background: #f8f9fa; border-radius: 10px; padding: 20px; margin-top: 15px; }
+        .preview-label { color: #888; font-size: 0.85em; font-weight: 600; margin-bottom: 10px; display: block; }
+        .preview-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 8px; border: 1px solid #eee; }
+        .preview-header-left { display: flex; align-items: center; gap: 15px; }
+        .preview-logo { width: 50px; height: 50px; object-fit: contain; }
+        .preview-header-right { text-align: right; font-size: 0.85em; color: #666; }
+        .preview-footer { text-align: center; padding: 10px; background: white; border-radius: 8px; border: 1px solid #eee; margin-top: 10px; font-size: 0.85em; color: #888; }
+        .form-actions { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-save-profile { padding: 12px 30px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.2s; }
+        .btn-save-profile:hover { background: #1e8449; transform: translateY(-2px); }
+        .btn-save-profile:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-reset { padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; transition: all 0.2s; }
+        .btn-reset:hover { background: #7f8c8d; }
+        .toast { position: fixed; bottom: 30px; right: 30px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 600; z-index: 99999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-success { background: #27ae60; }
         .toast-error { background: #e74c3c; }
-
-        /* ======= RESPONSIVE ======= */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -463,260 +92,190 @@
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>🧾 Facture Pro</h2>
-            <p>Générateur de factures</p>
-        </div>
-
-        <div class="user-info">
-            <div class="user-avatar" id="userAvatar">👤</div>
-            <h3 id="userName">Chargement...</h3>
-            <p id="userEmail">...</p>
-            <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
-        </div>
-
-        <ul class="nav-menu">
-            <li><a href="dashboard.html">
-                <span class="menu-icon">📊</span> Tableau de bord
-            </a></li>
-            <li><a href="new-facture.html">
-                <span class="menu-icon">➕</span> Nouvelle facture
-            </a></li>
-            <li><a href="history.html">
-                <span class="menu-icon">📋</span> Mes factures
-            </a></li>
-            <li><a href="profile.html" class="active">
-                <span class="menu-icon">🏢</span> Mon entreprise
-            </a></li>
-            <div class="nav-separator"></div>
-            <li><a href="payment.html">
-                <span class="menu-icon">💳</span> Abonnement
-            </a></li>
-            <li><a href="#" id="contactWhatsapp">
-                <span class="menu-icon">📞</span> Nous contacter
-            </a></li>
-            <div class="nav-separator"></div>
-            <li><a href="#" class="logout-btn" id="logoutBtn">
-                <span class="menu-icon">🚪</span> Déconnexion
-            </a></li>
-        </ul>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>🧾 Facture Pro</h2>
+        <p>Générateur de factures</p>
     </div>
-
-    <!-- MAIN -->
-    <div class="main-content">
-
-        <div class="top-bar">
-            <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
-                <h1>🏢 Mon Entreprise</h1>
-            </div>
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <h3 id="userName">Chargement...</h3>
+        <p id="userEmail">...</p>
+        <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
+    </div>
+    <ul class="nav-menu">
+        <li><a href="dashboard.html"><span class="menu-icon">📊</span> Tableau de bord</a></li>
+        <li><a href="new-facture.html"><span class="menu-icon">➕</span> Nouvelle facture</a></li>
+        <li><a href="history.html"><span class="menu-icon">📋</span> Mes factures</a></li>
+        <li><a href="profile.html" class="active"><span class="menu-icon">🏢</span> Mon entreprise</a></li>
+        <div class="nav-separator"></div>
+        <li><a href="payment.html"><span class="menu-icon">💳</span> Abonnement</a></li>
+        <li><a href="#" id="contactWhatsapp"><span class="menu-icon">📞</span> Nous contacter</a></li>
+        <div class="nav-separator"></div>
+        <div style="padding: 5px 15px; margin-bottom: 5px;">
+            <button onclick="DarkMode.toggle(); updateDarkBtn()" id="darkModeBtn" style="width:100%; padding:10px 15px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:10px; cursor:pointer; font-size:0.9em; display:flex; align-items:center; gap:10px;">
+                <span id="darkModeIcon">🌙</span>
+                <span id="darkModeText">Mode sombre</span>
+            </button>
         </div>
+        <div class="nav-separator"></div>
+        <li><a href="#" class="logout-btn" id="logoutBtn"><span class="menu-icon">🚪</span> Déconnexion</a></li>
+    </ul>
+</div>
 
-        <div class="profile-container">
-
-            <!-- LOGO -->
-            <div class="profile-card">
-                <h2>🖼️ Logo de l'entreprise</h2>
-
-                <div class="logo-section">
-                    <div class="logo-preview" id="logoPreview">
-                        <div class="placeholder-text" id="logoPlaceholder">
-                            📷<br>Aucun logo
-                        </div>
-                        <img id="logoImage" src="" 
-                             style="display:none;">
-                    </div>
-
-                    <div class="logo-actions">
-                        <label>Choisir un logo</label>
-                        <input type="file" id="logoInput" 
-                               accept="image/*">
-                        <button class="btn-upload" id="btnUploadLogo">
-                            📤 Uploader un logo
-                        </button>
-                        <button class="btn-remove-logo" id="btnRemoveLogo"
-                                style="display:none;">
-                            🗑️ Supprimer le logo
-                        </button>
-                        <p class="upload-info">
-                            PNG, JPG ou SVG. Max 2MB.
-                        </p>
-                        <div class="upload-progress" id="uploadProgress">
-                            <div class="upload-progress-bar" 
-                                 id="uploadProgressBar"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INFOS ENTREPRISE -->
-            <div class="profile-card">
-                <h2>📋 Informations de l'entreprise</h2>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Nom de l'entreprise</label>
-                        <input type="text" id="companyName" 
-                               placeholder="Nom de votre entreprise">
-                    </div>
-                    <div class="input-group">
-                        <label>Numéro fiscal / SIRET</label>
-                        <input type="text" id="companyTaxId" 
-                               placeholder="Numéro d'identification">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Email professionnel</label>
-                        <input type="email" id="companyEmail" 
-                               placeholder="contact@entreprise.com">
-                    </div>
-                    <div class="input-group">
-                        <label>Téléphone</label>
-                        <input type="text" id="companyPhone" 
-                               placeholder="+000 00 00 00 00">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Site web</label>
-                        <input type="url" id="companyWebsite" 
-                               placeholder="https://www.entreprise.com">
-                    </div>
-                </div>
-            </div>
-
-            <!-- ADRESSE -->
-            <div class="profile-card">
-                <h2>📍 Adresse</h2>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Adresse complète</label>
-                        <input type="text" id="companyAddress" 
-                               placeholder="Rue, numéro, quartier">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Ville</label>
-                        <input type="text" id="companyCity" 
-                               placeholder="Votre ville">
-                    </div>
-                    <div class="input-group">
-                        <label>Pays</label>
-                        <input type="text" id="companyCountry" 
-                               placeholder="Votre pays">
-                    </div>
-                </div>
-            </div>
-
-            <!-- DESCRIPTION -->
-            <div class="profile-card">
-                <h2>📝 Description / Slogan</h2>
-
-                <div class="input-group">
-                    <label>Description de l'entreprise</label>
-                    <textarea id="companyDescription" 
-                              placeholder="Décrivez votre entreprise, vos services, votre slogan..."></textarea>
-                </div>
-            </div>
-
-            <!-- APERÇU EN-TÊTE / PIED DE PAGE -->
-            <div class="profile-card">
-                <h2>👁️ Aperçu sur la facture</h2>
-
-                <div class="header-footer-preview">
-                    <span class="preview-label">En-tête de facture :</span>
-                    <div class="preview-header">
-                        <div class="preview-header-left">
-                            <img id="previewLogo" class="preview-logo" 
-                                 src="" style="display:none;">
-                            <div>
-                                <strong id="previewName">
-                                    Nom de l'entreprise
-                                </strong>
-                                <br>
-                                <span id="previewDesc" 
-                                      style="color:#888; font-size:0.85em;">
-                                    Description
-                                </span>
-                            </div>
-                        </div>
-                        <div class="preview-header-right">
-                            <span id="previewAddress">Adresse</span><br>
-                            <span id="previewPhone">Téléphone</span><br>
-                            <span id="previewEmail">Email</span>
-                        </div>
-                    </div>
-
-                    <div class="preview-footer">
-                        <span id="previewFooter">
-                            Nom entreprise — Adresse — Téléphone — Email
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOUTONS -->
-            <div class="form-actions">
-                <button id="btnSaveProfile" class="btn-save-profile">
-                    💾 Sauvegarder les modifications
-                </button>
-                <button id="btnReset" class="btn-reset">
-                    🔄 Réinitialiser
-                </button>
-            </div>
-
+<div class="main-content">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h1>🏢 Mon Entreprise</h1>
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast"></div>
+    <div class="profile-container">
+
+        <!-- LOGO -->
+        <div class="profile-card">
+            <h2>🖼️ Logo de l'entreprise</h2>
+            <div class="logo-section">
+                <div class="logo-preview" id="logoPreview">
+                    <div class="placeholder-text" id="logoPlaceholder">📷<br>Aucun logo</div>
+                    <img id="logoImage" src="" style="display:none;">
+                </div>
+                <div class="logo-actions">
+                    <label>Choisir un logo</label>
+                    <input type="file" id="logoInput" accept="image/*">
+                    <button class="btn-upload" id="btnUploadLogo">📤 Uploader un logo</button>
+                    <button class="btn-remove-logo" id="btnRemoveLogo" style="display:none;">🗑️ Supprimer le logo</button>
+                    <p class="upload-info">PNG, JPG ou SVG. Max 2MB.</p>
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="upload-progress-bar" id="uploadProgressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFOS -->
+        <div class="profile-card">
+            <h2>📋 Informations de l'entreprise</h2>
+            <div class="form-row">
+                <div class="input-group"><label>Nom de l'entreprise</label><input type="text" id="companyName" placeholder="Nom de votre entreprise"></div>
+                <div class="input-group"><label>Numéro fiscal / SIRET</label><input type="text" id="companyTaxId" placeholder="Numéro d'identification"></div>
+            </div>
+            <div class="form-row">
+                <div class="input-group"><label>Email professionnel</label><input type="email" id="companyEmail" placeholder="contact@entreprise.com"></div>
+                <div class="input-group"><label>Téléphone</label><input type="text" id="companyPhone" placeholder="+000 00 00 00 00"></div>
+            </div>
+            <div class="form-row">
+                <div class="input-group"><label>Site web</label><input type="url" id="companyWebsite" placeholder="https://www.entreprise.com"></div>
+            </div>
+        </div>
+
+        <!-- ADRESSE -->
+        <div class="profile-card">
+            <h2>📍 Adresse</h2>
+            <div class="form-row">
+                <div class="input-group"><label>Adresse complète</label><input type="text" id="companyAddress" placeholder="Rue, numéro, quartier"></div>
+            </div>
+            <div class="form-row">
+                <div class="input-group"><label>Ville</label><input type="text" id="companyCity" placeholder="Votre ville"></div>
+                <div class="input-group"><label>Pays</label><input type="text" id="companyCountry" placeholder="Votre pays"></div>
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="profile-card">
+            <h2>📝 Description / Slogan</h2>
+            <div class="input-group">
+                <label>Description de l'entreprise</label>
+                <textarea id="companyDescription" placeholder="Décrivez votre entreprise, vos services, votre slogan..."></textarea>
+            </div>
+        </div>
+
+        <!-- APERÇU -->
+        <div class="profile-card">
+            <h2>👁️ Aperçu sur la facture</h2>
+            <div class="header-footer-preview">
+                <span class="preview-label">En-tête de facture :</span>
+                <div class="preview-header">
+                    <div class="preview-header-left">
+                        <img id="previewLogo" class="preview-logo" src="" style="display:none;">
+                        <div>
+                            <strong id="previewName">Nom de l'entreprise</strong><br>
+                            <span id="previewDesc" style="color:#888; font-size:0.85em;">Description</span>
+                        </div>
+                    </div>
+                    <div class="preview-header-right">
+                        <span id="previewAddress">Adresse</span><br>
+                        <span id="previewPhone">Téléphone</span><br>
+                        <span id="previewEmail">Email</span>
+                    </div>
+                </div>
+                <div class="preview-footer">
+                    <span id="previewFooter">Nom entreprise — Adresse — Téléphone — Email</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button id="btnSaveProfile" class="btn-save-profile">💾 Sauvegarder les modifications</button>
+            <button id="btnReset" class="btn-reset">🔄 Réinitialiser</button>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script type="module">
-import { auth, db, IMGBB_API_KEY } from '../js/firebase-config.js';
-import {
-    onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-    doc, getDoc, updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
+    authDomain: "facture-pro-2a843.firebaseapp.com",
+    projectId: "facture-pro-2a843",
+    storageBucket: "facture-pro-2a843.firebasestorage.app",
+    messagingSenderId: "30400911697",
+    appId: "1:30400911697:web:a5ddafe5dcc58c0a38db70"
+};
+
+const IMGBB_API_KEY = "534370f257aabfabfcaee69028df857f";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 let currentUser = null;
 let userData = null;
 let logoURL = '';
 
-// ============================
-// 🔒 VÉRIFIER CONNEXION
-// ============================
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "../login.html";
-        return;
-    }
-
+    if (!user) { window.location.href = "../login.html"; return; }
     currentUser = user;
 
     try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (!userDoc.exists()) {
-            window.location.href = "../login.html";
-            return;
+        // ✅ Cache userData
+        let cached = Cache.get('userData_' + user.uid);
+        if (!cached) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (!userDoc.exists()) { window.location.href = "../login.html"; return; }
+            cached = userDoc.data();
+            Cache.set('userData_' + user.uid, cached);
+        }
+        userData = cached;
+
+        // ✅ Cache settings pour WhatsApp
+        let settings = Cache.get('settings');
+        if (!settings) {
+            const settingsDoc = await getDoc(doc(db, "settings", "global"));
+            settings = settingsDoc.exists() ? settingsDoc.data() : {};
+            Cache.set('settings', settings);
         }
 
-        userData = userDoc.data();
-
-        // Sidebar
         document.getElementById('userName').textContent = userData.fullName;
         document.getElementById('userEmail').textContent = userData.email;
-        document.getElementById('userAvatar').textContent =
-            userData.fullName.charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = userData.fullName.charAt(0).toUpperCase();
 
         const planEl = document.getElementById('userPlan');
         if (userData.isPaid) {
@@ -724,9 +283,7 @@ onAuthStateChanged(auth, async (user) => {
             planEl.className = "user-plan plan-pro";
         }
 
-        // Remplir les champs
         const c = userData.company || {};
-
         document.getElementById('companyName').value = c.name || '';
         document.getElementById('companyTaxId').value = c.taxId || '';
         document.getElementById('companyEmail').value = c.email || '';
@@ -735,23 +292,27 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('companyAddress').value = c.address || '';
         document.getElementById('companyCity').value = c.city || '';
         document.getElementById('companyCountry').value = c.country || '';
-        document.getElementById('companyDescription').value = 
-            c.description || '';
+        document.getElementById('companyDescription').value = c.description || '';
 
-        // Logo
         if (c.logo) {
             logoURL = c.logo;
             document.getElementById('logoImage').src = c.logo;
             document.getElementById('logoImage').style.display = 'block';
             document.getElementById('logoPlaceholder').style.display = 'none';
             document.getElementById('btnRemoveLogo').style.display = 'block';
-
             document.getElementById('previewLogo').src = c.logo;
             document.getElementById('previewLogo').style.display = 'block';
         }
 
-        // Mettre à jour aperçu
         updatePreview();
+
+        // WhatsApp
+        const whatsappNum = settings.whatsapp || "000000000";
+        const whatsappMsg = settings.whatsappMessage || "Bonjour, j'utilise Facture Pro.";
+        document.getElementById('contactWhatsapp').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(whatsappMsg)}`, '_blank');
+        });
 
     } catch (error) {
         console.error("Erreur:", error);
@@ -759,80 +320,53 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ============================
-// 🖼️ UPLOAD LOGO (ImgBB)
+// 🖼️ UPLOAD LOGO
 // ============================
-const logoInput = document.getElementById('logoInput');
-const btnUploadLogo = document.getElementById('btnUploadLogo');
-
-btnUploadLogo.addEventListener('click', () => {
-    logoInput.click();
+document.getElementById('btnUploadLogo').addEventListener('click', () => {
+    document.getElementById('logoInput').click();
 });
 
-logoInput.addEventListener('change', async (e) => {
+document.getElementById('logoInput').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validation
-    if (file.size > 2 * 1024 * 1024) {
-        showToast("❌ Le fichier doit faire moins de 2MB", "error");
-        return;
-    }
+    if (file.size > 2 * 1024 * 1024) { showToast("❌ Le fichier doit faire moins de 2MB", "error"); return; }
+    if (!file.type.startsWith('image/')) { showToast("❌ Veuillez sélectionner une image", "error"); return; }
 
-    if (!file.type.startsWith('image/')) {
-        showToast("❌ Veuillez sélectionner une image", "error");
-        return;
-    }
-
-    // Afficher progression
     const progress = document.getElementById('uploadProgress');
     const progressBar = document.getElementById('uploadProgressBar');
     progress.style.display = 'block';
     progressBar.style.width = '30%';
 
     try {
-        // Convertir en base64
         const base64 = await fileToBase64(file);
         progressBar.style.width = '60%';
 
-        // Upload vers ImgBB
         const formData = new FormData();
         formData.append('image', base64.split(',')[1]);
 
-        const response = await fetch(
-            `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
-            {
-                method: 'POST',
-                body: formData
-            }
-        );
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: 'POST',
+            body: formData
+        });
 
         const data = await response.json();
         progressBar.style.width = '90%';
 
         if (data.success) {
             logoURL = data.data.url;
-
-            // Afficher le logo
             document.getElementById('logoImage').src = logoURL;
             document.getElementById('logoImage').style.display = 'block';
             document.getElementById('logoPlaceholder').style.display = 'none';
             document.getElementById('btnRemoveLogo').style.display = 'block';
-
-            // Aperçu
             document.getElementById('previewLogo').src = logoURL;
             document.getElementById('previewLogo').style.display = 'block';
-
             progressBar.style.width = '100%';
-            setTimeout(() => {
-                progress.style.display = 'none';
-                progressBar.style.width = '0%';
-            }, 1000);
-
+            setTimeout(() => { progress.style.display = 'none'; progressBar.style.width = '0%'; }, 1000);
             showToast("✅ Logo uploadé !", "success");
         } else {
             throw new Error("Échec de l'upload");
         }
-
     } catch (error) {
         progress.style.display = 'none';
         progressBar.style.width = '0%';
@@ -849,7 +383,6 @@ function fileToBase64(file) {
     });
 }
 
-// Supprimer logo
 document.getElementById('btnRemoveLogo').addEventListener('click', () => {
     logoURL = '';
     document.getElementById('logoImage').src = '';
@@ -861,73 +394,57 @@ document.getElementById('btnRemoveLogo').addEventListener('click', () => {
 });
 
 // ============================
-// 👁️ APERÇU EN TEMPS RÉEL
+// 👁️ APERÇU
 // ============================
-const previewFields = [
-    'companyName', 'companyAddress', 'companyCity',
-    'companyCountry', 'companyPhone', 'companyEmail',
-    'companyDescription'
-];
-
+const previewFields = ['companyName', 'companyAddress', 'companyCity', 'companyCountry', 'companyPhone', 'companyEmail', 'companyDescription'];
 previewFields.forEach(id => {
     document.getElementById(id).addEventListener('input', updatePreview);
 });
 
 function updatePreview() {
-    const name = document.getElementById('companyName').value || 
-        'Nom de l\'entreprise';
-    const address = document.getElementById('companyAddress').value || 
-        'Adresse';
+    const name = document.getElementById('companyName').value || 'Nom de l\'entreprise';
+    const address = document.getElementById('companyAddress').value || 'Adresse';
     const city = document.getElementById('companyCity').value || '';
     const country = document.getElementById('companyCountry').value || '';
-    const phone = document.getElementById('companyPhone').value || 
-        'Téléphone';
+    const phone = document.getElementById('companyPhone').value || 'Téléphone';
     const email = document.getElementById('companyEmail').value || 'Email';
-    const desc = document.getElementById('companyDescription').value || 
-        'Description';
-
-    const fullAddress = [address, city, country]
-        .filter(Boolean).join(', ');
-
+    const desc = document.getElementById('companyDescription').value || 'Description';
+    const fullAddress = [address, city, country].filter(Boolean).join(', ');
     document.getElementById('previewName').textContent = name;
     document.getElementById('previewDesc').textContent = desc;
     document.getElementById('previewAddress').textContent = fullAddress;
     document.getElementById('previewPhone').textContent = '📞 ' + phone;
     document.getElementById('previewEmail').textContent = '📧 ' + email;
-    document.getElementById('previewFooter').textContent =
-        `${name} — ${fullAddress} — ${phone} — ${email}`;
+    document.getElementById('previewFooter').textContent = `${name} — ${fullAddress} — ${phone} — ${email}`;
 }
 
 // ============================
 // 💾 SAUVEGARDER
 // ============================
-document.getElementById('btnSaveProfile').addEventListener('click', 
-    async () => {
+document.getElementById('btnSaveProfile').addEventListener('click', async () => {
     if (!currentUser) return;
-
     const btn = document.getElementById('btnSaveProfile');
     btn.disabled = true;
     btn.textContent = '⏳ Sauvegarde en cours...';
 
     try {
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            company: {
-                name: document.getElementById('companyName').value.trim(),
-                taxId: document.getElementById('companyTaxId').value.trim(),
-                email: document.getElementById('companyEmail').value.trim(),
-                phone: document.getElementById('companyPhone').value.trim(),
-                website: document.getElementById('companyWebsite')
-                    .value.trim(),
-                address: document.getElementById('companyAddress')
-                    .value.trim(),
-                city: document.getElementById('companyCity').value.trim(),
-                country: document.getElementById('companyCountry')
-                    .value.trim(),
-                description: document.getElementById('companyDescription')
-                    .value.trim(),
-                logo: logoURL
-            }
-        });
+        const companyData = {
+            name: document.getElementById('companyName').value.trim(),
+            taxId: document.getElementById('companyTaxId').value.trim(),
+            email: document.getElementById('companyEmail').value.trim(),
+            phone: document.getElementById('companyPhone').value.trim(),
+            website: document.getElementById('companyWebsite').value.trim(),
+            address: document.getElementById('companyAddress').value.trim(),
+            city: document.getElementById('companyCity').value.trim(),
+            country: document.getElementById('companyCountry').value.trim(),
+            description: document.getElementById('companyDescription').value.trim(),
+            logo: logoURL
+        };
+
+        await updateDoc(doc(db, "users", currentUser.uid), { company: companyData });
+
+        // ✅ Vider le cache userData
+        Cache.remove('userData_' + currentUser.uid);
 
         showToast("✅ Profil sauvegardé !", "success");
 
@@ -953,8 +470,7 @@ document.getElementById('btnReset').addEventListener('click', () => {
         document.getElementById('companyAddress').value = c.address || '';
         document.getElementById('companyCity').value = c.city || '';
         document.getElementById('companyCountry').value = c.country || '';
-        document.getElementById('companyDescription').value = 
-            c.description || '';
+        document.getElementById('companyDescription').value = c.description || '';
         updatePreview();
         showToast("✅ Champs réinitialisés", "success");
     }
@@ -976,6 +492,7 @@ function showToast(message, type) {
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
+        Cache.clear();
         await signOut(auth);
         window.location.href = "../login.html";
     }
@@ -987,19 +504,19 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
 document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
 });
+</script>
 
-// ============================
-// 📞 WHATSAPP
-// ============================
-document.getElementById('contactWhatsapp').addEventListener('click', (e) => {
-    e.preventDefault();
-    const phone = "000000000";
-    const msg = "Bonjour, j'utilise Facture Pro.";
-    window.open(
-        `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
-        '_blank'
-    );
-});
+<script src="../js/cache.js"></script>
+<script src="../js/darkmode.js"></script>
+<script>
+    function updateDarkBtn() {
+        const isDark = DarkMode.isDark();
+        const icon = document.getElementById('darkModeIcon');
+        const text = document.getElementById('darkModeText');
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+        if (text) text.textContent = isDark ? 'Mode clair' : 'Mode sombre';
+    }
+    window.addEventListener('load', updateDarkBtn);
 </script>
 
 </body>

@@ -8,8 +8,7 @@
         (function() {
             const saved = localStorage.getItem('darkMode');
             if (saved === 'true') {
-                document.documentElement
-                    .setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
@@ -81,6 +80,8 @@
         .empty-state { text-align: center; padding: 50px 20px; color: #aaa; }
         .empty-icon { font-size: 3em; margin-bottom: 15px; }
         .empty-state p { margin-bottom: 20px; }
+        .loading-spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top-color: #6c63ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -199,7 +200,8 @@
             <a href="history.html">Voir tout →</a>
         </div>
         <div id="facturesContainer">
-            <div class="empty-state" id="emptyState">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <div class="empty-state" id="emptyState" style="display:none;">
                 <div class="empty-icon">📭</div>
                 <p>Aucune facture pour le moment</p>
                 <a href="new-facture.html" class="btn-new-facture">➕ Créer ma première facture</a>
@@ -242,14 +244,24 @@ onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "../login.html"; return; }
 
     try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (!userDoc.exists()) { window.location.href = "../login.html"; return; }
-        const userData = userDoc.data();
+        // ✅ Vérifier cache d'abord
+        let userData = Cache.get('userData_' + user.uid);
+        if (!userData) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (!userDoc.exists()) { window.location.href = "../login.html"; return; }
+            userData = userDoc.data();
+            Cache.set('userData_' + user.uid, userData);
+        }
 
         if (userData.role === "admin") { window.location.href = "../admin/dashboard.html"; return; }
 
-        const settingsDoc = await getDoc(doc(db, "settings", "global"));
-        const settings = settingsDoc.exists() ? settingsDoc.data() : {};
+        // ✅ Vérifier cache settings
+        let settings = Cache.get('settings');
+        if (!settings) {
+            const settingsDoc = await getDoc(doc(db, "settings", "global"));
+            settings = settingsDoc.exists() ? settingsDoc.data() : {};
+            Cache.set('settings', settings);
+        }
 
         const pricePro = settings.pricePro || 9;
         const priceSymbol = settings.priceProSymbol || '$';
@@ -308,7 +320,9 @@ onAuthStateChanged(auth, async (user) => {
 
         await chargerFacturesRecentes(user.uid, devise);
 
-    } catch (error) { console.error("Erreur:", error); }
+    } catch (error) {
+        console.error("Erreur:", error);
+    }
 });
 
 async function chargerFacturesRecentes(userId, devise) {
@@ -325,15 +339,15 @@ async function chargerFacturesRecentes(userId, devise) {
             facturesArray.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        // Trier par date décroissante
         facturesArray.sort((a, b) => {
             const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
             const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
             return dateB - dateA;
         });
 
-        // Limiter à 5
         facturesArray = facturesArray.slice(0, 5);
+
+        document.getElementById('loadingSpinner').style.display = 'none';
 
         if (facturesArray.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
@@ -354,14 +368,10 @@ async function chargerFacturesRecentes(userId, devise) {
 
         facturesArray.forEach(data => {
             totalRevenue += data.totalFinal || 0;
-
             if (data.createdAt) {
                 const factureDate = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
-                if (factureDate.getMonth() === currentMonth && factureDate.getFullYear() === currentYear) {
-                    monthCount++;
-                }
+                if (factureDate.getMonth() === currentMonth && factureDate.getFullYear() === currentYear) monthCount++;
             }
-
             const factureDevise = data.devise || devise;
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -379,12 +389,15 @@ async function chargerFacturesRecentes(userId, devise) {
 
     } catch (error) {
         console.error("Erreur factures:", error);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
     }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
+        Cache.clear();
         await signOut(auth);
         window.location.href = "../login.html";
     }
@@ -395,6 +408,7 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 });
 </script>
 
+<script src="../js/cache.js"></script>
 <script src="../js/darkmode.js"></script>
 <script>
     function updateDarkBtn() {
