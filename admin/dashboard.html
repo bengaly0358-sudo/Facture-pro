@@ -8,211 +8,59 @@
         (function() {
             const saved = localStorage.getItem('darkMode');
             if (saved === 'true') {
-                document.documentElement
-                    .setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
     <link rel="stylesheet" href="../css/darkmode.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background: #f0f2f5;
-        }
-
-        /* ======= SIDEBAR ======= */
-        .sidebar {
-            width: 270px;
-            background: linear-gradient(180deg, #1a1a2e, #0f3460);
-            color: white;
-            padding: 25px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            padding: 0 20px 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; min-height: 100vh; background: #f0f2f5; }
+        .sidebar { width: 270px; background: linear-gradient(180deg, #1a1a2e, #0f3460); color: white; padding: 25px 0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: all 0.3s; }
+        .sidebar-header { text-align: center; padding: 0 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-header h2 { font-size: 1.4em; color: #e94560; }
         .sidebar-header p { color: #888; font-size: 0.85em; margin-top: 5px; }
-
-        .admin-badge {
-            display: inline-block; padding: 3px 15px;
-            background: rgba(233,69,96,0.2); color: #e94560;
-            border-radius: 15px; font-size: 0.75em;
-            margin-top: 8px; font-weight: 600;
-        }
-
+        .admin-badge { display: inline-block; padding: 3px 15px; background: rgba(233,69,96,0.2); color: #e94560; border-radius: 15px; font-size: 0.75em; margin-top: 8px; font-weight: 600; }
         .nav-menu { list-style: none; padding: 15px 0; }
-
-        .nav-menu a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 25px; color: #aaa;
-            text-decoration: none; font-size: 0.95em;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            background: rgba(233,69,96,0.1);
-            color: white; border-left-color: #e94560;
-        }
-
+        .nav-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: #aaa; text-decoration: none; font-size: 0.95em; transition: all 0.3s; border-left: 3px solid transparent; cursor: pointer; }
+        .nav-menu a:hover, .nav-menu a.active { background: rgba(233,69,96,0.1); color: white; border-left-color: #e94560; }
         .menu-icon { font-size: 1.2em; width: 25px; text-align: center; }
-
-        .nav-separator {
-            height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 10px 20px;
-        }
-
+        .nav-separator { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 20px; }
         .logout-btn { color: #e74c3c !important; }
-        .logout-btn:hover {
-            background: rgba(231,76,60,0.1) !important;
-            border-left-color: #e74c3c !important;
-        }
-
-        .nav-count {
-            background: #e94560; color: white;
-            padding: 2px 8px; border-radius: 10px;
-            font-size: 0.75em; margin-left: auto;
-        }
-
-        /* ======= MAIN ======= */
-        .main-content {
-            margin-left: 270px;
-            flex: 1;
-            padding: 25px;
-        }
-
-        .top-bar {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 25px;
-            flex-wrap: wrap; gap: 15px;
-        }
-
-        .top-bar-left {
-            display: flex; align-items: center; gap: 15px;
-        }
-
-        .menu-toggle {
-            display: none; background: #e94560; color: white;
-            border: none; padding: 10px 15px;
-            border-radius: 8px; cursor: pointer; font-size: 1.2em;
-        }
-
+        .logout-btn:hover { background: rgba(231,76,60,0.1) !important; border-left-color: #e74c3c !important; }
+        .nav-count { background: #e94560; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: auto; }
+        .main-content { margin-left: 270px; flex: 1; padding: 25px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .top-bar-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { display: none; background: #e94560; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1.2em; }
         .top-bar h1 { font-size: 1.5em; color: #333; }
         .admin-time { color: #888; font-size: 0.9em; }
-
-        /* ======= TABS ======= */
-        .tabs {
-            display: flex; gap: 5px; margin-bottom: 25px;
-            background: white; border-radius: 12px; padding: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        .tab {
-            padding: 12px 20px; border: none;
-            background: transparent; border-radius: 8px;
-            cursor: pointer; font-size: 0.9em; font-weight: 600;
-            color: #888; transition: all 0.3s; white-space: nowrap;
-            display: flex; align-items: center; gap: 8px;
-        }
-
+        .tabs { display: flex; gap: 5px; margin-bottom: 25px; background: white; border-radius: 12px; padding: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
+        .tab { padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: 600; color: #888; transition: all 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
         .tab:hover { color: #333; background: #f5f5f5; }
         .tab.active { background: #e94560; color: white; }
-
-        .tab-badge {
-            padding: 1px 8px; border-radius: 10px; font-size: 0.8em;
-            background: #eee; color: #888;
-        }
-
-        .tab.active .tab-badge {
-            background: rgba(255,255,255,0.3); color: white;
-        }
-
-        /* ======= TAB CONTENT ======= */
+        .tab-badge { padding: 1px 8px; border-radius: 10px; font-size: 0.8em; background: #eee; color: #888; }
+        .tab.active .tab-badge { background: rgba(255,255,255,0.3); color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* ======= STATS ======= */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px; margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: white; border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 25px; }
+        .stat-card { background: white; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-3px); }
         .stat-card .stat-icon { font-size: 1.8em; margin-bottom: 8px; }
         .stat-card h4 { color: #888; font-size: 0.8em; font-weight: 500; }
         .stat-card .stat-value { font-size: 1.8em; font-weight: 700; color: #333; }
         .stat-card .stat-sub { font-size: 0.8em; color: #aaa; margin-top: 3px; }
-
-        /* ======= CARDS ======= */
-        .card {
-            background: white; border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px; overflow: hidden;
-        }
-
-        .card-header {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 18px 20px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid #f0f0f0; }
         .card-header h2 { color: #333; font-size: 1.1em; }
         .card-count { color: #888; font-size: 0.85em; }
-
         .table-wrapper { overflow-x: auto; }
-
         table { width: 100%; border-collapse: collapse; }
         thead tr { background: #f8f9fa; }
-
-        th {
-            padding: 12px 15px; text-align: left;
-            color: #888; font-size: 0.8em; font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f5f5f5;
-            font-size: 0.9em; color: #555;
-            vertical-align: middle;
-        }
-
+        th { padding: 12px 15px; text-align: left; color: #888; font-size: 0.8em; font-weight: 600; text-transform: uppercase; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; font-size: 0.9em; color: #555; vertical-align: middle; }
         tr:hover { background: #fafafa; }
-
-        /* ======= BADGES ======= */
-        .badge {
-            padding: 4px 12px; border-radius: 15px;
-            font-size: 0.8em; font-weight: 600;
-        }
-
+        .badge { padding: 4px 12px; border-radius: 15px; font-size: 0.8em; font-weight: 600; }
         .badge-active { background: rgba(39,174,96,0.1); color: #27ae60; }
         .badge-inactive { background: rgba(231,76,60,0.1); color: #e74c3c; }
         .badge-pending { background: rgba(243,156,18,0.1); color: #f39c12; }
@@ -222,16 +70,8 @@
         .badge-client { background: rgba(52,152,219,0.1); color: #3498db; }
         .badge-free { background: rgba(231,76,60,0.1); color: #e74c3c; }
         .badge-pro { background: rgba(108,99,255,0.1); color: #6c63ff; }
-
-        /* ======= BUTTONS ======= */
-        .btn-sm {
-            padding: 5px 12px; border: none;
-            border-radius: 6px; cursor: pointer;
-            font-size: 0.8em; transition: all 0.2s; margin: 2px;
-        }
-
+        .btn-sm { padding: 5px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.2s; margin: 2px; }
         .btn-sm:hover { opacity: 0.85; transform: translateY(-1px); }
-
         .btn-activate { background: #27ae60; color: white; }
         .btn-deactivate { background: #e74c3c; color: white; }
         .btn-approve { background: #27ae60; color: white; }
@@ -239,175 +79,41 @@
         .btn-view-admin { background: #3498db; color: white; }
         .btn-make-pro { background: #6c63ff; color: white; }
         .btn-remove-pro { background: #e67e22; color: white; }
-
-        /* ======= SEARCH ======= */
-        .search-bar {
-            display: flex; gap: 10px; padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0; flex-wrap: wrap;
-        }
-
-        .search-bar input,
-        .search-bar select {
-            padding: 10px 15px; border: 1px solid #e0e0e0;
-            border-radius: 8px; font-size: 0.9em; outline: none;
-            flex: 1; min-width: 150px;
-        }
-
-        .search-bar input:focus,
-        .search-bar select:focus { border-color: #e94560; }
-
-        .btn-search {
-            padding: 10px 20px; background: #e94560;
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer; font-size: 0.9em;
-            transition: all 0.2s;
-        }
-
+        .search-bar { display: flex; gap: 10px; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; }
+        .search-bar input, .search-bar select { padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9em; outline: none; flex: 1; min-width: 150px; }
+        .search-bar input:focus, .search-bar select:focus { border-color: #e94560; }
+        .btn-search { padding: 10px 20px; background: #e94560; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s; }
         .btn-search:hover { background: #c0392b; }
-
-        /* ======= SETTINGS ======= */
-        .settings-card {
-            background: white; border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .settings-card h2 {
-            color: #333; font-size: 1.1em; margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .settings-row {
-            display: flex; gap: 15px;
-            margin-bottom: 15px; flex-wrap: wrap;
-        }
-
+        .settings-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .settings-card h2 { color: #333; font-size: 1.1em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        .settings-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .settings-group { flex: 1; min-width: 250px; }
-
-        .settings-group label {
-            display: block; margin-bottom: 6px; color: #666;
-            font-size: 0.85em; font-weight: 600;
-        }
-
-        .settings-group input,
-        .settings-group textarea,
-        .settings-group select {
-            width: 100%; padding: 11px;
-            border: 1px solid #e0e0e0; border-radius: 8px;
-            font-size: 0.95em; outline: none;
-            font-family: 'Segoe UI', sans-serif;
-            background: #fafafa;
-        }
-
-        .settings-group input:focus,
-        .settings-group textarea:focus,
-        .settings-group select:focus {
-            border-color: #e94560; background: white;
-        }
-
-        .btn-save-settings {
-            padding: 12px 30px; background: #27ae60;
-            color: white; border: none; border-radius: 10px;
-            cursor: pointer; font-size: 1em; font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-save-settings:hover {
-            background: #1e8449; transform: translateY(-2px);
-        }
-
-        .btn-save-settings:disabled {
-            opacity: 0.6; cursor: not-allowed;
-        }
-
-        /* ======= EMPTY ======= */
-        .empty-state {
-            text-align: center; padding: 40px; color: #aaa;
-        }
-
-        .empty-state .empty-icon {
-            font-size: 2.5em; margin-bottom: 10px;
-        }
-
-        /* ======= LOADING ======= */
+        .settings-group label { display: block; margin-bottom: 6px; color: #666; font-size: 0.85em; font-weight: 600; }
+        .settings-group input, .settings-group textarea, .settings-group select { width: 100%; padding: 11px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.95em; outline: none; font-family: 'Segoe UI', sans-serif; background: #fafafa; }
+        .settings-group input:focus, .settings-group textarea:focus, .settings-group select:focus { border-color: #e94560; background: white; }
+        .btn-save-settings { padding: 12px 30px; background: #27ae60; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.2s; }
+        .btn-save-settings:hover { background: #1e8449; transform: translateY(-2px); }
+        .btn-save-settings:disabled { opacity: 0.6; cursor: not-allowed; }
+        .empty-state { text-align: center; padding: 40px; color: #aaa; }
+        .empty-state .empty-icon { font-size: 2.5em; margin-bottom: 10px; }
         .loading { text-align: center; padding: 40px; }
-
-        .loading-spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #eee;
-            border-top-color: #e94560;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 15px;
-        }
-
+        .loading-spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top-color: #e94560; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ======= MODAL ======= */
-        .modal-overlay {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center; align-items: center;
-            z-index: 9999;
-        }
-
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 9999; }
         .modal-overlay.show { display: flex; }
-
-        .modal-box {
-            background: white; border-radius: 15px;
-            width: 90%; max-width: 600px;
-            max-height: 80vh; overflow-y: auto;
-            padding: 30px; position: relative;
-        }
-
-        .modal-close {
-            position: absolute; top: 15px; right: 15px;
-            background: #e74c3c; color: white; border: none;
-            width: 35px; height: 35px; border-radius: 50%;
-            cursor: pointer; font-size: 1em;
-            display: flex; align-items: center;
-            justify-content: center;
-        }
-
+        .modal-box { background: white; border-radius: 15px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 30px; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: #e74c3c; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1em; display: flex; align-items: center; justify-content: center; }
         .modal-close:hover { background: #c0392b; }
-
-        /* ======= TOAST ======= */
-        .toast {
-            position: fixed; bottom: 30px; right: 30px;
-            padding: 15px 25px; border-radius: 10px;
-            color: white; font-weight: 600; z-index: 99999;
-            transform: translateY(100px); opacity: 0;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
+        .toast { position: fixed; bottom: 30px; right: 30px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 600; z-index: 99999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-success { background: #27ae60; }
         .toast-error { background: #e74c3c; }
-
-        /* ======= RECENT ACTIVITY ======= */
-        .activity-item {
-            display: flex; align-items: center; gap: 15px;
-            padding: 12px 20px;
-            border-bottom: 1px solid #f5f5f5;
-        }
-
-        .activity-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center;
-            justify-content: center; font-size: 1.2em;
-            flex-shrink: 0;
-        }
-
+        .activity-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; border-bottom: 1px solid #f5f5f5; }
+        .activity-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em; flex-shrink: 0; }
         .activity-info { flex: 1; }
         .activity-info h4 { color: #333; font-size: 0.9em; }
         .activity-info p { color: #888; font-size: 0.8em; }
         .activity-time { color: #aaa; font-size: 0.8em; }
-
-        /* ======= RESPONSIVE ======= */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -418,527 +124,285 @@
             .settings-row { flex-direction: column; }
             .settings-group { min-width: 100%; }
         }
-
-        @media (max-width: 500px) {
-            .stats-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR ADMIN -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>🧾 Facture Pro</h2>
-            <p>Panneau d'administration</p>
-            <span class="admin-badge">🔐 ADMIN</span>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>🧾 Facture Pro</h2>
+        <p>Panneau d'administration</p>
+        <span class="admin-badge">🔐 ADMIN</span>
+    </div>
+    <ul class="nav-menu">
+        <li><a onclick="switchTab('overview')"><span class="menu-icon">📊</span> Dashboard</a></li>
+        <div class="nav-separator"></div>
+        <li><a onclick="switchTab('users')"><span class="menu-icon">👥</span> Utilisateurs <span class="nav-count" id="navUsersCount">0</span></a></li>
+        <li><a onclick="switchTab('payments')"><span class="menu-icon">💳</span> Paiements <span class="nav-count" id="navPaymentsCount">0</span></a></li>
+        <li><a onclick="switchTab('factures')"><span class="menu-icon">📄</span> Factures <span class="nav-count" id="navFacturesCount">0</span></a></li>
+        <div class="nav-separator"></div>
+        <li><a onclick="switchTab('settings')"><span class="menu-icon">⚙️</span> Paramètres</a></li>
+        <div class="nav-separator"></div>
+        <div style="padding: 5px 15px; margin-bottom: 5px;">
+            <button onclick="DarkMode.toggle(); updateDarkBtn()" id="darkModeBtn" style="width:100%; padding:10px 15px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:10px; cursor:pointer; font-size:0.9em; display:flex; align-items:center; gap:10px;">
+                <span id="darkModeIcon">🌙</span>
+                <span id="darkModeText">Mode sombre</span>
+            </button>
         </div>
+        <div class="nav-separator"></div>
+        <li><a href="#" class="logout-btn" id="logoutBtn"><span class="menu-icon">🚪</span> Déconnexion</a></li>
+    </ul>
+</div>
 
-        <ul class="nav-menu">
-            <li><a onclick="switchTab('overview')" id="nav-overview">
-                <span class="menu-icon">📊</span> Dashboard
-            </a></li>
-            <div class="nav-separator"></div>
-            <li><a onclick="switchTab('users')" id="nav-users">
-                <span class="menu-icon">👥</span> Utilisateurs
-                <span class="nav-count" id="navUsersCount">0</span>
-            </a></li>
-            <li><a onclick="switchTab('payments')" id="nav-payments">
-                <span class="menu-icon">💳</span> Paiements
-                <span class="nav-count" id="navPaymentsCount">0</span>
-            </a></li>
-            <li><a onclick="switchTab('factures')" id="nav-factures">
-                <span class="menu-icon">📄</span> Factures
-                <span class="nav-count" id="navFacturesCount">0</span>
-            </a></li>
-            <div class="nav-separator"></div>
-            <li><a onclick="switchTab('settings')" id="nav-settings">
-                <span class="menu-icon">⚙️</span> Paramètres
-            </a></li>
-            <div class="nav-separator"></div>
+<!-- MAIN -->
+<div class="main-content">
 
-            <!-- Dark Mode -->
-            <div style="padding: 5px 15px; margin-bottom: 5px;">
-                <button
-                    onclick="DarkMode.toggle(); updateDarkBtn()"
-                    id="darkModeBtn"
-                    style="width:100%; padding:10px 15px;
-                    background:rgba(255,255,255,0.05);
-                    border:1px solid rgba(255,255,255,0.1);
-                    color:white; border-radius:10px; cursor:pointer;
-                    font-size:0.9em; display:flex;
-                    align-items:center; gap:10px;">
-                    <span id="darkModeIcon">🌙</span>
-                    <span id="darkModeText">Mode sombre</span>
-                </button>
-            </div>
-
-            <div class="nav-separator"></div>
-
-            <li><a href="#" class="logout-btn" id="logoutBtn">
-                <span class="menu-icon">🚪</span> Déconnexion
-            </a></li>
-        </ul>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h1>🔐 Administration</h1>
+        </div>
+        <div class="admin-time" id="adminTime"></div>
     </div>
 
-    <!-- MAIN -->
-    <div class="main-content">
-
-        <!-- TOP BAR -->
-        <div class="top-bar">
-            <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
-                <h1>🔐 Administration</h1>
-            </div>
-            <div class="admin-time" id="adminTime"></div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="tab active" id="tab-overview"
-                    onclick="switchTab('overview')">
-                📊 Vue d'ensemble
-            </button>
-            <button class="tab" id="tab-users"
-                    onclick="switchTab('users')">
-                👥 Utilisateurs
-                <span class="tab-badge" id="tabUsersCount">0</span>
-            </button>
-            <button class="tab" id="tab-payments"
-                    onclick="switchTab('payments')">
-                💳 Paiements
-                <span class="tab-badge" id="tabPaymentsCount">0</span>
-            </button>
-            <button class="tab" id="tab-factures"
-                    onclick="switchTab('factures')">
-                📄 Factures
-                <span class="tab-badge" id="tabFacturesCount">0</span>
-            </button>
-            <button class="tab" id="tab-settings"
-                    onclick="switchTab('settings')">
-                ⚙️ Paramètres
-            </button>
-        </div>
-
-        <!-- ======= OVERVIEW ======= -->
-        <div class="tab-content active" id="content-overview">
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">👥</div>
-                    <h4>Total utilisateurs</h4>
-                    <div class="stat-value" id="statUsers">0</div>
-                    <p class="stat-sub" id="statUsersNew">
-                        0 ce mois
-                    </p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📄</div>
-                    <h4>Total factures</h4>
-                    <div class="stat-value" id="statFactures">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <h4>Paiements en attente</h4>
-                    <div class="stat-value" id="statPending">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <h4>Revenus confirmés</h4>
-                    <div class="stat-value" id="statRevenue">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⭐</div>
-                    <h4>Abonnés Pro</h4>
-                    <div class="stat-value" id="statPro">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🆓</div>
-                    <h4>Plan Gratuit</h4>
-                    <div class="stat-value" id="statFree">0</div>
-                </div>
-            </div>
-
-            <!-- ACTIVITÉS RÉCENTES -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>🕐 Activités récentes</h2>
-                </div>
-                <div id="recentActivities">
-                    <div class="loading" id="loadingOverview">
-                        <div class="loading-spinner"></div>
-                        <p>Chargement...</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ======= USERS ======= -->
-        <div class="tab-content" id="content-users">
-            <div class="card">
-                <div class="card-header">
-                    <h2>👥 Gestion des utilisateurs</h2>
-                    <span class="card-count" id="usersCount">
-                        0 utilisateur(s)
-                    </span>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="searchUsers"
-                           placeholder="🔍 Nom ou email">
-                    <select id="filterRole">
-                        <option value="">Tous les rôles</option>
-                        <option value="client">Clients</option>
-                        <option value="admin">Admins</option>
-                    </select>
-                    <select id="filterPlan">
-                        <option value="">Tous les plans</option>
-                        <option value="free">Gratuit</option>
-                        <option value="pro">Pro</option>
-                    </select>
-                    <button class="btn-search"
-                            onclick="filterUsers()">
-                        🔍
-                    </button>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Email</th>
-                                <th>Rôle</th>
-                                <th>Plan</th>
-                                <th>Factures</th>
-                                <th>Inscrit le</th>
-                                <th>Dernière connexion</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="empty-state" id="usersEmpty"
-                     style="display:none;">
-                    <div class="empty-icon">👥</div>
-                    <p>Aucun utilisateur trouvé</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======= PAYMENTS ======= -->
-        <div class="tab-content" id="content-payments">
-            <div class="card">
-                <div class="card-header">
-                    <h2>💳 Gestion des paiements</h2>
-                    <span class="card-count" id="paymentsCount">
-                        0 paiement(s)
-                    </span>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="searchPayments"
-                           placeholder="🔍 Nom ou email">
-                    <select id="filterPaymentStatus">
-                        <option value="">Tous les statuts</option>
-                        <option value="pending">En attente</option>
-                        <option value="approved">Approuvés</option>
-                        <option value="rejected">Rejetés</option>
-                    </select>
-                    <button class="btn-search"
-                            onclick="filterPayments()">
-                        🔍
-                    </button>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Utilisateur</th>
-                                <th>Email</th>
-                                <th>Plan</th>
-                                <th>Montant</th>
-                                <th>Méthode</th>
-                                <th>Date</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="paymentsTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="empty-state" id="paymentsEmpty"
-                     style="display:none;">
-                    <div class="empty-icon">💳</div>
-                    <p>Aucun paiement trouvé</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======= FACTURES ======= -->
-        <div class="tab-content" id="content-factures">
-            <div class="card">
-                <div class="card-header">
-                    <h2>📄 Toutes les factures</h2>
-                    <span class="card-count" id="facturesCount">
-                        0 facture(s)
-                    </span>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="searchFactures"
-                           placeholder="🔍 N° ou client">
-                    <button class="btn-search"
-                            onclick="filterFacturesAdmin()">
-                        🔍
-                    </button>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>N° Facture</th>
-                                <th>Créateur</th>
-                                <th>Client</th>
-                                <th>Date</th>
-                                <th>Modèle</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="facturesTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="empty-state" id="facturesEmpty"
-                     style="display:none;">
-                    <div class="empty-icon">📄</div>
-                    <p>Aucune facture trouvée</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======= SETTINGS ======= -->
-        <div class="tab-content" id="content-settings">
-
-            <!-- Propriétaire -->
-            <div class="settings-card">
-                <h2>👤 Informations du propriétaire</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Nom du propriétaire</label>
-                        <input type="text" id="settingsOwnerName"
-                               placeholder="Votre nom complet">
-                    </div>
-                    <div class="settings-group">
-                        <label>Email principal</label>
-                        <input type="email" id="settingsOwnerEmail"
-                               placeholder="votre@email.com">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contact -->
-            <div class="settings-card">
-                <h2>📞 Contact & Communication</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>
-                            📱 Numéro WhatsApp
-                            <small style="color:#888;">
-                                (sans + ni espaces)
-                            </small>
-                        </label>
-                        <input type="text" id="settingsWhatsapp"
-                               placeholder="Ex: 224620000000">
-                    </div>
-                    <div class="settings-group">
-                        <label>📞 Numéro téléphone (affiché)</label>
-                        <input type="text" id="settingsPhone"
-                               placeholder="Ex: +224 620 00 00 00">
-                    </div>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>📧 Email support</label>
-                        <input type="email" id="settingsEmail"
-                               placeholder="support@facturepro.com">
-                    </div>
-                    <div class="settings-group">
-                        <label>💬 Message WhatsApp par défaut</label>
-                        <input type="text" id="settingsWhatsappMsg"
-                               placeholder="Bonjour, j'utilise Facture Pro...">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Devise & Prix -->
-            <div class="settings-card">
-                <h2>💱 Devise & Prix des plans</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Devise par défaut</label>
-                        <select id="settingsDevise">
-                            <option value="$">$ - Dollar USD</option>
-                            <option value="€">€ - Euro</option>
-                            <option value="£">£ - Livre Sterling</option>
-                            <option value="FCFA">FCFA - Franc CFA</option>
-                            <option value="MAD">MAD - Dirham</option>
-                            <option value="DZD">DZD - Dinar Algérien</option>
-                            <option value="TND">TND - Dinar Tunisien</option>
-                            <option value="GNF">GNF - Franc Guinéen</option>
-                            <option value="CDF">CDF - Franc Congolais</option>
-                        </select>
-                    </div>
-                    <div class="settings-group">
-                        <label>
-                            Symbole personnalisé
-                            <small style="color:#888;">
-                                (laisse vide pour utiliser la devise)
-                            </small>
-                        </label>
-                        <input type="text" id="settingsDeviseCustom"
-                               placeholder="Ex: F, DA, DH...">
-                    </div>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Prix plan Pro (chiffre)</label>
-                        <input type="number" id="settingsPricePro"
-                               value="9" min="0" step="0.01">
-                    </div>
-                    <div class="settings-group">
-                        <label>
-                            Symbole prix Pro
-                            <small style="color:#888;">
-                                Ex: $, €, FCFA, F
-                            </small>
-                        </label>
-                        <input type="text" id="settingsPriceProSymbol"
-                               placeholder="Ex: $ € £ FCFA F">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Limites -->
-            <div class="settings-card">
-                <h2>📊 Limites & Plans</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Factures max plan Gratuit</label>
-                        <input type="number" id="settingsMaxFactures"
-                               value="10" min="1">
-                    </div>
-                    <div class="settings-group">
-                        <label>Durée essai gratuit (jours)</label>
-                        <input type="number" id="settingsTrialDays"
-                               value="30" min="1">
-                    </div>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Description plan Gratuit</label>
-                        <input type="text" id="settingsFreeDesc"
-                               placeholder="Ex: 10 factures par mois">
-                    </div>
-                    <div class="settings-group">
-                        <label>Description plan Pro</label>
-                        <input type="text" id="settingsProDesc"
-                               placeholder="Ex: Factures illimitées">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Paiement -->
-            <div class="settings-card">
-                <h2>💳 Méthodes de paiement</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Numéro Mobile Money</label>
-                        <input type="text" id="settingsMobileMoney"
-                               placeholder="Ex: +224 620 00 00 00">
-                    </div>
-                    <div class="settings-group">
-                        <label>Nom opérateur Mobile Money</label>
-                        <input type="text" id="settingsMobileMoneyName"
-                               placeholder="Ex: Orange Money, MTN...">
-                    </div>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>IBAN / Compte bancaire</label>
-                        <input type="text" id="settingsIban"
-                               placeholder="XX00 0000 0000 0000">
-                    </div>
-                    <div class="settings-group">
-                        <label>Nom titulaire</label>
-                        <input type="text" id="settingsBankName"
-                               placeholder="Nom du titulaire">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Facture -->
-            <div class="settings-card">
-                <h2>🧾 Paramètres des factures</h2>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>TVA par défaut (%)</label>
-                        <input type="number" id="settingsTva"
-                               value="18" min="0" max="100">
-                    </div>
-                    <div class="settings-group">
-                        <label>Mentions légales</label>
-                        <input type="text" id="settingsMentions"
-                               placeholder="Ex: Merci pour votre confiance">
-                    </div>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label>Pied de page des factures</label>
-                        <input type="text" id="settingsFooter"
-                               placeholder="Ex: Facture Pro — Votre partenaire">
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn-save-settings" id="btnSaveSettings">
-                💾 Sauvegarder tous les paramètres
-            </button>
-
-        </div>
-
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" id="tab-overview" onclick="switchTab('overview')">📊 Vue d'ensemble</button>
+        <button class="tab" id="tab-users" onclick="switchTab('users')">👥 Utilisateurs <span class="tab-badge" id="tabUsersCount">0</span></button>
+        <button class="tab" id="tab-payments" onclick="switchTab('payments')">💳 Paiements <span class="tab-badge" id="tabPaymentsCount">0</span></button>
+        <button class="tab" id="tab-factures" onclick="switchTab('factures')">📄 Factures <span class="tab-badge" id="tabFacturesCount">0</span></button>
+        <button class="tab" id="tab-settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
     </div>
 
-    <!-- MODAL USER -->
-    <div class="modal-overlay" id="userModal">
-        <div class="modal-box">
-            <button class="modal-close" id="closeUserModal">✕</button>
-            <div id="userModalContent"></div>
+    <!-- OVERVIEW -->
+    <div class="tab-content active" id="content-overview">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><h4>Total utilisateurs</h4><div class="stat-value" id="statUsers">0</div><p class="stat-sub" id="statUsersNew">0 ce mois</p></div>
+            <div class="stat-card"><div class="stat-icon">📄</div><h4>Total factures</h4><div class="stat-value" id="statFactures">0</div></div>
+            <div class="stat-card"><div class="stat-icon">⏳</div><h4>Paiements en attente</h4><div class="stat-value" id="statPending">0</div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><h4>Revenus confirmés</h4><div class="stat-value" id="statRevenue">0</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><h4>Abonnés Pro</h4><div class="stat-value" id="statPro">0</div></div>
+            <div class="stat-card"><div class="stat-icon">🆓</div><h4>Plan Gratuit</h4><div class="stat-value" id="statFree">0</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h2>🕐 Activités récentes</h2></div>
+            <div id="recentActivities">
+                <div class="loading" id="loadingOverview">
+                    <div class="loading-spinner"></div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast"></div>
+    <!-- USERS -->
+    <div class="tab-content" id="content-users">
+        <div class="card">
+            <div class="card-header"><h2>👥 Gestion des utilisateurs</h2><span class="card-count" id="usersCount">0 utilisateur(s)</span></div>
+            <div class="search-bar">
+                <input type="text" id="searchUsers" placeholder="🔍 Nom ou email">
+                <select id="filterRole">
+                    <option value="">Tous les rôles</option>
+                    <option value="client">Clients</option>
+                    <option value="admin">Admins</option>
+                </select>
+                <select id="filterPlan">
+                    <option value="">Tous les plans</option>
+                    <option value="free">Gratuit</option>
+                    <option value="pro">Pro</option>
+                </select>
+                <button class="btn-search" onclick="filterUsers()">🔍</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Plan</th>
+                            <th>Factures</th>
+                            <th>Inscrit le</th>
+                            <th>Dernière connexion</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="usersEmpty" style="display:none;"><div class="empty-icon">👥</div><p>Aucun utilisateur trouvé</p></div>
+        </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="tab-content" id="content-payments">
+        <div class="card">
+            <div class="card-header"><h2>💳 Gestion des paiements</h2><span class="card-count" id="paymentsCount">0 paiement(s)</span></div>
+            <div class="search-bar">
+                <input type="text" id="searchPayments" placeholder="🔍 Nom ou email">
+                <select id="filterPaymentStatus">
+                    <option value="">Tous les statuts</option>
+                    <option value="pending">En attente</option>
+                    <option value="approved">Approuvés</option>
+                    <option value="rejected">Rejetés</option>
+                </select>
+                <button class="btn-search" onclick="filterPayments()">🔍</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Plan</th>
+                            <th>Montant</th>
+                            <th>Méthode</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody"></tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="paymentsEmpty" style="display:none;"><div class="empty-icon">💳</div><p>Aucun paiement trouvé</p></div>
+        </div>
+    </div>
+
+    <!-- FACTURES -->
+    <div class="tab-content" id="content-factures">
+        <div class="card">
+            <div class="card-header"><h2>📄 Toutes les factures</h2><span class="card-count" id="facturesCount">0 facture(s)</span></div>
+            <div class="search-bar">
+                <input type="text" id="searchFactures" placeholder="🔍 N° ou client">
+                <button class="btn-search" onclick="filterFacturesAdmin()">🔍</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>N° Facture</th>
+                            <th>Créateur</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Modèle</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facturesTableBody"></tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="facturesEmpty" style="display:none;"><div class="empty-icon">📄</div><p>Aucune facture trouvée</p></div>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-content" id="content-settings">
+
+        <div class="settings-card">
+            <h2>👤 Informations du propriétaire</h2>
+            <div class="settings-row">
+                <div class="settings-group"><label>Nom du propriétaire</label><input type="text" id="settingsOwnerName" placeholder="Votre nom complet"></div>
+                <div class="settings-group"><label>Email principal</label><input type="email" id="settingsOwnerEmail" placeholder="votre@email.com"></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>📞 Contact & Communication</h2>
+            <div class="settings-row">
+                <div class="settings-group"><label>📱 Numéro WhatsApp <small style="color:#888;">(sans + ni espaces)</small></label><input type="text" id="settingsWhatsapp" placeholder="Ex: 224620000000"></div>
+                <div class="settings-group"><label>📞 Numéro téléphone (affiché)</label><input type="text" id="settingsPhone" placeholder="Ex: +224 620 00 00 00"></div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-group"><label>📧 Email support</label><input type="email" id="settingsEmail" placeholder="support@facturepro.com"></div>
+                <div class="settings-group"><label>💬 Message WhatsApp par défaut</label><input type="text" id="settingsWhatsappMsg" placeholder="Bonjour, j'utilise Facture Pro..."></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>💱 Devise & Prix des plans</h2>
+            <div class="settings-row">
+                <div class="settings-group">
+                    <label>Devise par défaut</label>
+                    <select id="settingsDevise">
+                        <option value="$">$ - Dollar USD</option>
+                        <option value="€">€ - Euro</option>
+                        <option value="£">£ - Livre Sterling</option>
+                        <option value="FCFA">FCFA - Franc CFA</option>
+                        <option value="MAD">MAD - Dirham</option>
+                        <option value="DZD">DZD - Dinar Algérien</option>
+                        <option value="TND">TND - Dinar Tunisien</option>
+                        <option value="GNF">GNF - Franc Guinéen</option>
+                        <option value="CDF">CDF - Franc Congolais</option>
+                    </select>
+                </div>
+                <div class="settings-group"><label>Symbole personnalisé <small style="color:#888;">(laisse vide pour utiliser la devise)</small></label><input type="text" id="settingsDeviseCustom" placeholder="Ex: F, DA, DH..."></div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-group"><label>Prix plan Pro (chiffre)</label><input type="number" id="settingsPricePro" value="9" min="0" step="0.01"></div>
+                <div class="settings-group"><label>Symbole prix Pro <small style="color:#888;">Ex: $, €, FCFA, F</small></label><input type="text" id="settingsPriceProSymbol" placeholder="Ex: $ € £ FCFA F"></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>📊 Limites & Plans</h2>
+            <div class="settings-row">
+                <div class="settings-group"><label>Factures max plan Gratuit</label><input type="number" id="settingsMaxFactures" value="10" min="1"></div>
+                <div class="settings-group"><label>Durée essai gratuit (jours)</label><input type="number" id="settingsTrialDays" value="30" min="1"></div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-group"><label>Description plan Gratuit</label><input type="text" id="settingsFreeDesc" placeholder="Ex: 10 factures par mois"></div>
+                <div class="settings-group"><label>Description plan Pro</label><input type="text" id="settingsProDesc" placeholder="Ex: Factures illimitées"></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>💳 Méthodes de paiement</h2>
+            <div class="settings-row">
+                <div class="settings-group"><label>Numéro Mobile Money</label><input type="text" id="settingsMobileMoney" placeholder="Ex: +224 620 00 00 00"></div>
+                <div class="settings-group"><label>Nom opérateur Mobile Money</label><input type="text" id="settingsMobileMoneyName" placeholder="Ex: Orange Money, MTN..."></div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-group"><label>IBAN / Compte bancaire</label><input type="text" id="settingsIban" placeholder="XX00 0000 0000 0000"></div>
+                <div class="settings-group"><label>Nom titulaire</label><input type="text" id="settingsBankName" placeholder="Nom du titulaire"></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>🧾 Paramètres des factures</h2>
+            <div class="settings-row">
+                <div class="settings-group"><label>TVA par défaut (%)</label><input type="number" id="settingsTva" value="18" min="0" max="100"></div>
+                <div class="settings-group"><label>Mentions légales</label><input type="text" id="settingsMentions" placeholder="Ex: Merci pour votre confiance"></div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-group"><label>Pied de page des factures</label><input type="text" id="settingsFooter" placeholder="Ex: Facture Pro — Votre partenaire"></div>
+            </div>
+        </div>
+
+        <button class="btn-save-settings" id="btnSaveSettings">💾 Sauvegarder tous les paramètres</button>
+
+    </div>
+
+</div>
+
+<!-- MODAL USER -->
+<div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+        <button class="modal-close" id="closeUserModal">✕</button>
+        <div id="userModalContent"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
 <script type="module">
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-    getAuth, onAuthStateChanged, signOut
-} from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-    getFirestore, doc, getDoc, setDoc, updateDoc,
-    collection, query, orderBy, getDocs, serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
@@ -966,10 +430,7 @@ let devise = '$';
 // 🔒 VÉRIFIER ADMIN
 // ============================
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "../login.html";
-        return;
-    }
+    if (!user) { window.location.href = "../login.html"; return; }
 
     try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -978,7 +439,6 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
-        // Charger tout
         await Promise.all([
             chargerUsers(),
             chargerPayments(),
@@ -987,7 +447,6 @@ onAuthStateChanged(auth, async (user) => {
         ]);
 
         updateStats();
-
         document.getElementById('loadingOverview').style.display = 'none';
         afficherActivitesRecentes();
 
@@ -1000,9 +459,7 @@ onAuthStateChanged(auth, async (user) => {
 function updateTime() {
     const now = new Date();
     const el = document.getElementById('adminTime');
-    if (el) el.textContent =
-        now.toLocaleDateString('fr-FR') + ' — ' +
-        now.toLocaleTimeString('fr-FR');
+    if (el) el.textContent = now.toLocaleDateString('fr-FR') + ' — ' + now.toLocaleTimeString('fr-FR');
 }
 updateTime();
 setInterval(updateTime, 1000);
@@ -1011,57 +468,46 @@ setInterval(updateTime, 1000);
 // 👥 UTILISATEURS
 // ============================
 async function chargerUsers() {
-    const q = query(
-        collection(db, "users"),
-        orderBy("createdAt", "desc")
-    );
-    const snapshot = await getDocs(q);
-    allUsers = [];
-    snapshot.forEach(d => {
-        allUsers.push({ id: d.id, ...d.data() });
-    });
+    try {
+        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        allUsers = [];
+        snapshot.forEach(d => { allUsers.push({ id: d.id, ...d.data() }); });
+    } catch (e) {
+        // Sans orderBy si erreur index
+        const snapshot = await getDocs(collection(db, "users"));
+        allUsers = [];
+        snapshot.forEach(d => { allUsers.push({ id: d.id, ...d.data() }); });
+        allUsers.sort((a, b) => {
+            const dA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+            const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+            return dB - dA;
+        });
+    }
+
     filteredUsersData = [...allUsers];
     afficherUsers();
-
-    document.getElementById('navUsersCount').textContent =
-        allUsers.length;
-    document.getElementById('tabUsersCount').textContent =
-        allUsers.length;
+    document.getElementById('navUsersCount').textContent = allUsers.length;
+    document.getElementById('tabUsersCount').textContent = allUsers.length;
 }
 
 function afficherUsers() {
     const tbody = document.getElementById('usersTableBody');
     tbody.innerHTML = '';
-
-    document.getElementById('usersCount').textContent =
-        filteredUsersData.length + ' utilisateur(s)';
+    document.getElementById('usersCount').textContent = filteredUsersData.length + ' utilisateur(s)';
 
     if (filteredUsersData.length === 0) {
         document.getElementById('usersEmpty').style.display = 'block';
         return;
     }
-
     document.getElementById('usersEmpty').style.display = 'none';
 
     filteredUsersData.forEach(u => {
-        const createdAt = u.createdAt?.toDate
-            ? u.createdAt.toDate().toLocaleDateString('fr-FR')
-            : 'N/A';
-        const lastLogin = u.lastLogin?.toDate
-            ? u.lastLogin.toDate().toLocaleDateString('fr-FR')
-            : 'N/A';
-
-        const roleBadge = u.role === 'admin'
-            ? '<span class="badge badge-admin">🔐 Admin</span>'
-            : '<span class="badge badge-client">👤 Client</span>';
-
-        const planBadge = u.isPaid
-            ? '<span class="badge badge-pro">⭐ Pro</span>'
-            : '<span class="badge badge-free">🆓 Gratuit</span>';
-
-        const statusBadge = u.isActive !== false
-            ? '<span class="badge badge-active">✅ Actif</span>'
-            : '<span class="badge badge-inactive">❌ Inactif</span>';
+        const createdAt = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A';
+        const lastLogin = u.lastLogin?.toDate ? u.lastLogin.toDate().toLocaleDateString('fr-FR') : 'N/A';
+        const roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">🔐 Admin</span>' : '<span class="badge badge-client">👤 Client</span>';
+        const planBadge = u.isPaid ? '<span class="badge badge-pro">⭐ Pro</span>' : '<span class="badge badge-free">🆓 Gratuit</span>';
+        const statusBadge = u.isActive !== false ? '<span class="badge badge-active">✅ Actif</span>' : '<span class="badge badge-inactive">❌ Inactif</span>';
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -1069,33 +515,21 @@ function afficherUsers() {
             <td style="font-size:0.85em;">${u.email || 'N/A'}</td>
             <td>${roleBadge}</td>
             <td>${planBadge}</td>
-            <td style="text-align:center;">
-                ${u.facturesCount || 0}
-            </td>
+            <td style="text-align:center;">${u.facturesCount || 0}</td>
             <td style="font-size:0.85em;">${createdAt}</td>
             <td style="font-size:0.85em;">${lastLogin}</td>
             <td>${statusBadge}</td>
             <td>
                 <div style="display:flex; flex-wrap:wrap; gap:3px;">
                     ${u.isActive !== false
-                        ? `<button class="btn-sm btn-deactivate"
-                                   onclick="toggleUser('${u.id}', false)"
-                                   title="Désactiver">❌</button>`
-                        : `<button class="btn-sm btn-activate"
-                                   onclick="toggleUser('${u.id}', true)"
-                                   title="Activer">✅</button>`
+                        ? `<button class="btn-sm btn-deactivate" onclick="toggleUser('${u.id}', false)" title="Désactiver">❌</button>`
+                        : `<button class="btn-sm btn-activate" onclick="toggleUser('${u.id}', true)" title="Activer">✅</button>`
                     }
                     ${!u.isPaid
-                        ? `<button class="btn-sm btn-make-pro"
-                                   onclick="makeUserPro('${u.id}')"
-                                   title="Activer Pro">⭐</button>`
-                        : `<button class="btn-sm btn-remove-pro"
-                                   onclick="removeUserPro('${u.id}')"
-                                   title="Retirer Pro">🔄</button>`
+                        ? `<button class="btn-sm btn-make-pro" onclick="makeUserPro('${u.id}')" title="Activer Pro">⭐</button>`
+                        : `<button class="btn-sm btn-remove-pro" onclick="removeUserPro('${u.id}')" title="Retirer Pro">🔄</button>`
                     }
-                    <button class="btn-sm btn-view-admin"
-                            onclick="viewUser('${u.id}')"
-                            title="Voir détails">👁️</button>
+                    <button class="btn-sm btn-view-admin" onclick="viewUser('${u.id}')" title="Voir détails">👁️</button>
                 </div>
             </td>
         `;
@@ -1104,38 +538,27 @@ function afficherUsers() {
 }
 
 window.filterUsers = function() {
-    const search = document.getElementById('searchUsers')
-        .value.toLowerCase().trim();
+    const search = document.getElementById('searchUsers').value.toLowerCase().trim();
     const role = document.getElementById('filterRole').value;
     const plan = document.getElementById('filterPlan').value;
-
     filteredUsersData = allUsers.filter(u => {
         if (search) {
             const name = (u.fullName || '').toLowerCase();
             const email = (u.email || '').toLowerCase();
-            if (!name.includes(search) && !email.includes(search))
-                return false;
+            if (!name.includes(search) && !email.includes(search)) return false;
         }
         if (role && u.role !== role) return false;
         if (plan === 'free' && u.isPaid) return false;
         if (plan === 'pro' && !u.isPaid) return false;
         return true;
     });
-
     afficherUsers();
 };
 
 window.toggleUser = async function(userId, activate) {
     try {
-        await updateDoc(doc(db, "users", userId), {
-            isActive: activate
-        });
-        showToast(
-            activate
-                ? "✅ Utilisateur activé"
-                : "❌ Utilisateur désactivé",
-            "success"
-        );
+        await updateDoc(doc(db, "users", userId), { isActive: activate });
+        showToast(activate ? "✅ Utilisateur activé" : "❌ Utilisateur désactivé", "success");
         await chargerUsers();
         updateStats();
     } catch (error) {
@@ -1146,11 +569,7 @@ window.toggleUser = async function(userId, activate) {
 window.makeUserPro = async function(userId) {
     if (!confirm("Activer le plan Pro pour cet utilisateur ?")) return;
     try {
-        await updateDoc(doc(db, "users", userId), {
-            isPaid: true,
-            plan: "pro",
-            maxFactures: 999999
-        });
+        await updateDoc(doc(db, "users", userId), { isPaid: true, plan: "pro", maxFactures: 999999 });
         showToast("✅ Plan Pro activé !", "success");
         await chargerUsers();
         updateStats();
@@ -1162,11 +581,7 @@ window.makeUserPro = async function(userId) {
 window.removeUserPro = async function(userId) {
     if (!confirm("Retirer le plan Pro de cet utilisateur ?")) return;
     try {
-        await updateDoc(doc(db, "users", userId), {
-            isPaid: false,
-            plan: "gratuit",
-            maxFactures: settings.maxFactures || 10
-        });
+        await updateDoc(doc(db, "users", userId), { isPaid: false, plan: "gratuit", maxFactures: settings.maxFactures || 10 });
         showToast("✅ Plan Pro retiré", "success");
         await chargerUsers();
         updateStats();
@@ -1178,70 +593,32 @@ window.removeUserPro = async function(userId) {
 window.viewUser = function(userId) {
     const u = allUsers.find(x => x.id === userId);
     if (!u) return;
-
     const content = `
-        <h2 style="color:#e94560; margin-bottom:20px;">
-            👤 ${u.fullName || 'N/A'}
-        </h2>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr;
-                    gap:15px; margin-bottom:20px;">
+        <h2 style="color:#e94560; margin-bottom:20px;">👤 ${u.fullName || 'N/A'}</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
             <div>
                 <p><strong>📧 Email :</strong> ${u.email}</p>
                 <p><strong>📱 Tél :</strong> ${u.phone || 'N/A'}</p>
                 <p><strong>🎭 Rôle :</strong> ${u.role}</p>
-                <p><strong>💰 Plan :</strong>
-                    ${u.isPaid ? 'Pro ⭐' : 'Gratuit 🆓'}
-                </p>
+                <p><strong>💰 Plan :</strong> ${u.isPaid ? 'Pro ⭐' : 'Gratuit 🆓'}</p>
             </div>
             <div>
-                <p><strong>📄 Factures :</strong>
-                    ${u.facturesCount || 0}
-                </p>
-                <p><strong>✅ Actif :</strong>
-                    ${u.isActive !== false ? 'Oui' : 'Non'}
-                </p>
-                <p><strong>📅 Inscrit :</strong>
-                    ${u.createdAt?.toDate
-                        ? u.createdAt.toDate().toLocaleDateString('fr-FR')
-                        : 'N/A'}
-                </p>
-                <p><strong>🔑 Dernière connexion :</strong>
-                    ${u.lastLogin?.toDate
-                        ? u.lastLogin.toDate().toLocaleDateString('fr-FR')
-                        : 'N/A'}
-                </p>
+                <p><strong>📄 Factures :</strong> ${u.facturesCount || 0}</p>
+                <p><strong>✅ Actif :</strong> ${u.isActive !== false ? 'Oui' : 'Non'}</p>
+                <p><strong>📅 Inscrit :</strong> ${u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A'}</p>
+                <p><strong>🔑 Dernière connexion :</strong> ${u.lastLogin?.toDate ? u.lastLogin.toDate().toLocaleDateString('fr-FR') : 'N/A'}</p>
             </div>
         </div>
-
         <hr style="margin:15px 0;">
-
         <h3 style="margin-bottom:10px;">🏢 Entreprise</h3>
-        <div style="background:#f8f9fa; padding:15px;
-                    border-radius:8px;">
-            ${u.company?.logo
-                ? `<img src="${u.company.logo}"
-                        style="max-width:80px; border-radius:8px;
-                        margin-bottom:10px; display:block;">`
-                : '<p style="color:#aaa;">Pas de logo</p>'
-            }
-            <p><strong>Nom :</strong>
-                ${u.company?.name || 'N/A'}
-            </p>
-            <p><strong>Email :</strong>
-                ${u.company?.email || 'N/A'}
-            </p>
-            <p><strong>Tél :</strong>
-                ${u.company?.phone || 'N/A'}
-            </p>
-            <p><strong>Adresse :</strong>
-                ${u.company?.address || 'N/A'},
-                ${u.company?.city || ''},
-                ${u.company?.country || ''}
-            </p>
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px;">
+            ${u.company?.logo ? `<img src="${u.company.logo}" style="max-width:80px; border-radius:8px; margin-bottom:10px; display:block;">` : '<p style="color:#aaa;">Pas de logo</p>'}
+            <p><strong>Nom :</strong> ${u.company?.name || 'N/A'}</p>
+            <p><strong>Email :</strong> ${u.company?.email || 'N/A'}</p>
+            <p><strong>Tél :</strong> ${u.company?.phone || 'N/A'}</p>
+            <p><strong>Adresse :</strong> ${u.company?.address || 'N/A'}, ${u.company?.city || ''}, ${u.company?.country || ''}</p>
         </div>
     `;
-
     document.getElementById('userModalContent').innerHTML = content;
     document.getElementById('userModal').classList.add('show');
 };
@@ -1254,64 +631,49 @@ document.getElementById('closeUserModal').addEventListener('click', () => {
 // 💳 PAIEMENTS
 // ============================
 async function chargerPayments() {
-    const q = query(
-        collection(db, "payments"),
-        orderBy("createdAt", "desc")
-    );
-    const snapshot = await getDocs(q);
-    allPayments = [];
-    snapshot.forEach(d => {
-        allPayments.push({ id: d.id, ...d.data() });
-    });
+    try {
+        const q = query(collection(db, "payments"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        allPayments = [];
+        snapshot.forEach(d => { allPayments.push({ id: d.id, ...d.data() }); });
+    } catch (e) {
+        const snapshot = await getDocs(collection(db, "payments"));
+        allPayments = [];
+        snapshot.forEach(d => { allPayments.push({ id: d.id, ...d.data() }); });
+        allPayments.sort((a, b) => {
+            const dA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+            const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+            return dB - dA;
+        });
+    }
+
     filteredPaymentsData = [...allPayments];
     afficherPayments();
-
-    const pending = allPayments.filter(
-        p => p.status === 'pending'
-    ).length;
-
-    document.getElementById('navPaymentsCount').textContent =
-        pending || allPayments.length;
-    document.getElementById('tabPaymentsCount').textContent =
-        allPayments.length;
+    const pending = allPayments.filter(p => p.status === 'pending').length;
+    document.getElementById('navPaymentsCount').textContent = pending || allPayments.length;
+    document.getElementById('tabPaymentsCount').textContent = allPayments.length;
 }
 
 function afficherPayments() {
     const tbody = document.getElementById('paymentsTableBody');
     tbody.innerHTML = '';
-
-    document.getElementById('paymentsCount').textContent =
-        filteredPaymentsData.length + ' paiement(s)';
+    document.getElementById('paymentsCount').textContent = filteredPaymentsData.length + ' paiement(s)';
 
     if (filteredPaymentsData.length === 0) {
         document.getElementById('paymentsEmpty').style.display = 'block';
         return;
     }
-
     document.getElementById('paymentsEmpty').style.display = 'none';
 
+    const priceSymbol = settings.priceProSymbol || settings.devise || '$';
+
     filteredPaymentsData.forEach(p => {
-        const date = p.createdAt?.toDate
-            ? p.createdAt.toDate().toLocaleDateString('fr-FR')
-            : 'N/A';
-
-        const priceSymbol = settings.priceProSymbol ||
-            settings.devise || '$';
-
+        const date = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A';
         let statusBadge = '';
         switch(p.status) {
-            case 'pending':
-                statusBadge =
-                    '<span class="badge badge-pending">⏳ En attente</span>';
-                break;
-            case 'approved':
-                statusBadge =
-                    '<span class="badge badge-approved">✅ Approuvé</span>';
-                break;
-            case 'rejected':
-                statusBadge =
-                    '<span class="badge badge-rejected">❌ Rejeté</span>';
-                break;
+            case 'pending': statusBadge = '<span class="badge badge-pending">⏳ En attente</span>'; break;
+            case 'approved': statusBadge = '<span class="badge badge-approved">✅ Approuvé</span>'; break;
+            case 'rejected': statusBadge = '<span class="badge badge-rejected">❌ Rejeté</span>'; break;
         }
 
         const row = document.createElement('tr');
@@ -1319,25 +681,15 @@ function afficherPayments() {
             <td><strong>${p.userName || 'N/A'}</strong></td>
             <td style="font-size:0.85em;">${p.userEmail || 'N/A'}</td>
             <td>${p.plan || 'N/A'}</td>
-            <td>
-                <strong>
-                    ${p.amount || 0}${priceSymbol}
-                </strong>
-            </td>
+            <td><strong>${p.amount || 0}${priceSymbol}</strong></td>
             <td>${p.method || 'N/A'}</td>
             <td style="font-size:0.85em;">${date}</td>
             <td>${statusBadge}</td>
             <td>
                 <div style="display:flex; gap:3px; flex-wrap:wrap;">
                     ${p.status === 'pending' ? `
-                        <button class="btn-sm btn-approve"
-                                onclick="approvePayment('${p.id}', '${p.userId}')">
-                            ✅ Approuver
-                        </button>
-                        <button class="btn-sm btn-reject"
-                                onclick="rejectPayment('${p.id}')">
-                            ❌ Rejeter
-                        </button>
+                        <button class="btn-sm btn-approve" onclick="approvePayment('${p.id}', '${p.userId}')">✅ Approuver</button>
+                        <button class="btn-sm btn-reject" onclick="rejectPayment('${p.id}')">❌ Rejeter</button>
                     ` : ''}
                 </div>
             </td>
@@ -1347,37 +699,25 @@ function afficherPayments() {
 }
 
 window.filterPayments = function() {
-    const search = document.getElementById('searchPayments')
-        .value.toLowerCase().trim();
+    const search = document.getElementById('searchPayments').value.toLowerCase().trim();
     const status = document.getElementById('filterPaymentStatus').value;
-
     filteredPaymentsData = allPayments.filter(p => {
         if (search) {
             const name = (p.userName || '').toLowerCase();
             const email = (p.userEmail || '').toLowerCase();
-            if (!name.includes(search) && !email.includes(search))
-                return false;
+            if (!name.includes(search) && !email.includes(search)) return false;
         }
         if (status && p.status !== status) return false;
         return true;
     });
-
     afficherPayments();
 };
 
 window.approvePayment = async function(paymentId, userId) {
-    if (!confirm("Approuver ce paiement et activer le plan Pro ?"))
-        return;
-
+    if (!confirm("Approuver ce paiement et activer le plan Pro ?")) return;
     try {
-        await updateDoc(doc(db, "payments", paymentId), {
-            status: 'approved'
-        });
-        await updateDoc(doc(db, "users", userId), {
-            isPaid: true,
-            plan: "pro",
-            maxFactures: 999999
-        });
+        await updateDoc(doc(db, "payments", paymentId), { status: 'approved' });
+        await updateDoc(doc(db, "users", userId), { isPaid: true, plan: "pro", maxFactures: 999999 });
         showToast("✅ Paiement approuvé ! Plan Pro activé.", "success");
         await chargerPayments();
         await chargerUsers();
@@ -1390,9 +730,7 @@ window.approvePayment = async function(paymentId, userId) {
 window.rejectPayment = async function(paymentId) {
     if (!confirm("Rejeter ce paiement ?")) return;
     try {
-        await updateDoc(doc(db, "payments", paymentId), {
-            status: 'rejected'
-        });
+        await updateDoc(doc(db, "payments", paymentId), { status: 'rejected' });
         showToast("✅ Paiement rejeté", "success");
         await chargerPayments();
     } catch (error) {
@@ -1404,87 +742,67 @@ window.rejectPayment = async function(paymentId) {
 // 📄 FACTURES
 // ============================
 async function chargerAllFactures() {
-    const q = query(
-        collection(db, "factures"),
-        orderBy("createdAt", "desc")
-    );
-    const snapshot = await getDocs(q);
-    allFactures = [];
-    snapshot.forEach(d => {
-        allFactures.push({ id: d.id, ...d.data() });
-    });
+    try {
+        const q = query(collection(db, "factures"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        allFactures = [];
+        snapshot.forEach(d => { allFactures.push({ id: d.id, ...d.data() }); });
+    } catch (e) {
+        const snapshot = await getDocs(collection(db, "factures"));
+        allFactures = [];
+        snapshot.forEach(d => { allFactures.push({ id: d.id, ...d.data() }); });
+        allFactures.sort((a, b) => {
+            const dA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+            const dB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+            return dB - dA;
+        });
+    }
+
     filteredFacturesData = [...allFactures];
     afficherAllFactures();
-
-    document.getElementById('navFacturesCount').textContent =
-        allFactures.length;
-    document.getElementById('tabFacturesCount').textContent =
-        allFactures.length;
+    document.getElementById('navFacturesCount').textContent = allFactures.length;
+    document.getElementById('tabFacturesCount').textContent = allFactures.length;
 }
 
 function afficherAllFactures() {
     const tbody = document.getElementById('facturesTableBody');
     tbody.innerHTML = '';
-
-    document.getElementById('facturesCount').textContent =
-        filteredFacturesData.length + ' facture(s)';
+    document.getElementById('facturesCount').textContent = filteredFacturesData.length + ' facture(s)';
 
     if (filteredFacturesData.length === 0) {
         document.getElementById('facturesEmpty').style.display = 'block';
         return;
     }
-
     document.getElementById('facturesEmpty').style.display = 'none';
+
+    const modeles = { classique: '📄 Classique', moderne: '🎨 Moderne', minimal: '✨ Minimal', professionnel: '💼 Pro' };
 
     filteredFacturesData.forEach(f => {
         const creator = allUsers.find(u => u.id === f.userId);
         const factureDevise = f.devise || devise;
-
-        const modeles = {
-            classique: '📄 Classique',
-            moderne: '🎨 Moderne',
-            minimal: '✨ Minimal',
-            professionnel: '💼 Pro'
-        };
-
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
-                <strong style="color:#6c63ff;">
-                    ${f.factureNumber || 'N/A'}
-                </strong>
-            </td>
+            <td><strong style="color:#6c63ff;">${f.factureNumber || 'N/A'}</strong></td>
             <td>${creator?.fullName || 'N/A'}</td>
             <td>${f.client?.name || 'N/A'}</td>
             <td>${f.date || 'N/A'}</td>
-            <td style="font-size:0.85em;">
-                ${modeles[f.modele] || '📄 Classique'}
-            </td>
-            <td>
-                <strong>
-                    ${(f.totalFinal || 0).toFixed(2)}
-                    ${factureDevise}
-                </strong>
-            </td>
+            <td style="font-size:0.85em;">${modeles[f.modele] || '📄 Classique'}</td>
+            <td><strong>${(f.totalFinal || 0).toFixed(2)} ${factureDevise}</strong></td>
         `;
         tbody.appendChild(row);
     });
 }
 
 window.filterFacturesAdmin = function() {
-    const search = document.getElementById('searchFactures')
-        .value.toLowerCase().trim();
-
+    const search = document.getElementById('searchFactures').value.toLowerCase().trim();
     filteredFacturesData = allFactures.filter(f => {
         if (search) {
             const num = (f.factureNumber || '').toLowerCase();
             const client = (f.client?.name || '').toLowerCase();
-            if (!num.includes(search) && !client.includes(search))
-                return false;
+            if (!num.includes(search) && !client.includes(search)) return false;
         }
         return true;
     });
-
     afficherAllFactures();
 };
 
@@ -1492,86 +810,57 @@ window.filterFacturesAdmin = function() {
 // 📊 STATS
 // ============================
 function updateStats() {
-    document.getElementById('statUsers').textContent =
-        allUsers.length;
-    document.getElementById('statFactures').textContent =
-        allFactures.length;
-
-    const pending = allPayments.filter(
-        p => p.status === 'pending'
-    ).length;
+    document.getElementById('statUsers').textContent = allUsers.length;
+    document.getElementById('statFactures').textContent = allFactures.length;
+    const pending = allPayments.filter(p => p.status === 'pending').length;
     document.getElementById('statPending').textContent = pending;
-
-    const priceSymbol = settings.priceProSymbol ||
-        settings.devise || '$';
-    const revenue = allPayments
-        .filter(p => p.status === 'approved')
-        .reduce((sum, p) => sum + (p.amount || 0), 0);
-    document.getElementById('statRevenue').textContent =
-        revenue + priceSymbol;
-
+    const priceSymbol = settings.priceProSymbol || settings.devise || '$';
+    const revenue = allPayments.filter(p => p.status === 'approved').reduce((sum, p) => sum + (p.amount || 0), 0);
+    document.getElementById('statRevenue').textContent = revenue + priceSymbol;
     const proUsers = allUsers.filter(u => u.isPaid).length;
     document.getElementById('statPro').textContent = proUsers;
-    document.getElementById('statFree').textContent =
-        allUsers.length - proUsers;
-
+    document.getElementById('statFree').textContent = allUsers.length - proUsers;
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     const newMonth = allUsers.filter(u => {
         if (!u.createdAt) return false;
-        const date = u.createdAt.toDate
-            ? u.createdAt.toDate()
-            : new Date(u.createdAt);
-        return date.getMonth() === currentMonth &&
-            date.getFullYear() === currentYear;
+        const date = u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt);
+        return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
     }).length;
-    document.getElementById('statUsersNew').textContent =
-        newMonth + ' ce mois';
+    document.getElementById('statUsersNew').textContent = newMonth + ' ce mois';
 }
 
 // ============================
-// 🕐 ACTIVITÉS RÉCENTES
+// 🕐 ACTIVITÉS
 // ============================
 function afficherActivitesRecentes() {
     const container = document.getElementById('recentActivities');
     container.innerHTML = '';
-
     const activites = [];
+    const priceSymbol = settings.priceProSymbol || settings.devise || '$';
 
-    // Derniers utilisateurs
     allUsers.slice(0, 3).forEach(u => {
         activites.push({
-            icon: '👤',
-            bg: 'rgba(52,152,219,0.1)',
+            icon: '👤', bg: 'rgba(52,152,219,0.1)',
             title: `Nouvel utilisateur : ${u.fullName}`,
             desc: u.email,
-            time: u.createdAt?.toDate
-                ? u.createdAt.toDate().toLocaleDateString('fr-FR')
-                : 'N/A'
+            time: u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A'
         });
     });
 
-    // Derniers paiements
     allPayments.slice(0, 3).forEach(p => {
-        const priceSymbol = settings.priceProSymbol ||
-            settings.devise || '$';
         activites.push({
-            icon: '💳',
-            bg: 'rgba(39,174,96,0.1)',
+            icon: '💳', bg: 'rgba(39,174,96,0.1)',
             title: `Paiement ${p.status} : ${p.userName}`,
             desc: `${p.amount}${priceSymbol} — Plan ${p.plan}`,
-            time: p.createdAt?.toDate
-                ? p.createdAt.toDate().toLocaleDateString('fr-FR')
-                : 'N/A'
+            time: p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A'
         });
     });
 
-    // Dernières factures
     allFactures.slice(0, 3).forEach(f => {
         const creator = allUsers.find(u => u.id === f.userId);
         activites.push({
-            icon: '📄',
-            bg: 'rgba(108,99,255,0.1)',
+            icon: '📄', bg: 'rgba(108,99,255,0.1)',
             title: `Facture créée : ${f.factureNumber}`,
             desc: `Par ${creator?.fullName || 'N/A'} — Client : ${f.client?.name || 'N/A'}`,
             time: f.date || 'N/A'
@@ -1579,8 +868,7 @@ function afficherActivitesRecentes() {
     });
 
     if (activites.length === 0) {
-        container.innerHTML =
-            '<div class="empty-state"><p>Aucune activité</p></div>';
+        container.innerHTML = '<div class="empty-state"><p>Aucune activité</p></div>';
         return;
     }
 
@@ -1588,14 +876,8 @@ function afficherActivitesRecentes() {
         const item = document.createElement('div');
         item.className = 'activity-item';
         item.innerHTML = `
-            <div class="activity-icon"
-                 style="background:${a.bg};">
-                ${a.icon}
-            </div>
-            <div class="activity-info">
-                <h4>${a.title}</h4>
-                <p>${a.desc}</p>
-            </div>
+            <div class="activity-icon" style="background:${a.bg};">${a.icon}</div>
+            <div class="activity-info"><h4>${a.title}</h4><p>${a.desc}</p></div>
             <div class="activity-time">${a.time}</div>
         `;
         container.appendChild(item);
@@ -1607,126 +889,74 @@ function afficherActivitesRecentes() {
 // ============================
 async function chargerSettings() {
     try {
-        const settingsDoc = await getDoc(
-            doc(db, "settings", "global")
-        );
+        const settingsDoc = await getDoc(doc(db, "settings", "global"));
         if (settingsDoc.exists()) {
             settings = settingsDoc.data();
             devise = settings.devise || '$';
-
-            document.getElementById('settingsOwnerName').value =
-                settings.ownerName || '';
-            document.getElementById('settingsOwnerEmail').value =
-                settings.ownerEmail || '';
-            document.getElementById('settingsWhatsapp').value =
-                settings.whatsapp || '';
-            document.getElementById('settingsPhone').value =
-                settings.phone || '';
-            document.getElementById('settingsEmail').value =
-                settings.email || '';
-            document.getElementById('settingsWhatsappMsg').value =
-                settings.whatsappMessage || '';
-            document.getElementById('settingsDevise').value =
-                settings.devise || '$';
-            document.getElementById('settingsDeviseCustom').value =
-                settings.deviseCustom || '';
-            document.getElementById('settingsPricePro').value =
-                settings.pricePro || 9;
-            document.getElementById('settingsPriceProSymbol').value =
-                settings.priceProSymbol || '$';
-            document.getElementById('settingsMaxFactures').value =
-                settings.maxFactures || 10;
-            document.getElementById('settingsTrialDays').value =
-                settings.trialDays || 30;
-            document.getElementById('settingsFreeDesc').value =
-                settings.freeDesc || '';
-            document.getElementById('settingsProDesc').value =
-                settings.proDesc || '';
-            document.getElementById('settingsMobileMoney').value =
-                settings.mobileMoney || '';
-            document.getElementById('settingsMobileMoneyName').value =
-                settings.mobileMoneyName || '';
-            document.getElementById('settingsIban').value =
-                settings.iban || '';
-            document.getElementById('settingsBankName').value =
-                settings.bankName || '';
-            document.getElementById('settingsTva').value =
-                settings.tva || 18;
-            document.getElementById('settingsMentions').value =
-                settings.mentions || '';
-            document.getElementById('settingsFooter').value =
-                settings.footer || '';
+            document.getElementById('settingsOwnerName').value = settings.ownerName || '';
+            document.getElementById('settingsOwnerEmail').value = settings.ownerEmail || '';
+            document.getElementById('settingsWhatsapp').value = settings.whatsapp || '';
+            document.getElementById('settingsPhone').value = settings.phone || '';
+            document.getElementById('settingsEmail').value = settings.email || '';
+            document.getElementById('settingsWhatsappMsg').value = settings.whatsappMessage || '';
+            document.getElementById('settingsDevise').value = settings.devise || '$';
+            document.getElementById('settingsDeviseCustom').value = settings.deviseCustom || '';
+            document.getElementById('settingsPricePro').value = settings.pricePro || 9;
+            document.getElementById('settingsPriceProSymbol').value = settings.priceProSymbol || '$';
+            document.getElementById('settingsMaxFactures').value = settings.maxFactures || 10;
+            document.getElementById('settingsTrialDays').value = settings.trialDays || 30;
+            document.getElementById('settingsFreeDesc').value = settings.freeDesc || '';
+            document.getElementById('settingsProDesc').value = settings.proDesc || '';
+            document.getElementById('settingsMobileMoney').value = settings.mobileMoney || '';
+            document.getElementById('settingsMobileMoneyName').value = settings.mobileMoneyName || '';
+            document.getElementById('settingsIban').value = settings.iban || '';
+            document.getElementById('settingsBankName').value = settings.bankName || '';
+            document.getElementById('settingsTva').value = settings.tva || 18;
+            document.getElementById('settingsMentions').value = settings.mentions || '';
+            document.getElementById('settingsFooter').value = settings.footer || '';
         }
     } catch (error) {
         console.error("Erreur settings:", error);
     }
 }
 
-document.getElementById('btnSaveSettings')
-    .addEventListener('click', async () => {
+document.getElementById('btnSaveSettings').addEventListener('click', async () => {
     const btn = document.getElementById('btnSaveSettings');
     btn.disabled = true;
     btn.textContent = '⏳ Sauvegarde...';
 
     try {
-        const deviseCustom = document.getElementById('settingsDeviseCustom')
-            .value.trim();
-        const deviseValue = deviseCustom ||
-            document.getElementById('settingsDevise').value;
+        const deviseCustom = document.getElementById('settingsDeviseCustom').value.trim();
+        const deviseValue = deviseCustom || document.getElementById('settingsDevise').value;
 
         settings = {
-            ownerName: document.getElementById('settingsOwnerName')
-                .value.trim(),
-            ownerEmail: document.getElementById('settingsOwnerEmail')
-                .value.trim(),
-            whatsapp: document.getElementById('settingsWhatsapp')
-                .value.trim(),
-            phone: document.getElementById('settingsPhone')
-                .value.trim(),
-            email: document.getElementById('settingsEmail')
-                .value.trim(),
-            whatsappMessage: document.getElementById('settingsWhatsappMsg')
-                .value.trim(),
+            ownerName: document.getElementById('settingsOwnerName').value.trim(),
+            ownerEmail: document.getElementById('settingsOwnerEmail').value.trim(),
+            whatsapp: document.getElementById('settingsWhatsapp').value.trim(),
+            phone: document.getElementById('settingsPhone').value.trim(),
+            email: document.getElementById('settingsEmail').value.trim(),
+            whatsappMessage: document.getElementById('settingsWhatsappMsg').value.trim(),
             devise: deviseValue,
             deviseCustom: deviseCustom,
-            pricePro: parseFloat(
-                document.getElementById('settingsPricePro').value
-            ) || 9,
-            priceProSymbol: document.getElementById('settingsPriceProSymbol')
-                .value.trim() || deviseValue,
-            maxFactures: parseInt(
-                document.getElementById('settingsMaxFactures').value
-            ) || 10,
-            trialDays: parseInt(
-                document.getElementById('settingsTrialDays').value
-            ) || 30,
-            freeDesc: document.getElementById('settingsFreeDesc')
-                .value.trim(),
-            proDesc: document.getElementById('settingsProDesc')
-                .value.trim(),
-            mobileMoney: document.getElementById('settingsMobileMoney')
-                .value.trim(),
-            mobileMoneyName: document.getElementById('settingsMobileMoneyName')
-                .value.trim(),
-            iban: document.getElementById('settingsIban')
-                .value.trim(),
-            bankName: document.getElementById('settingsBankName')
-                .value.trim(),
-            tva: parseFloat(
-                document.getElementById('settingsTva').value
-            ) || 18,
-            mentions: document.getElementById('settingsMentions')
-                .value.trim(),
-            footer: document.getElementById('settingsFooter')
-                .value.trim(),
+            pricePro: parseFloat(document.getElementById('settingsPricePro').value) || 9,
+            priceProSymbol: document.getElementById('settingsPriceProSymbol').value.trim() || deviseValue,
+            maxFactures: parseInt(document.getElementById('settingsMaxFactures').value) || 10,
+            trialDays: parseInt(document.getElementById('settingsTrialDays').value) || 30,
+            freeDesc: document.getElementById('settingsFreeDesc').value.trim(),
+            proDesc: document.getElementById('settingsProDesc').value.trim(),
+            mobileMoney: document.getElementById('settingsMobileMoney').value.trim(),
+            mobileMoneyName: document.getElementById('settingsMobileMoneyName').value.trim(),
+            iban: document.getElementById('settingsIban').value.trim(),
+            bankName: document.getElementById('settingsBankName').value.trim(),
+            tva: parseFloat(document.getElementById('settingsTva').value) || 18,
+            mentions: document.getElementById('settingsMentions').value.trim(),
+            footer: document.getElementById('settingsFooter').value.trim(),
             updatedAt: serverTimestamp()
         };
 
         await setDoc(doc(db, "settings", "global"), settings);
-
         devise = deviseValue;
         updateStats();
-
         showToast("✅ Paramètres sauvegardés !", "success");
 
     } catch (error) {
@@ -1741,19 +971,10 @@ document.getElementById('btnSaveSettings')
 // 🔀 TABS
 // ============================
 window.switchTab = function(tabName) {
-    // Cacher tous les contenus
-    document.querySelectorAll('.tab-content')
-        .forEach(t => t.classList.remove('active'));
-
-    // Désactiver tous les tabs
-    document.querySelectorAll('.tab')
-        .forEach(t => t.classList.remove('active'));
-
-    // Activer le bon contenu
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const content = document.getElementById('content-' + tabName);
     if (content) content.classList.add('active');
-
-    // Activer le bon tab button
     const tab = document.getElementById('tab-' + tabName);
     if (tab) tab.classList.add('active');
 };
@@ -1771,8 +992,7 @@ function showToast(message, type) {
 // ============================
 // 🚪 DÉCONNEXION
 // ============================
-document.getElementById('logoutBtn')
-    .addEventListener('click', async (e) => {
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
         await signOut(auth);
@@ -1788,7 +1008,6 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 });
 </script>
 
-<!-- Dark Mode -->
 <script src="../js/darkmode.js"></script>
 <script>
     function updateDarkBtn() {
@@ -1796,8 +1015,7 @@ document.getElementById('menuToggle').addEventListener('click', () => {
         const icon = document.getElementById('darkModeIcon');
         const text = document.getElementById('darkModeText');
         if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-        if (text) text.textContent = isDark
-            ? 'Mode clair' : 'Mode sombre';
+        if (text) text.textContent = isDark ? 'Mode clair' : 'Mode sombre';
     }
     window.addEventListener('load', updateDarkBtn);
 </script>
