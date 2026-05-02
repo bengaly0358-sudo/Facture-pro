@@ -69,7 +69,287 @@
         .devise-selector label { font-weight: 600; color: #555; font-size: 0.9em; }
         .devise-selector select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; outline: none; background: white; }
 
-        /* TABLE */
+/* ======= ASSISTANT IA ======= */
+.ia-assistant-box {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    color: white;
+}
+
+.ia-assistant-box h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.ia-assistant-box p {
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.ia-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-ia {
+    padding: 8px 15px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+}
+
+.btn-ia:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+.btn-ia:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ======= MODAL IA ======= */
+.modal-ia {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.modal-ia.show { display: flex; }
+
+.modal-ia-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-ia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px 15px 0 0;
+    color: white;
+}
+
+.modal-ia-header h3 { color: white; margin: 0; }
+
+.modal-ia-header button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.modal-ia-body {
+    padding: 20px;
+    font-size: 0.95em;
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.modal-ia-actions {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    justify-content: flex-end;
+}
+
+.btn-appliquer {
+    padding: 10px 20px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-appliquer:hover { background: #1e8449; }
+
+.btn-fermer {
+    padding: 10px 20px;
+    background: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* ======= CHATBOT ======= */
+.btn-chatbot {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 5px 20px rgba(102,126,234,0.5);
+    z-index: 9998;
+    transition: all 0.3s;
+}
+
+.btn-chatbot:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.6);
+}
+
+.chatbot-box {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 450px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    z-index: 9998;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatbot-box.show { display: flex; }
+
+.chatbot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.chatbot-header h3 { color: white; margin: 0; font-size: 1em; }
+
+.chatbot-header button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    max-width: 85%;
+    line-height: 1.4;
+}
+
+.message.bot {
+    background: #f0f2f5;
+    color: #333;
+    align-self: flex-start;
+    border-radius: 12px 12px 12px 0;
+}
+
+.message.user {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    align-self: flex-end;
+    border-radius: 12px 12px 0 12px;
+}
+
+.message.loading {
+    background: #f0f2f5;
+    color: #888;
+    align-self: flex-start;
+}
+
+.chatbot-input {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 0.9em;
+    outline: none;
+}
+
+.chatbot-input input:focus { border-color: #667eea; }
+
+.chatbot-input button {
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* Loading animation */
+.loading-dots::after {
+    content: '...';
+    animation: dots 1s infinite;
+}
+
+@keyframes dots {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+}
+
+@media (max-width: 768px) {
+    .chatbot-box {
+        width: 90%;
+        right: 5%;
+        bottom: 90px;
+    }
+    .ia-buttons { flex-direction: column; }
+    .btn-ia { width: 100%; text-align: center; }
+}        
+/* TABLE */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
         thead tr { background: #6c63ff; color: white; }
@@ -294,7 +574,74 @@
             <div class="mobile-articles" id="mobileArticles">
                 <div id="mobileArticlesContainer"></div>
             </div>
-            <button id="addArticle" class="btn-add">+ Ajouter un article</button>
+            
+<button id="addArticle" class="btn-add">
+    + Ajouter un article
+</button>
+
+<!-- ASSISTANT IA -->
+<div class="ia-assistant-box">
+    <h3>🤖 Assistant IA</h3>
+    <p>Laisse l'IA t'aider à remplir ta facture</p>
+    <div class="ia-buttons">
+        <button class="btn-ia" id="btnIADescription">
+            ✨ Générer descriptions
+        </button>
+        <button class="btn-ia" id="btnIAPrix">
+            💰 Suggérer prix
+        </button>
+        <button class="btn-ia" id="btnIANotes">
+            📝 Générer notes
+        </button>
+        <button class="btn-ia" id="btnIAAnalyse">
+            📊 Analyser facture
+        </button>
+    </div>
+</div>
+
+<!-- CHATBOT IA -->
+<div class="chatbot-box" id="chatbotBox">
+    <div class="chatbot-header">
+        <h3>🤖 Assistant Facture Pro</h3>
+        <button id="closeChatbot">✕</button>
+    </div>
+    <div class="chatbot-messages" id="chatbotMessages">
+        <div class="message bot">
+            👋 Bonjour ! Je suis ton assistant IA.
+            Comment puis-je t'aider avec ta facture ?
+        </div>
+    </div>
+    <div class="chatbot-input">
+        <input type="text" id="chatbotInput"
+               placeholder="Pose ta question...">
+        <button id="chatbotSend">📤</button>
+    </div>
+</div>
+
+<!-- BOUTON CHATBOT -->
+<button class="btn-chatbot" id="btnChatbot">
+    🤖 Assistant
+</button>
+
+<!-- MODAL RÉSULTAT IA -->
+<div class="modal-ia" id="modalIA">
+    <div class="modal-ia-content">
+        <div class="modal-ia-header">
+            <h3 id="modalIATitle">🤖 Résultat IA</h3>
+            <button id="closeModalIA">✕</button>
+        </div>
+        <div class="modal-ia-body" id="modalIABody">
+        </div>
+        <div class="modal-ia-actions">
+            <button id="btnAppliquerIA" class="btn-appliquer">
+                ✅ Appliquer
+            </button>
+            <button id="btnFermerIA" class="btn-fermer">
+                ❌ Fermer
+            </button>
+        </div>
+    </div>
+</div>
         </div>
 
         <div class="section calculs-section">
@@ -946,6 +1293,388 @@ document.getElementById('saveSignClient').addEventListener('click', () => { loca
     }
     window.addEventListener('load', updateDarkBtn);
 </script>
+<script>
+// ============================
+// 🤖 ASSISTANT IA
+// ============================
+const BACKEND_URL = 'https://facture-pro-backend.onrender.com';
+let historiqueChat = [];
+let dernierResultatIA = '';
+let typeResultatIA = '';
 
+// ============================
+// 🔧 FONCTION APPEL API
+// ============================
+async function appellerIA(endpoint, data) {
+    const response = await fetch(BACKEND_URL + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+        throw new Error('Erreur serveur : ' + response.status);
+    }
+
+    return await response.json();
+}
+
+// ============================
+// ✨ GÉNÉRER DESCRIPTIONS
+// ============================
+document.getElementById('btnIADescription')
+    .addEventListener('click', async () => {
+
+    const rows = document.querySelectorAll('#articlesBody tr');
+    const mCards = document.querySelectorAll('.mobile-article-card');
+
+    if (rows.length === 0) {
+        showToast("❌ Ajoutez d'abord des articles", "error");
+        return;
+    }
+
+    const btn = document.getElementById('btnIADescription');
+    btn.disabled = true;
+    btn.textContent = '⏳ Génération...';
+
+    try {
+        let descriptionsGenerees = [];
+
+        for (let row of rows) {
+            const descInput = row.querySelector('.desc');
+            const articleNom = descInput.value.trim();
+
+            if (articleNom) {
+                const result = await appellerIA(
+                    '/api/generer-description',
+                    { article: articleNom }
+                );
+                descriptionsGenerees.push({
+                    original: articleNom,
+                    description: result.description
+                });
+            }
+        }
+
+        if (descriptionsGenerees.length === 0) {
+            showToast(
+                "❌ Remplissez les noms des articles d'abord",
+                "error"
+            );
+            btn.disabled = false;
+            btn.textContent = '✨ Générer descriptions';
+            return;
+        }
+
+        // Afficher dans modal
+        let contenu = descriptionsGenerees.map((d, i) =>
+            `Article ${i + 1} : ${d.original}\n📝 ${d.description}`
+        ).join('\n\n');
+
+        dernierResultatIA = descriptionsGenerees;
+        typeResultatIA = 'descriptions';
+
+        afficherModalIA(
+            '✨ Descriptions générées',
+            contenu
+        );
+
+    } catch (error) {
+        showToast("❌ Erreur IA : " + error.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✨ Générer descriptions';
+});
+
+// ============================
+// 💰 SUGGÉRER PRIX
+// ============================
+document.getElementById('btnIAPrix')
+    .addEventListener('click', async () => {
+
+    const rows = document.querySelectorAll('#articlesBody tr');
+    const devise = document.getElementById('devise').value;
+
+    if (rows.length === 0) {
+        showToast("❌ Ajoutez d'abord des articles", "error");
+        return;
+    }
+
+    const btn = document.getElementById('btnIAPrix');
+    btn.disabled = true;
+    btn.textContent = '⏳ Analyse...';
+
+    try {
+        let prixGeneres = [];
+
+        for (let row of rows) {
+            const descInput = row.querySelector('.desc');
+            const articleNom = descInput.value.trim();
+
+            if (articleNom) {
+                const result = await appellerIA(
+                    '/api/suggerer-prix',
+                    { article: articleNom, devise: devise }
+                );
+                prixGeneres.push({
+                    article: articleNom,
+                    prix: result.prix,
+                    row: row
+                });
+            }
+        }
+
+        if (prixGeneres.length === 0) {
+            showToast(
+                "❌ Remplissez les noms des articles d'abord",
+                "error"
+            );
+            btn.disabled = false;
+            btn.textContent = '💰 Suggérer prix';
+            return;
+        }
+
+        let contenu = prixGeneres.map((p, i) =>
+            `Article ${i + 1} : ${p.article}\n💰 Prix suggéré : ${p.prix} ${devise}`
+        ).join('\n\n');
+
+        dernierResultatIA = prixGeneres;
+        typeResultatIA = 'prix';
+
+        afficherModalIA('💰 Prix suggérés', contenu);
+
+    } catch (error) {
+        showToast("❌ Erreur IA : " + error.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = '💰 Suggérer prix';
+});
+
+// ============================
+// 📝 GÉNÉRER NOTES
+// ============================
+document.getElementById('btnIANotes')
+    .addEventListener('click', async () => {
+
+    const clientName = document.getElementById('clientName').value.trim();
+    const total = document.getElementById('totalFinal').textContent;
+    const devise = document.getElementById('devise').value;
+
+    const btn = document.getElementById('btnIANotes');
+    btn.disabled = true;
+    btn.textContent = '⏳ Génération...';
+
+    try {
+        const result = await appellerIA('/api/generer-notes', {
+            client: clientName || 'le client',
+            total: total,
+            devise: devise
+        });
+
+        dernierResultatIA = result.notes;
+        typeResultatIA = 'notes';
+
+        afficherModalIA('📝 Notes générées', result.notes);
+
+    } catch (error) {
+        showToast("❌ Erreur IA : " + error.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = '📝 Générer notes';
+});
+
+// ============================
+// 📊 ANALYSER FACTURE
+// ============================
+document.getElementById('btnIAAnalyse')
+    .addEventListener('click', async () => {
+
+    const rows = document.querySelectorAll('#articlesBody tr');
+    const articles = [];
+
+    rows.forEach(row => {
+        const desc = row.querySelector('.desc').value;
+        const prix = row.querySelector('.prix').value;
+        const qty = row.querySelector('.qty').value;
+        if (desc) {
+            articles.push({
+                description: desc,
+                prix: prix,
+                quantite: qty
+            });
+        }
+    });
+
+    if (articles.length === 0) {
+        showToast("❌ Ajoutez d'abord des articles", "error");
+        return;
+    }
+
+    const btn = document.getElementById('btnIAAnalyse');
+    btn.disabled = true;
+    btn.textContent = '⏳ Analyse...';
+
+    try {
+        const result = await appellerIA('/api/analyser-facture', {
+            client: document.getElementById('clientName').value || 'N/A',
+            articles: articles,
+            total: document.getElementById('totalFinal').textContent,
+            devise: document.getElementById('devise').value,
+            tva: document.getElementById('tvaPercent').value,
+            reduction: document.getElementById('reductionPercent').value
+        });
+
+        dernierResultatIA = result.analyse;
+        typeResultatIA = 'analyse';
+
+        afficherModalIA('📊 Analyse de la facture', result.analyse);
+
+    } catch (error) {
+        showToast("❌ Erreur IA : " + error.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = '📊 Analyser facture';
+});
+
+// ============================
+// 📋 MODAL IA
+// ============================
+function afficherModalIA(titre, contenu) {
+    document.getElementById('modalIATitle').textContent = titre;
+    document.getElementById('modalIABody').textContent = contenu;
+    document.getElementById('modalIA').classList.add('show');
+}
+
+document.getElementById('closeModalIA').addEventListener('click', () => {
+    document.getElementById('modalIA').classList.remove('show');
+});
+
+document.getElementById('btnFermerIA').addEventListener('click', () => {
+    document.getElementById('modalIA').classList.remove('show');
+});
+
+// Appliquer le résultat IA
+document.getElementById('btnAppliquerIA').addEventListener('click', () => {
+    if (typeResultatIA === 'descriptions') {
+        const rows = document.querySelectorAll('#articlesBody tr');
+        const mCards = document.querySelectorAll('.mobile-article-card');
+
+        dernierResultatIA.forEach((d, i) => {
+            if (rows[i]) {
+                rows[i].querySelector('.desc').value = d.description;
+            }
+            if (mCards[i]) {
+                const mDesc = mCards[i].querySelector('.m-desc');
+                if (mDesc) mDesc.value = d.description;
+            }
+        });
+        showToast("✅ Descriptions appliquées !", "success");
+
+    } else if (typeResultatIA === 'prix') {
+        const rows = document.querySelectorAll('#articlesBody tr');
+        const mCards = document.querySelectorAll('.mobile-article-card');
+
+        dernierResultatIA.forEach((p, i) => {
+            if (rows[i]) {
+                rows[i].querySelector('.prix').value = p.prix;
+            }
+            if (mCards[i]) {
+                const mPrix = mCards[i].querySelector('.m-prix');
+                if (mPrix) mPrix.value = p.prix;
+            }
+        });
+        calculerTotal();
+        showToast("✅ Prix appliqués !", "success");
+
+    } else if (typeResultatIA === 'notes') {
+        document.getElementById('factureNotes').value =
+            dernierResultatIA;
+        showToast("✅ Notes appliquées !", "success");
+    }
+
+    document.getElementById('modalIA').classList.remove('show');
+});
+
+// ============================
+// 💬 CHATBOT
+// ============================
+const btnChatbot = document.getElementById('btnChatbot');
+const chatbotBox = document.getElementById('chatbotBox');
+const chatbotInput = document.getElementById('chatbotInput');
+const chatbotMessages = document.getElementById('chatbotMessages');
+
+btnChatbot.addEventListener('click', () => {
+    chatbotBox.classList.toggle('show');
+});
+
+document.getElementById('closeChatbot').addEventListener('click', () => {
+    chatbotBox.classList.remove('show');
+});
+
+document.getElementById('chatbotSend').addEventListener('click', () => {
+    envoyerMessageChat();
+});
+
+chatbotInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') envoyerMessageChat();
+});
+
+async function envoyerMessageChat() {
+    const message = chatbotInput.value.trim();
+    if (!message) return;
+
+    // Afficher message utilisateur
+    ajouterMessage(message, 'user');
+    chatbotInput.value = '';
+
+    // Ajouter au historique
+    historiqueChat.push({ role: 'user', content: message });
+
+    // Message loading
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message bot loading';
+    loadingDiv.innerHTML = '🤖 <span class="loading-dots">En train de réfléchir</span>';
+    chatbotMessages.appendChild(loadingDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+    try {
+        const result = await appellerIA('/api/chat', {
+            message: message,
+            historique: historiqueChat.slice(-10)
+        });
+
+        // Supprimer loading
+        chatbotMessages.removeChild(loadingDiv);
+
+        // Afficher réponse
+        ajouterMessage(result.reponse, 'bot');
+
+        // Ajouter au historique
+        historiqueChat.push({
+            role: 'assistant',
+            content: result.reponse
+        });
+
+    } catch (error) {
+        chatbotMessages.removeChild(loadingDiv);
+        ajouterMessage(
+            "❌ Désolé, une erreur est survenue. Réessayez.",
+            'bot'
+        );
+    }
+}
+
+function ajouterMessage(texte, type) {
+    const div = document.createElement('div');
+    div.className = 'message ' + type;
+    div.textContent = (type === 'bot' ? '🤖 ' : '👤 ') + texte;
+    chatbotMessages.appendChild(div);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+</script>
 </body>
 </html>
