@@ -46,8 +46,11 @@
         .filter-group { flex: 1; min-width: 180px; }
         .filter-group label { display: block; margin-bottom: 5px; color: #666; font-size: 0.85em; font-weight: 600; }
         .filter-group input, .filter-group select { width: 100%; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9em; outline: none; background: #fafafa; }
+        .filter-group input:focus, .filter-group select:focus { border-color: #6c63ff; background: white; }
         .btn-filter { padding: 10px 20px; background: #6c63ff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; height: 42px; }
+        .btn-filter:hover { background: #5a52d5; }
         .btn-clear-filter { padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; height: 42px; }
+        .btn-clear-filter:hover { background: #7f8c8d; }
         .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-mini { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
         .stat-mini .stat-icon { font-size: 1.5em; margin-bottom: 5px; }
@@ -68,10 +71,15 @@
         .badge-created { background: rgba(39,174,96,0.1); color: #27ae60; }
         .badge-expired { background: rgba(231,76,60,0.1); color: #e74c3c; }
         .actions-cell { display: flex; gap: 5px; flex-wrap: wrap; }
-        .btn-view, .btn-pdf-dl, .btn-delete-facture { padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.2s; white-space: nowrap; }
+        .btn-view, .btn-edit, .btn-pdf-dl, .btn-delete-facture { padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.2s; white-space: nowrap; }
         .btn-view { background: #3498db; color: white; }
+        .btn-view:hover { background: #2980b9; }
+        .btn-edit { background: #27ae60; color: white; }
+        .btn-edit:hover { background: #1e8449; }
         .btn-pdf-dl { background: #e74c3c; color: white; }
+        .btn-pdf-dl:hover { background: #c0392b; }
         .btn-delete-facture { background: #95a5a6; color: white; }
+        .btn-delete-facture:hover { background: #7f8c8d; }
         .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
         .empty-state .empty-icon { font-size: 3em; margin-bottom: 15px; }
         .empty-state p { margin-bottom: 20px; font-size: 1.1em; }
@@ -90,7 +98,11 @@
         .modal-close:hover { background: #c0392b; }
         .modal-actions-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .btn-modal-pdf { padding: 8px 18px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; }
+        .btn-modal-pdf:hover { background: #c0392b; }
         .btn-modal-print { padding: 8px 18px; background: #2980b9; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; }
+        .btn-modal-print:hover { background: #2471a3; }
+        .btn-modal-edit { padding: 8px 18px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; }
+        .btn-modal-edit:hover { background: #1e8449; }
         .modal-delete { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 99999; }
         .modal-delete.show { display: flex; }
         .modal-delete-content { background: white; padding: 35px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
@@ -98,11 +110,15 @@
         .modal-delete-content p { color: #666; margin-bottom: 10px; }
         .modal-delete-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
         .btn-confirm-delete { padding: 12px 25px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-confirm-delete:hover { background: #c0392b; }
         .btn-cancel-delete { padding: 12px 25px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-cancel-delete:hover { background: #7f8c8d; }
         .toast { position: fixed; bottom: 30px; right: 30px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 600; z-index: 999999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-success { background: #27ae60; }
         .toast-error { background: #e74c3c; }
+
+        /* MOBILE */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -112,6 +128,46 @@
             .filter-group { min-width: 100%; }
             .stats-bar { grid-template-columns: 1fr 1fr; }
             .actions-cell { flex-direction: column; }
+
+            /* Cards mobile au lieu de table */
+            .table-wrapper table thead { display: none; }
+            .table-wrapper table tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                background: #f8f9fa;
+                border-radius: 10px;
+                padding: 15px;
+                border: 1px solid #eee;
+            }
+            .table-wrapper table tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border-bottom: 1px solid #eee;
+                font-size: 0.9em;
+            }
+            .table-wrapper table tbody td:last-child {
+                border-bottom: none;
+                padding-top: 10px;
+                justify-content: flex-start;
+            }
+            .table-wrapper table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #666;
+                font-size: 0.85em;
+                margin-right: 10px;
+            }
+            .actions-cell {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-bar { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -234,6 +290,7 @@
     <div class="modal-box">
         <button class="modal-close" id="closeViewModal">✕</button>
         <div class="modal-actions-bar">
+            <button class="btn-modal-edit" id="modalBtnEdit">✏️ Modifier</button>
             <button class="btn-modal-pdf" id="modalBtnPDF">📄 Télécharger PDF</button>
             <button class="btn-modal-print" id="modalBtnPrint">🖨️ Imprimer</button>
         </div>
@@ -289,7 +346,6 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = user;
 
     try {
-        // ✅ Cache userData
         let userData = Cache.get('userData_' + user.uid);
         if (!userData) {
             const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -306,7 +362,6 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('userPlan').className = "user-plan plan-pro";
         }
 
-        // ✅ Cache settings
         settings = Cache.get('settings');
         if (!settings) {
             const settingsDoc = await getDoc(doc(db, "settings", "global"));
@@ -330,22 +385,19 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// ============================
+// 📋 CHARGER FACTURES
+// ============================
 async function chargerFactures() {
     document.getElementById('loadingState').style.display = 'block';
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('tableWrapper').style.display = 'none';
 
     try {
-        const q = query(
-            collection(db, "factures"),
-            where("userId", "==", currentUser.uid)
-        );
-
+        const q = query(collection(db, "factures"), where("userId", "==", currentUser.uid));
         const snapshot = await getDocs(q);
         allFactures = [];
-        snapshot.forEach(docSnap => {
-            allFactures.push({ id: docSnap.id, ...docSnap.data() });
-        });
+        snapshot.forEach(docSnap => { allFactures.push({ id: docSnap.id, ...docSnap.data() }); });
 
         allFactures.sort((a, b) => {
             const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
@@ -357,7 +409,6 @@ async function chargerFactures() {
         updateStats();
         currentPage = 1;
         afficherFactures();
-
     } catch (error) {
         console.error("Erreur chargement:", error);
         document.getElementById('loadingState').innerHTML = `<p style="color:red; padding:20px;">❌ Erreur : ${error.message}</p>`;
@@ -367,6 +418,9 @@ async function chargerFactures() {
     document.getElementById('loadingState').style.display = 'none';
 }
 
+// ============================
+// 📊 STATS
+// ============================
 function updateStats() {
     const total = filteredFactures.length;
     let revenue = 0;
@@ -389,6 +443,9 @@ function updateStats() {
     document.getElementById('statAverage').textContent = average.toFixed(2) + ' ' + devise;
 }
 
+// ============================
+// 📋 AFFICHER FACTURES
+// ============================
 function afficherFactures() {
     const tbody = document.getElementById('facturesBody');
     tbody.innerHTML = '';
@@ -408,6 +465,8 @@ function afficherFactures() {
     const start = (currentPage - 1) * perPage;
     const pageFactures = filteredFactures.slice(start, start + perPage);
 
+    const modeles = { classique: '📄 Classique', moderne: '🎨 Moderne', minimal: '✨ Minimal', professionnel: '💼 Pro' };
+
     pageFactures.forEach(f => {
         const factureDevise = f.devise || devise;
         const now = new Date();
@@ -416,20 +475,19 @@ function afficherFactures() {
             ? '<span class="badge badge-expired">⏰ Échue</span>'
             : '<span class="badge badge-created">✅ Active</span>';
 
-        const modeles = { classique: '📄 Classique', moderne: '🎨 Moderne', minimal: '✨ Minimal', professionnel: '💼 Pro' };
-
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong class="facture-number">${f.factureNumber || 'N/A'}</strong></td>
-            <td>${f.client?.name || 'N/A'}</td>
-            <td>${f.date || 'N/A'}</td>
-            <td>${f.echeance || 'N/A'}</td>
-            <td><span style="font-size:0.85em; color:#666;">${modeles[f.modele] || '📄 Classique'}</span></td>
-            <td><strong>${(f.totalFinal || 0).toFixed(2)} ${factureDevise}</strong></td>
-            <td>${statusHTML}</td>
-            <td>
+            <td data-label="N° Facture"><strong class="facture-number">${f.factureNumber || 'N/A'}</strong></td>
+            <td data-label="Client">${f.client?.name || 'N/A'}</td>
+            <td data-label="Date">${f.date || 'N/A'}</td>
+            <td data-label="Échéance">${f.echeance || 'N/A'}</td>
+            <td data-label="Modèle"><span style="font-size:0.85em; color:#666;">${modeles[f.modele] || '📄 Classique'}</span></td>
+            <td data-label="Total"><strong>${(f.totalFinal || 0).toFixed(2)} ${factureDevise}</strong></td>
+            <td data-label="Statut">${statusHTML}</td>
+            <td data-label="Actions">
                 <div class="actions-cell">
                     <button class="btn-view" onclick="viewFacture('${f.id}')">👁️ Voir</button>
+                    <button class="btn-edit" onclick="modifierFacture('${f.id}')">✏️ Modifier</button>
                     <button class="btn-pdf-dl" onclick="downloadPDF('${f.id}')">📄 PDF</button>
                     <button class="btn-delete-facture" onclick="openDeleteModal('${f.id}')">🗑️</button>
                 </div>
@@ -448,6 +506,9 @@ function afficherFactures() {
     }
 }
 
+// ============================
+// 🔍 RECHERCHE
+// ============================
 document.getElementById('btnSearch').addEventListener('click', appliquerFiltres);
 document.getElementById('searchInput').addEventListener('keyup', (e) => { if (e.key === 'Enter') appliquerFiltres(); });
 document.getElementById('btnClearSearch').addEventListener('click', () => {
@@ -493,12 +554,26 @@ function appliquerFiltres() {
     afficherFactures();
 }
 
+// ============================
+// 📄 PAGINATION
+// ============================
 document.getElementById('prevPage').addEventListener('click', () => { if (currentPage > 1) { currentPage--; afficherFactures(); } });
 document.getElementById('nextPage').addEventListener('click', () => {
     const totalPages = Math.ceil(filteredFactures.length / perPage);
     if (currentPage < totalPages) { currentPage++; afficherFactures(); }
 });
 
+// ============================
+// ✏️ MODIFIER FACTURE
+// ============================
+window.modifierFacture = function(factureId) {
+    localStorage.setItem('editFactureId', factureId);
+    window.location.href = 'new-facture.html?edit=' + factureId;
+};
+
+// ============================
+// 👁️ VOIR FACTURE
+// ============================
 window.viewFacture = function(factureId) {
     const f = allFactures.find(x => x.id === factureId);
     if (!f) return;
@@ -527,7 +602,7 @@ window.viewFacture = function(factureId) {
 
     const content = `
         <div style="font-family:Arial,sans-serif;">
-            <div style="display:flex; justify-content:space-between; border-bottom:3px solid ${headerColor}; padding-bottom:15px; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:3px solid ${headerColor}; padding-bottom:15px; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                 <div>
                     <h1 style="color:${headerColor}; font-size:2em; margin:0;">FACTURE</h1>
                     <p style="margin:3px 0; font-size:0.9em;"><strong>N°:</strong> ${f.factureNumber || 'N/A'}</p>
@@ -556,22 +631,10 @@ window.viewFacture = function(factureId) {
             </table>
             <div style="display:flex; justify-content:flex-end; margin-bottom:15px;">
                 <div style="width:280px; background:#f8f9fa; padding:15px; border-radius:8px; font-size:0.9em;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <span>Sous-total :</span>
-                        <strong>${(f.sousTotal || 0).toFixed(2)} ${factureDevise}</strong>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <span>TVA (${f.tvaPercent || 0}%) :</span>
-                        <span>${(f.tvaAmount || 0).toFixed(2)} ${factureDevise}</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#e74c3c;">
-                        <span>Réduction (${f.reductionPercent || 0}%) :</span>
-                        <span>-${(f.reductionAmount || 0).toFixed(2)} ${factureDevise}</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; border-top:2px solid ${headerColor}; padding-top:8px; margin-top:8px;">
-                        <strong style="font-size:1.1em;">TOTAL :</strong>
-                        <strong style="font-size:1.1em; color:${headerColor};">${(f.totalFinal || 0).toFixed(2)} ${factureDevise}</strong>
-                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Sous-total :</span><strong>${(f.sousTotal || 0).toFixed(2)} ${factureDevise}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>TVA (${f.tvaPercent || 0}%) :</span><span>${(f.tvaAmount || 0).toFixed(2)} ${factureDevise}</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#e74c3c;"><span>Réduction (${f.reductionPercent || 0}%) :</span><span>-${(f.reductionAmount || 0).toFixed(2)} ${factureDevise}</span></div>
+                    <div style="display:flex; justify-content:space-between; border-top:2px solid ${headerColor}; padding-top:8px; margin-top:8px;"><strong style="font-size:1.1em;">TOTAL :</strong><strong style="font-size:1.1em; color:${headerColor};">${(f.totalFinal || 0).toFixed(2)} ${factureDevise}</strong></div>
                 </div>
             </div>
             ${f.notes ? `<div style="background:#fff3cd; padding:12px; border-radius:8px; margin-bottom:15px; border-left:4px solid #ffc107; font-size:0.85em;"><strong>📝 Notes :</strong><p style="margin:5px 0; white-space:pre-wrap;">${f.notes}</p></div>` : ''}
@@ -585,6 +648,9 @@ window.viewFacture = function(factureId) {
     document.getElementById('viewModal').classList.add('show');
 };
 
+// ============================
+// MODAL EVENTS
+// ============================
 document.getElementById('closeViewModal').addEventListener('click', () => {
     document.getElementById('viewModal').classList.remove('show');
     currentViewFacture = null;
@@ -597,19 +663,31 @@ document.getElementById('viewModal').addEventListener('click', (e) => {
     }
 });
 
+// Modifier depuis modal
+document.getElementById('modalBtnEdit').addEventListener('click', () => {
+    if (currentViewFacture) {
+        modifierFacture(currentViewFacture.id);
+    }
+});
+
+// PDF depuis modal
 document.getElementById('modalBtnPDF').addEventListener('click', () => {
     if (!currentViewFacture) return;
     downloadPDFFromModal();
 });
 
+// Imprimer depuis modal
 document.getElementById('modalBtnPrint').addEventListener('click', () => {
     const content = document.getElementById('viewModalContent').innerHTML;
     const win = window.open('', '_blank');
-    win.document.write(`<html><head><title>Facture</title><style>body{font-family:Arial,sans-serif;padding:20px;}@page{margin:10mm;}</style></head><body>${content}</body></html>`);
+    win.document.write(`<html><head><title>Facture</title><style>body{font-family:Arial,sans-serif;padding:20px;}@page{margin:10mm;}table{width:100%;border-collapse:collapse;}</style></head><body>${content}</body></html>`);
     win.document.close();
     win.print();
 });
 
+// ============================
+// 📄 PDF
+// ============================
 window.downloadPDF = function(factureId) {
     const f = allFactures.find(x => x.id === factureId);
     if (!f) return;
@@ -626,21 +704,22 @@ function downloadPDFFromModal() {
     container.innerHTML = content;
     document.body.appendChild(container);
 
-    const options = {
+    html2pdf().set({
         margin: [8, 8, 8, 8],
         filename: `facture_${f.factureNumber || 'export'}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: 'avoid-all' }
-    };
-
-    html2pdf().set(options).from(container).save().then(() => {
+    }).from(container).save().then(() => {
         document.body.removeChild(container);
         showToast("✅ PDF téléchargé !", "success");
     });
 }
 
+// ============================
+// 🗑️ SUPPRIMER
+// ============================
 window.openDeleteModal = function(factureId) {
     deleteFactureId = factureId;
     document.getElementById('deleteModal').classList.add('show');
@@ -656,10 +735,7 @@ document.getElementById('confirmDelete').addEventListener('click', async () => {
     try {
         await deleteDoc(doc(db, "factures", deleteFactureId));
         await updateDoc(doc(db, "users", currentUser.uid), { facturesCount: increment(-1) });
-
-        // Vider cache userData
         Cache.remove('userData_' + currentUser.uid);
-
         document.getElementById('deleteModal').classList.remove('show');
         showToast("✅ Facture supprimée", "success");
         await chargerFactures();
@@ -669,6 +745,9 @@ document.getElementById('confirmDelete').addEventListener('click', async () => {
     deleteFactureId = null;
 });
 
+// ============================
+// 🔔 TOAST
+// ============================
 function showToast(message, type) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
@@ -676,6 +755,9 @@ function showToast(message, type) {
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
+// ============================
+// 🚪 DÉCONNEXION
+// ============================
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {

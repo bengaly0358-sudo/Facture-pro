@@ -557,20 +557,145 @@
             }
         }
 
-        /* ======= RESPONSIVE ======= */
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
-            .menu-toggle { display: block; }
-            .calculs-wrapper { flex-direction: column; }
-            .totaux-box { width: 100%; min-width: auto; }
-            .signatures-container { flex-direction: column; }
-            .action-bar { flex-direction: column; }
-            .btn-action { width: 100%; justify-content: center; }
-            .form-row { flex-direction: column; }
-            .input-group { min-width: 100%; }
-        }
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+    .menu-toggle { display: block; }
+    .calculs-wrapper { flex-direction: column; }
+    .totaux-box { width: 100%; min-width: auto; }
+    .signatures-container { flex-direction: column; }
+    .action-bar { flex-direction: column; }
+    .btn-action { width: 100%; justify-content: center; }
+    .form-row { flex-direction: column; }
+    .input-group { min-width: 100%; }
+/* ======= ARTICLES MOBILE ======= */
+.mobile-articles {
+    display: none;
+}
+
+.mobile-article-card {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.mobile-article-card .card-number {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    background: #6c63ff;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+
+.mobile-article-card .btn-delete-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-article-card .card-field {
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.mobile-article-card .card-field:first-of-type {
+    margin-top: 30px;
+}
+
+.mobile-article-card .card-field label {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.mobile-article-card .card-field input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95em;
+    outline: none;
+    background: white;
+}
+
+.mobile-article-card .card-field input:focus {
+    border-color: #6c63ff;
+}
+
+.mobile-article-card .card-row {
+    display: flex;
+    gap: 10px;
+}
+
+.mobile-article-card .card-row .card-field {
+    flex: 1;
+}
+
+.mobile-article-card .card-total {
+    text-align: right;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #6c63ff;
+    padding-top: 5px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-articles {
+        display: block !important;
+    }
+}
+
+    /* ======= TABLE MOBILE ======= */
+    table { display: none; }
+
+    .mobile-articles { display: block !important; }
+
+    .modeles-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .modeles-bar .modele-btn {
+        width: 100%;
+        text-align: center;
+    }
+}        
     </style>
 </head>
 <body>
@@ -677,6 +802,10 @@
             <button id="btnSave" class="btn-action btn-save">
                 💾 Sauvegarder
             </button>
+<button id="btnCancel" class="btn-action btn-cancel"
+        style="display:none; background:#95a5a6; color:white;">
+    ❌ Annuler
+</button>
             <button id="btnPrint" class="btn-action btn-print">
                 🖨️ Imprimer
             </button>
@@ -758,29 +887,37 @@
                 </div>
             </div>
 
-            <!-- ARTICLES -->
-            <div class="section">
-                <h2>📦 Articles / Services</h2>
-                <div class="table-wrapper">
-                    <table id="articlesTable">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Description</th>
-                                <th>Prix Unitaire</th>
-                                <th>Qté</th>
-                                <th>Total</th>
-                                <th>❌</th>
-                            </tr>
-                        </thead>
-                        <tbody id="articlesBody"></tbody>
-                    </table>
-                </div>
-                <button id="addArticle" class="btn-add">
-                    + Ajouter un article
-                </button>
-            </div>
+           <!-- ARTICLES -->
+<div class="section">
+    <h2>📦 Articles / Services</h2>
 
+    <!-- VERSION DESKTOP : Table -->
+    <div class="table-wrapper desktop-only">
+        <table id="articlesTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Prix Unitaire</th>
+                    <th>Qté</th>
+                    <th>Total</th>
+                    <th>❌</th>
+                </tr>
+            </thead>
+            <tbody id="articlesBody"></tbody>
+        </table>
+    </div>
+
+    <!-- VERSION MOBILE : Cards -->
+    <div class="mobile-articles" id="mobileArticles" style="display:none;">
+        <div id="mobileArticlesContainer"></div>
+    </div>
+
+    <button id="addArticle" class="btn-add">
+        + Ajouter un article
+    </button>
+</div>
+            
             <!-- CALCULS -->
             <div class="section calculs-section">
                 <div class="calculs-wrapper">
@@ -945,6 +1082,181 @@ let settings = {};
 let modeleActuel = 'classique';
 
 // ============================
+// 📝 MODE ÉDITION
+// ============================
+async function verifierModeEdition() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+
+    if (!editId) return;
+// Afficher bouton annuler
+const btnCancel = document.getElementById('btnCancel');
+if (btnCancel) {
+    btnCancel.style.display = 'flex';
+    btnCancel.addEventListener('click', () => {
+        window.location.href = 'history.html';
+    });
+}
+    // Mode édition
+    document.querySelector('.top-bar h1').textContent = '✏️ Modifier la Facture';
+    document.getElementById('btnSave').textContent = '💾 Mettre à jour';
+
+    showToast("⏳ Chargement de la facture...", "success");
+
+    try {
+        const factureDoc = await getDoc(doc(db, "factures", editId));
+        if (!factureDoc.exists()) {
+            showToast("❌ Facture introuvable", "error");
+            return;
+        }
+
+        const f = factureDoc.data();
+
+        // Remplir les champs
+        document.getElementById('factureNumber').value = f.factureNumber || '';
+        document.getElementById('factureDate').value = f.date || '';
+        document.getElementById('factureEcheance').value = f.echeance || '';
+
+        // Devise
+        if (f.devise) {
+            const deviseSelect = document.getElementById('devise');
+            deviseSelect.value = f.devise;
+        }
+
+        // Client
+        document.getElementById('clientName').value = f.client?.name || '';
+        document.getElementById('clientEmail').value = f.client?.email || '';
+        document.getElementById('clientPhone').value = f.client?.phone || '';
+        document.getElementById('clientAddress').value = f.client?.address || '';
+
+        // Articles
+        articlesBody.innerHTML = '';
+        if (typeof mobileContainer !== 'undefined') mobileContainer.innerHTML = '';
+        articleCount = 0;
+
+        (f.articles || []).forEach(a => {
+            ajouterArticle();
+            const lastRow = articlesBody.lastElementChild;
+            if (lastRow) {
+                lastRow.querySelector('.desc').value = a.description || '';
+                lastRow.querySelector('.prix').value = a.prixUnitaire || 0;
+                lastRow.querySelector('.qty').value = a.quantite || 1;
+            }
+
+            // Mobile
+            if (typeof mobileContainer !== 'undefined') {
+                const lastCard = mobileContainer.lastElementChild;
+                if (lastCard) {
+                    const mDesc = lastCard.querySelector('.m-desc');
+                    const mPrix = lastCard.querySelector('.m-prix');
+                    const mQty = lastCard.querySelector('.m-qty');
+                    if (mDesc) mDesc.value = a.description || '';
+                    if (mPrix) mPrix.value = a.prixUnitaire || 0;
+                    if (mQty) mQty.value = a.quantite || 1;
+                }
+            }
+        });
+
+        // TVA et Réduction
+        document.getElementById('tvaPercent').value = f.tvaPercent || 18;
+        document.getElementById('reductionPercent').value = f.reductionPercent || 0;
+
+        // Notes
+        document.getElementById('factureNotes').value = f.notes || '';
+
+        // Modèle
+        if (f.modele) {
+            const btn = document.querySelector(`.modele-btn[onclick*="${f.modele}"]`);
+            if (btn) changerModele(f.modele, btn);
+        }
+
+        // Calculer les totaux
+        calculerTotal();
+
+        // Changer le comportement du bouton save
+        document.getElementById('btnSave').onclick = async () => {
+            await mettreAJourFacture(editId);
+        };
+
+        showToast("✅ Facture chargée !", "success");
+
+    } catch (error) {
+        console.error("Erreur chargement facture:", error);
+        showToast("❌ Erreur : " + error.message, "error");
+    }
+}
+
+// ============================
+// 💾 METTRE À JOUR FACTURE
+// ============================
+async function mettreAJourFacture(factureId) {
+    if (!currentUser) return;
+
+    const clientName = document.getElementById('clientName').value.trim();
+    if (!clientName) {
+        showToast("❌ Entrez le nom du client", "error");
+        return;
+    }
+
+    const articles = [];
+    articlesBody.querySelectorAll('tr').forEach(row => {
+        articles.push({
+            description: row.querySelector('.desc').value,
+            prixUnitaire: parseFloat(row.querySelector('.prix').value) || 0,
+            quantite: parseInt(row.querySelector('.qty').value) || 0,
+            total: parseFloat(row.querySelector('.ligne-total').textContent) || 0
+        });
+    });
+
+    const devise = document.getElementById('devise').value;
+
+    const factureData = {
+        factureNumber: document.getElementById('factureNumber').value,
+        date: document.getElementById('factureDate').value,
+        echeance: document.getElementById('factureEcheance').value,
+        devise: devise,
+        modele: modeleActuel,
+        client: {
+            name: clientName,
+            address: document.getElementById('clientAddress').value,
+            phone: document.getElementById('clientPhone').value,
+            email: document.getElementById('clientEmail').value
+        },
+        articles: articles,
+        sousTotal: parseFloat(document.getElementById('sousTotal').textContent.split(' ')[0]) || 0,
+        tvaPercent: parseFloat(document.getElementById('tvaPercent').value) || 0,
+        tvaAmount: parseFloat(document.getElementById('tvaAmount').textContent.split(' ')[0]) || 0,
+        reductionPercent: parseFloat(document.getElementById('reductionPercent').value) || 0,
+        reductionAmount: parseFloat(document.getElementById('reductionAmount').textContent.replace('-', '').split(' ')[0]) || 0,
+        totalFinal: parseFloat(document.getElementById('totalFinal').textContent.split(' ')[0]) || 0,
+        notes: document.getElementById('factureNotes').value,
+        updatedAt: serverTimestamp()
+    };
+
+    try {
+        // Importer updateDoc
+import {
+    getFirestore, doc, getDoc,
+    collection, addDoc, updateDoc,
+    increment, serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        await updateDoc(doc(db, "factures", factureId), factureData);
+
+        showToast("✅ Facture mise à jour !", "success");
+
+        // Retourner à l'historique après 2 secondes
+        setTimeout(() => {
+            window.location.href = 'history.html';
+        }, 2000);
+
+    } catch (error) {
+        showToast("❌ Erreur : " + error.message, "error");
+    }
+}
+
+// ============================
 // 🔒 VÉRIFIER CONNEXION
 // ============================
 onAuthStateChanged(auth, async (user) => {
@@ -1017,6 +1329,8 @@ onAuthStateChanged(auth, async (user) => {
 
     } catch (error) {
         console.error("Erreur:", error);
+// Vérifier mode édition après chargement
+await verifierModeEdition();
     }
 });
 
@@ -1131,55 +1445,121 @@ document.getElementById('btnForward').addEventListener('click', () => {
 const articlesBody = document.getElementById('articlesBody');
 let articleCount = 0;
 
+function ajouterArticle() 
+const articlesBody = document.getElementById('articlesBody');
+const mobileContainer = document.getElementById('mobileArticlesContainer');
+let articleCount = 0;
+
 function ajouterArticle() {
     articleCount++;
+    const num = articleCount;
+
+    // VERSION DESKTOP
     const row = document.createElement('tr');
-    row.setAttribute('data-id', articleCount);
-
+    row.setAttribute('data-id', num);
     row.innerHTML = `
-        <td class="num-col">${articleCount}</td>
-        <td>
-            <input type="text" class="desc"
-                   placeholder="Description">
-        </td>
-        <td>
-            <input type="number" class="prix"
-                   placeholder="0.00" min="0" step="0.01">
-        </td>
-        <td>
-            <input type="number" class="qty"
-                   placeholder="1" min="1" value="1">
-        </td>
+        <td class="num-col">${num}</td>
+        <td><input type="text" class="desc" placeholder="Description"></td>
+        <td><input type="number" class="prix" placeholder="0.00" min="0" step="0.01"></td>
+        <td><input type="number" class="qty" placeholder="1" min="1" value="1"></td>
         <td class="ligne-total">0.00</td>
-        <td>
-            <button class="btn-delete-row"
-                    onclick="supprimerLigne(this)">🗑️</button>
-        </td>
+        <td><button class="btn-delete-row" onclick="supprimerLigne(${num})">🗑️</button></td>
     `;
-
     articlesBody.appendChild(row);
-
     row.querySelector('.prix').addEventListener('input', calculerTotal);
     row.querySelector('.qty').addEventListener('input', calculerTotal);
+
+    // VERSION MOBILE
+    const card = document.createElement('div');
+    card.className = 'mobile-article-card';
+    card.setAttribute('data-id', num);
+    card.innerHTML = `
+        <div class="card-number">${num}</div>
+        <button class="btn-delete-card" onclick="supprimerLigne(${num})">🗑️</button>
+        <div class="card-field">
+            <label>📝 Description</label>
+            <input type="text" class="m-desc" placeholder="Description de l'article ou service" data-id="${num}">
+        </div>
+        <div class="card-row">
+            <div class="card-field">
+                <label>💰 Prix unitaire</label>
+                <input type="number" class="m-prix" placeholder="0.00" min="0" step="0.01" data-id="${num}">
+            </div>
+            <div class="card-field">
+                <label>🔢 Quantité</label>
+                <input type="number" class="m-qty" placeholder="1" min="1" value="1" data-id="${num}">
+            </div>
+        </div>
+        <div class="card-total" id="m-total-${num}">Total : 0.00</div>
+    `;
+    mobileContainer.appendChild(card);
+
+    // Synchroniser mobile → desktop
+    card.querySelector('.m-desc').addEventListener('input', (e) => {
+        const id = e.target.getAttribute('data-id');
+        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
+        if (desktopRow) desktopRow.querySelector('.desc').value = e.target.value;
+        calculerTotal();
+    });
+
+    card.querySelector('.m-prix').addEventListener('input', (e) => {
+        const id = e.target.getAttribute('data-id');
+        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
+        if (desktopRow) desktopRow.querySelector('.prix').value = e.target.value;
+        calculerTotal();
+    });
+
+    card.querySelector('.m-qty').addEventListener('input', (e) => {
+        const id = e.target.getAttribute('data-id');
+        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
+        if (desktopRow) desktopRow.querySelector('.qty').value = e.target.value;
+        calculerTotal();
+    });
+
+    // Synchroniser desktop → mobile
+    row.querySelector('.desc').addEventListener('input', () => {
+        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (mCard) mCard.querySelector('.m-desc').value = row.querySelector('.desc').value;
+    });
+
+    row.querySelector('.prix').addEventListener('input', () => {
+        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (mCard) mCard.querySelector('.m-prix').value = row.querySelector('.prix').value;
+    });
+
+    row.querySelector('.qty').addEventListener('input', () => {
+        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (mCard) mCard.querySelector('.m-qty').value = row.querySelector('.qty').value;
+    });
 }
 
-window.supprimerLigne = function(btn) {
-    btn.closest('tr').remove();
+window.supprimerLigne = function(id) {
+    // Supprimer desktop
+    const row = articlesBody.querySelector(`tr[data-id="${id}"]`);
+    if (row) row.remove();
+
+    // Supprimer mobile
+    const card = mobileContainer.querySelector(`.mobile-article-card[data-id="${id}"]`);
+    if (card) card.remove();
+
     numeroterLignes();
     calculerTotal();
 };
 
 function numeroterLignes() {
-    articlesBody.querySelectorAll('tr').forEach((row, i) => {
+    const rows = articlesBody.querySelectorAll('tr');
+    rows.forEach((row, i) => {
         row.querySelector('.num-col').textContent = i + 1;
     });
-    articleCount = articlesBody.querySelectorAll('tr').length;
+
+    const cards = mobileContainer.querySelectorAll('.mobile-article-card');
+    cards.forEach((card, i) => {
+        card.querySelector('.card-number').textContent = i + 1;
+    });
+
+    articleCount = rows.length;
 }
 
-ajouterArticle();
-
-document.getElementById('addArticle')
-    .addEventListener('click', ajouterArticle);
 
 // ============================
 // 🧮 CALCULS
@@ -1190,46 +1570,29 @@ function calculerTotal() {
     let sousTotal = 0;
 
     rows.forEach(row => {
-        const prix = parseFloat(
-            row.querySelector('.prix').value
-        ) || 0;
-        const qty = parseInt(
-            row.querySelector('.qty').value
-        ) || 0;
+        const prix = parseFloat(row.querySelector('.prix').value) || 0;
+        const qty = parseInt(row.querySelector('.qty').value) || 0;
         const ligneTotal = prix * qty;
-        row.querySelector('.ligne-total').textContent =
-            ligneTotal.toFixed(2);
+        row.querySelector('.ligne-total').textContent = ligneTotal.toFixed(2);
         sousTotal += ligneTotal;
+
+        // Mettre à jour le total mobile
+        const id = row.getAttribute('data-id');
+        const mTotal = document.getElementById('m-total-' + id);
+        if (mTotal) mTotal.textContent = 'Total : ' + ligneTotal.toFixed(2) + ' ' + devise;
     });
 
-    const tva = parseFloat(
-        document.getElementById('tvaPercent').value
-    ) || 0;
-    const reduction = parseFloat(
-        document.getElementById('reductionPercent').value
-    ) || 0;
-
+    const tva = parseFloat(document.getElementById('tvaPercent').value) || 0;
+    const reduction = parseFloat(document.getElementById('reductionPercent').value) || 0;
     const tvaAmount = sousTotal * (tva / 100);
     const reductionAmount = sousTotal * (reduction / 100);
     const totalFinal = sousTotal + tvaAmount - reductionAmount;
 
-    document.getElementById('sousTotal').textContent =
-        sousTotal.toFixed(2) + ' ' + devise;
-    document.getElementById('tvaAmount').textContent =
-        tvaAmount.toFixed(2) + ' ' + devise;
-    document.getElementById('reductionAmount').textContent =
-        '-' + reductionAmount.toFixed(2) + ' ' + devise;
-    document.getElementById('totalFinal').textContent =
-        totalFinal.toFixed(2) + ' ' + devise;
+    document.getElementById('sousTotal').textContent = sousTotal.toFixed(2) + ' ' + devise;
+    document.getElementById('tvaAmount').textContent = tvaAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('reductionAmount').textContent = '-' + reductionAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('totalFinal').textContent = totalFinal.toFixed(2) + ' ' + devise;
 }
-
-document.getElementById('tvaPercent')
-    .addEventListener('input', calculerTotal);
-document.getElementById('reductionPercent')
-    .addEventListener('input', calculerTotal);
-document.getElementById('devise')
-    .addEventListener('change', calculerTotal);
-
 // ============================
 // 🖨️ IMPRIMER
 // ============================
