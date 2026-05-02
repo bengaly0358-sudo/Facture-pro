@@ -8,1059 +8,356 @@
         (function() {
             const saved = localStorage.getItem('darkMode');
             if (saved === 'true') {
-                document.documentElement
-                    .setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
     <link rel="stylesheet" href="../css/darkmode.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background: #f0f2f5;
-        }
-
-        /* ======= SIDEBAR ======= */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            color: white;
-            padding: 25px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            padding: 0 20px 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; min-height: 100vh; background: #f0f2f5; }
+        .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a2e, #16213e); color: white; padding: 25px 0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: all 0.3s; }
+        .sidebar-header { text-align: center; padding: 0 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-header h2 { font-size: 1.4em; color: #6c63ff; }
         .sidebar-header p { color: #888; font-size: 0.85em; margin-top: 5px; }
-
-        .user-info {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .user-avatar {
-            width: 60px; height: 60px;
-            background: #6c63ff; border-radius: 50%;
-            display: flex; align-items: center;
-            justify-content: center;
-            font-size: 1.5em; margin: 0 auto 10px;
-        }
-
+        .user-info { text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .user-avatar { width: 60px; height: 60px; background: #6c63ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; margin: 0 auto 10px; }
         .user-info h3 { font-size: 1em; margin-bottom: 3px; }
         .user-info p { color: #888; font-size: 0.8em; }
-
-        .user-plan {
-            display: inline-block; padding: 3px 12px;
-            border-radius: 15px; font-size: 0.75em; margin-top: 5px;
-        }
-
+        .user-plan { display: inline-block; padding: 3px 12px; border-radius: 15px; font-size: 0.75em; margin-top: 5px; }
         .plan-gratuit { background: rgba(231,76,60,0.2); color: #e74c3c; }
         .plan-pro { background: rgba(108,99,255,0.2); color: #6c63ff; }
-
         .nav-menu { list-style: none; padding: 15px 0; }
-
-        .nav-menu a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 25px; color: #aaa;
-            text-decoration: none; font-size: 0.95em;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            background: rgba(108,99,255,0.1);
-            color: white; border-left-color: #6c63ff;
-        }
-
+        .nav-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: #aaa; text-decoration: none; font-size: 0.95em; transition: all 0.3s; border-left: 3px solid transparent; }
+        .nav-menu a:hover, .nav-menu a.active { background: rgba(108,99,255,0.1); color: white; border-left-color: #6c63ff; }
         .menu-icon { font-size: 1.2em; width: 25px; text-align: center; }
-
-        .nav-separator {
-            height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 10px 20px;
-        }
-
+        .nav-separator { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 20px; }
         .logout-btn { color: #e74c3c !important; }
-        .logout-btn:hover {
-            background: rgba(231,76,60,0.1) !important;
-            border-left-color: #e74c3c !important;
-        }
-
-        /* ======= MAIN ======= */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 25px;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: #6c63ff; color: white;
-            border: none; padding: 10px 15px;
-            border-radius: 8px; cursor: pointer;
-            font-size: 1.2em;
-        }
-
+        .logout-btn:hover { background: rgba(231,76,60,0.1) !important; border-left-color: #e74c3c !important; }
+        .main-content { margin-left: 260px; flex: 1; padding: 25px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .top-bar-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { display: none; background: #6c63ff; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 1.2em; }
         .top-bar h1 { font-size: 1.5em; color: #333; }
-
         .nav-bar { display: flex; gap: 10px; }
-
-        .btn-nav {
-            background: white; border: 1px solid #ddd;
-            padding: 8px 15px; border-radius: 8px;
-            cursor: pointer; font-size: 0.9em;
-            transition: all 0.2s; color: #555;
-        }
-
-        .btn-nav:hover {
-            background: #6c63ff; color: white;
-            border-color: #6c63ff;
-        }
-
-        /* ======= MODELES ======= */
-        .modeles-bar {
-            background: white; border-radius: 12px;
-            padding: 15px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            display: flex; gap: 10px;
-            align-items: center; flex-wrap: wrap;
-        }
-
-        .modeles-bar label {
-            font-weight: 600; color: #555;
-            font-size: 0.9em;
-        }
-
-        .modele-btn {
-            padding: 8px 15px; border: 2px solid #e0e0e0;
-            border-radius: 8px; cursor: pointer;
-            font-size: 0.85em; background: white;
-            transition: all 0.2s; color: #555;
-        }
-
+        .btn-nav { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s; color: #555; }
+        .btn-nav:hover { background: #6c63ff; color: white; border-color: #6c63ff; }
+        .modeles-bar { background: white; border-radius: 12px; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .modeles-bar label { font-weight: 600; color: #555; font-size: 0.9em; }
+        .modele-btn { padding: 8px 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-size: 0.85em; background: white; transition: all 0.2s; color: #555; }
         .modele-btn:hover { border-color: #6c63ff; color: #6c63ff; }
-
-        .modele-btn.active {
-            border-color: #6c63ff;
-            background: #6c63ff; color: white;
-        }
-
-        /* ======= ACTION BAR ======= */
-        .action-bar {
-            display: flex; gap: 10px; flex-wrap: wrap;
-            margin-bottom: 20px; padding: 15px;
-            background: white; border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .btn-action {
-            padding: 10px 18px; border: none;
-            border-radius: 8px; cursor: pointer;
-            font-size: 0.9em; font-weight: 600;
-            transition: all 0.2s;
-            display: flex; align-items: center; gap: 6px;
-        }
-
-        .btn-action:hover {
-            transform: translateY(-2px); opacity: 0.9;
-        }
-
+        .modele-btn.active { border-color: #6c63ff; background: #6c63ff; color: white; }
+        .action-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-action { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .btn-action:hover { transform: translateY(-2px); opacity: 0.9; }
         .btn-save { background: #27ae60; color: white; }
         .btn-print { background: #2980b9; color: white; }
         .btn-pdf { background: #e74c3c; color: white; }
         .btn-word { background: #2c3e50; color: white; }
         .btn-clear { background: #e67e22; color: white; }
-
-        /* ======= FACTURE ======= */
-        .facture-container {
-            background: white; border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-        }
-
+        .btn-cancel-edit { background: #95a5a6; color: white; display: none; }
+        .facture-container { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); }
         .section { margin-bottom: 25px; }
-
-        .section h2 {
-            color: #333; margin-bottom: 15px;
-            font-size: 1.1em; padding-bottom: 8px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .form-row {
-            display: flex; gap: 15px;
-            margin-bottom: 12px; flex-wrap: wrap;
-        }
-
+        .section h2 { color: #333; margin-bottom: 15px; font-size: 1.1em; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 12px; flex-wrap: wrap; }
         .input-group { flex: 1; min-width: 200px; }
+        .input-group label { display: block; margin-bottom: 5px; color: #666; font-size: 0.85em; font-weight: 600; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.95em; outline: none; transition: border 0.3s; background: #fafafa; }
+        .input-group input:focus, .input-group select:focus { border-color: #6c63ff; background: white; }
+        .devise-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .devise-selector label { font-weight: 600; color: #555; font-size: 0.9em; }
+        .devise-selector select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; outline: none; background: white; }
 
-        .input-group label {
-            display: block; margin-bottom: 5px;
-            color: #666; font-size: 0.85em; font-weight: 600;
-        }
-
-        .input-group input,
-        .input-group select {
-            width: 100%; padding: 10px 12px;
-            border: 1px solid #e0e0e0; border-radius: 8px;
-            font-size: 0.95em; outline: none;
-            transition: border 0.3s; background: #fafafa;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: #6c63ff; background: white;
-        }
-
-        /* ======= TABLE ARTICLES ======= */
+        /* TABLE */
         .table-wrapper { overflow-x: auto; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            table-layout: fixed;
-        }
-
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
         thead tr { background: #6c63ff; color: white; }
-
-        th {
-            padding: 12px 10px;
-            font-size: 0.85em; font-weight: 600;
-            text-transform: uppercase; text-align: center;
-        }
-
+        th { padding: 12px 10px; font-size: 0.85em; font-weight: 600; text-transform: uppercase; text-align: center; }
         th:nth-child(1) { width: 40px; }
         th:nth-child(2) { width: auto; }
         th:nth-child(3) { width: 130px; }
         th:nth-child(4) { width: 80px; }
         th:nth-child(5) { width: 120px; }
         th:nth-child(6) { width: 60px; }
-
-        td {
-            padding: 8px; text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            word-break: break-word;
-        }
-
+        td { padding: 8px; text-align: center; border-bottom: 1px solid #f0f0f0; word-break: break-word; }
         tbody tr:hover { background: #fafafa; }
-
-        tbody input {
-            width: 100%; padding: 7px;
-            border: 1px solid #e0e0e0; border-radius: 6px;
-            text-align: center; font-size: 0.9em;
-            outline: none; background: #fafafa;
-            box-sizing: border-box;
-        }
-
-        tbody input:focus {
-            border-color: #6c63ff; background: white;
-        }
-
+        tbody input { width: 100%; padding: 7px; border: 1px solid #e0e0e0; border-radius: 6px; text-align: center; font-size: 0.9em; outline: none; background: #fafafa; box-sizing: border-box; }
+        tbody input:focus { border-color: #6c63ff; background: white; }
         tbody input.desc { text-align: left; }
-
-        .ligne-total {
-            font-weight: 700; color: #333;
-        }
-
+        .ligne-total { font-weight: 700; color: #333; }
         .num-col { width: 40px; color: #888; font-weight: 600; }
-
-        .btn-delete-row {
-            background: #ff4444; color: white;
-            border: none; padding: 5px 9px;
-            border-radius: 6px; cursor: pointer;
-            font-size: 0.8em;
-        }
-
+        .btn-delete-row { background: #ff4444; color: white; border: none; padding: 5px 9px; border-radius: 6px; cursor: pointer; font-size: 0.8em; }
         .btn-delete-row:hover { background: #cc0000; }
+        .btn-add { background: #6c63ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s; }
+        .btn-add:hover { background: #5a52d5; transform: translateY(-2px); }
 
-        .btn-add {
-            background: #6c63ff; color: white;
-            border: none; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer;
-            font-size: 0.9em; transition: all 0.2s;
-        }
+        /* MOBILE ARTICLES */
+        .mobile-articles { display: none; }
+        .mobile-article-card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 12px; position: relative; }
+        .mobile-article-card .card-number { position: absolute; top: 10px; left: 15px; background: #6c63ff; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: 700; }
+        .mobile-article-card .btn-delete-card { position: absolute; top: 10px; right: 10px; background: #ff4444; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 0.9em; display: flex; align-items: center; justify-content: center; }
+        .mobile-article-card .btn-delete-card:hover { background: #cc0000; }
+        .mobile-article-card .card-field { margin-bottom: 10px; margin-top: 5px; }
+        .mobile-article-card .card-field:first-of-type { margin-top: 30px; }
+        .mobile-article-card .card-field label { display: block; font-size: 0.8em; color: #666; font-weight: 600; margin-bottom: 4px; }
+        .mobile-article-card .card-field input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95em; outline: none; background: white; }
+        .mobile-article-card .card-field input:focus { border-color: #6c63ff; }
+        .mobile-article-card .card-row { display: flex; gap: 10px; }
+        .mobile-article-card .card-row .card-field { flex: 1; }
+        .mobile-article-card .card-total { text-align: right; font-size: 1.1em; font-weight: 700; color: #6c63ff; padding-top: 5px; border-top: 1px solid #eee; margin-top: 10px; }
+        .desktop-only { display: block; }
 
-        .btn-add:hover {
-            background: #5a52d5; transform: translateY(-2px);
-        }
-
-        /* ======= CALCULS ======= */
-        .calculs-section {
-            background: #f8f9fa; border-radius: 12px;
-            padding: 20px;
-        }
-
-        .calculs-wrapper {
-            display: flex; gap: 30px;
-            justify-content: space-between;
-        }
-
-        .notes-box {
-            flex: 1; display: flex;
-            flex-direction: column; gap: 8px;
-        }
-
-        .notes-box label {
-            font-weight: 600; color: #555; font-size: 0.9em;
-        }
-
-        .notes-box textarea {
-            flex: 1; min-height: 100px; padding: 12px;
-            border: 1px solid #e0e0e0; border-radius: 8px;
-            resize: vertical; font-size: 0.9em; outline: none;
-            background: white;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
+        /* CALCULS */
+        .calculs-section { background: #f8f9fa; border-radius: 12px; padding: 20px; }
+        .calculs-wrapper { display: flex; gap: 30px; justify-content: space-between; }
+        .notes-box { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .notes-box label { font-weight: 600; color: #555; font-size: 0.9em; }
+        .notes-box textarea { flex: 1; min-height: 100px; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; resize: vertical; font-size: 0.9em; outline: none; background: white; font-family: 'Segoe UI', sans-serif; }
         .notes-box textarea:focus { border-color: #6c63ff; }
-
         .totaux-box { width: 320px; min-width: 280px; }
-
-        .calcul-row {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 8px 0;
-            border-bottom: 1px solid #eee; font-size: 0.95em;
-        }
-
-        .calcul-input {
-            display: flex; align-items: center; gap: 8px;
-        }
-
-        .calcul-input input {
-            width: 60px; padding: 5px;
-            border: 1px solid #ddd; border-radius: 5px;
-            text-align: center; font-size: 0.9em; outline: none;
-        }
-
+        .calcul-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.95em; }
+        .calcul-input { display: flex; align-items: center; gap: 8px; }
+        .calcul-input input { width: 60px; padding: 5px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 0.9em; outline: none; }
         .calcul-input input:focus { border-color: #6c63ff; }
-
-        .amount {
-            min-width: 90px; text-align: right;
-            font-weight: 600; color: #333;
-        }
-
-        .total-row {
-            border-bottom: none;
-            border-top: 3px solid #6c63ff;
-            margin-top: 8px; padding-top: 12px;
-            font-size: 1.2em;
-        }
-
+        .amount { min-width: 90px; text-align: right; font-weight: 600; color: #333; }
+        .total-row { border-bottom: none; border-top: 3px solid #6c63ff; margin-top: 8px; padding-top: 12px; font-size: 1.2em; }
         .total-row strong { color: #6c63ff; }
 
-        /* ======= DEVISE ======= */
-        .devise-selector {
-            display: flex; align-items: center;
-            gap: 10px; margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .devise-selector label {
-            font-weight: 600; color: #555; font-size: 0.9em;
-        }
-
-        .devise-selector select {
-            padding: 8px 12px; border: 1px solid #ddd;
-            border-radius: 8px; font-size: 0.9em;
-            outline: none; background: white;
-        }
-
-        /* ======= SIGNATURES ======= */
-        .signatures-container {
-            display: flex; gap: 30px;
-            justify-content: space-between; flex-wrap: wrap;
-        }
-
-        .signature-box {
-            flex: 1; min-width: 280px;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-
-        .signature-box > label {
-            font-weight: 600; color: #555; font-size: 1em;
-        }
-
-        .canvas-wrapper {
-            position: relative;
-            border: 2px dashed #ccc; border-radius: 10px;
-            overflow: hidden; background: #fafafa;
-            cursor: crosshair; height: 150px;
-        }
-
-        .canvas-wrapper canvas {
-            display: block; width: 100%; height: 100%;
-        }
-
-        .canvas-placeholder {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ccc; font-size: 1em; pointer-events: none;
-        }
-
+        /* SIGNATURES */
+        .signatures-container { display: flex; gap: 30px; justify-content: space-between; flex-wrap: wrap; }
+        .signature-box { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+        .signature-box > label { font-weight: 600; color: #555; font-size: 1em; }
+        .canvas-wrapper { position: relative; border: 2px dashed #ccc; border-radius: 10px; overflow: hidden; background: #fafafa; cursor: crosshair; height: 150px; }
+        .canvas-wrapper canvas { display: block; width: 100%; height: 100%; }
+        .canvas-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ccc; font-size: 1em; pointer-events: none; }
         .signature-actions { display: flex; gap: 10px; }
+        .btn-clear-sign { flex: 1; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em; }
+        .btn-save-sign { flex: 1; padding: 8px; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em; }
+        .nom-signature, .date-signature { width: 100%; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9em; outline: none; }
 
-        .btn-clear-sign {
-            flex: 1; padding: 8px; background: #e74c3c;
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer; font-size: 0.85em;
-        }
-
-        .btn-save-sign {
-            flex: 1; padding: 8px; background: #27ae60;
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer; font-size: 0.85em;
-        }
-
-        .nom-signature, .date-signature {
-            width: 100%; padding: 8px 12px;
-            border: 1px solid #e0e0e0; border-radius: 8px;
-            font-size: 0.9em; outline: none;
-        }
-
-        /* ======= MODAL ======= */
-        .modal {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center; align-items: center;
-            z-index: 9999;
-        }
-
-        .modal-content {
-            background: white; padding: 35px;
-            border-radius: 15px; text-align: center;
-            max-width: 420px; width: 90%;
-        }
-
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 9999; }
+        .modal-content { background: white; padding: 35px; border-radius: 15px; text-align: center; max-width: 420px; width: 90%; }
         .modal-content h2 { margin-bottom: 15px; color: #e67e22; }
         .modal-content p { margin-bottom: 10px; color: #666; }
+        .modal-actions { display: flex; gap: 15px; margin-top: 25px; justify-content: center; }
+        .btn-confirm-clear { padding: 12px 25px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-cancel { padding: 12px 25px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; }
 
-        .modal-actions {
-            display: flex; gap: 15px;
-            margin-top: 25px; justify-content: center;
-        }
-
-        .btn-confirm-clear {
-            padding: 12px 25px; background: #e74c3c;
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .btn-cancel {
-            padding: 12px 25px; background: #95a5a6;
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* ======= TOAST ======= */
-        .toast {
-            position: fixed; bottom: 30px; right: 30px;
-            padding: 15px 25px; border-radius: 10px;
-            color: white; font-weight: 600; z-index: 99999;
-            transform: translateY(100px); opacity: 0;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
+        /* TOAST */
+        .toast { position: fixed; bottom: 30px; right: 30px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: 600; z-index: 99999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-success { background: #27ae60; }
         .toast-error { background: #e74c3c; }
         .toast-warning { background: #f39c12; }
 
-        /* ======= IMPRESSION ======= */
+        /* PRINT */
         @media print {
-            .sidebar, .top-bar, .action-bar,
-            .modeles-bar, .btn-add, .btn-delete-row,
-            .signature-actions, .modal, .toast,
-            .menu-toggle, .devise-selector {
-                display: none !important;
-            }
-
-            body {
-                background: white !important;
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-                padding: 0 !important;
-            }
-
-            .facture-container {
-                box-shadow: none !important;
-                border-radius: 0 !important;
-                padding: 15px !important;
-            }
-
-            /* Forcer sur une seule page */
-            .facture-container {
-                page-break-inside: avoid;
-            }
-
-            table {
-                page-break-inside: avoid;
-                font-size: 0.85em;
-            }
-
-            .section {
-                margin-bottom: 10px !important;
-            }
-
-            .calculs-section {
-                padding: 10px !important;
-            }
-
-            .signatures-container {
-                margin-top: 20px;
-            }
-
-            .canvas-wrapper {
-                border: 1px solid #ccc !important;
-                height: 80px !important;
-            }
-
-            @page {
-                margin: 10mm;
-                size: A4;
-            }
+            .sidebar, .top-bar, .action-bar, .modeles-bar, .btn-add, .btn-delete-row, .btn-delete-card, .signature-actions, .modal, .toast, .menu-toggle, .devise-selector, .mobile-articles { display: none !important; }
+            body { background: white !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .facture-container { box-shadow: none !important; border-radius: 0 !important; padding: 15px !important; page-break-inside: avoid; }
+            table { page-break-inside: avoid; font-size: 0.85em; }
+            .section { margin-bottom: 10px !important; }
+            .desktop-only { display: block !important; }
+            @page { margin: 10mm; size: A4; }
         }
 
-/* ======= RESPONSIVE ======= */
-@media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .main-content { margin-left: 0; }
-    .menu-toggle { display: block; }
-    .calculs-wrapper { flex-direction: column; }
-    .totaux-box { width: 100%; min-width: auto; }
-    .signatures-container { flex-direction: column; }
-    .action-bar { flex-direction: column; }
-    .btn-action { width: 100%; justify-content: center; }
-    .form-row { flex-direction: column; }
-    .input-group { min-width: 100%; }
-/* ======= ARTICLES MOBILE ======= */
-.mobile-articles {
-    display: none;
-}
-
-.mobile-article-card {
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 12px;
-    position: relative;
-}
-
-.mobile-article-card .card-number {
-    position: absolute;
-    top: 10px;
-    left: 15px;
-    background: #6c63ff;
-    color: white;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
-    font-weight: 700;
-}
-
-.mobile-article-card .btn-delete-card {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff4444;
-    color: white;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 0.9em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mobile-article-card .card-field {
-    margin-bottom: 10px;
-    margin-top: 5px;
-}
-
-.mobile-article-card .card-field:first-of-type {
-    margin-top: 30px;
-}
-
-.mobile-article-card .card-field label {
-    display: block;
-    font-size: 0.8em;
-    color: #666;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.mobile-article-card .card-field input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95em;
-    outline: none;
-    background: white;
-}
-
-.mobile-article-card .card-field input:focus {
-    border-color: #6c63ff;
-}
-
-.mobile-article-card .card-row {
-    display: flex;
-    gap: 10px;
-}
-
-.mobile-article-card .card-row .card-field {
-    flex: 1;
-}
-
-.mobile-article-card .card-total {
-    text-align: right;
-    font-size: 1.1em;
-    font-weight: 700;
-    color: #6c63ff;
-    padding-top: 5px;
-    border-top: 1px solid #eee;
-    margin-top: 10px;
-}
-
-.desktop-only {
-    display: block;
-}
-
-@media (max-width: 768px) {
-    .desktop-only {
-        display: none !important;
-    }
-
-    .mobile-articles {
-        display: block !important;
-    }
-}
-
-    /* ======= TABLE MOBILE ======= */
-    table { display: none; }
-
-    .mobile-articles { display: block !important; }
-
-    .modeles-bar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .modeles-bar .modele-btn {
-        width: 100%;
-        text-align: center;
-    }
-}        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .calculs-wrapper { flex-direction: column; }
+            .totaux-box { width: 100%; min-width: auto; }
+            .signatures-container { flex-direction: column; }
+            .action-bar { flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; }
+            .form-row { flex-direction: column; }
+            .input-group { min-width: 100%; }
+            .modeles-bar { flex-direction: column; align-items: flex-start; }
+            .modele-btn { width: 100%; text-align: center; }
+            .desktop-only { display: none !important; }
+            .mobile-articles { display: block !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>🧾 Facture Pro</h2>
-            <p>Générateur de factures</p>
-        </div>
-
-        <div class="user-info">
-            <div class="user-avatar" id="userAvatar">👤</div>
-            <h3 id="userName">Chargement...</h3>
-            <p id="userEmail">...</p>
-            <span class="user-plan plan-gratuit" id="userPlan">
-                Gratuit
-            </span>
-        </div>
-
-        <ul class="nav-menu">
-            <li><a href="dashboard.html">
-                <span class="menu-icon">📊</span> Tableau de bord
-            </a></li>
-            <li><a href="new-facture.html" class="active">
-                <span class="menu-icon">➕</span> Nouvelle facture
-            </a></li>
-            <li><a href="history.html">
-                <span class="menu-icon">📋</span> Mes factures
-            </a></li>
-            <li><a href="profile.html">
-                <span class="menu-icon">🏢</span> Mon entreprise
-            </a></li>
-            <div class="nav-separator"></div>
-            <li><a href="payment.html">
-                <span class="menu-icon">💳</span> Abonnement
-            </a></li>
-            <li><a href="#" id="contactWhatsapp">
-                <span class="menu-icon">📞</span> Nous contacter
-            </a></li>
-            <div class="nav-separator"></div>
-
-            <div style="padding: 5px 15px; margin-bottom: 5px;">
-                <button
-                    onclick="DarkMode.toggle(); updateDarkBtn()"
-                    id="darkModeBtn"
-                    style="width:100%; padding:10px 15px;
-                    background:rgba(255,255,255,0.05);
-                    border:1px solid rgba(255,255,255,0.1);
-                    color:white; border-radius:10px; cursor:pointer;
-                    font-size:0.9em; display:flex;
-                    align-items:center; gap:10px;">
-                    <span id="darkModeIcon">🌙</span>
-                    <span id="darkModeText">Mode sombre</span>
-                </button>
-            </div>
-
-            <div class="nav-separator"></div>
-
-            <li><a href="#" class="logout-btn" id="logoutBtn">
-                <span class="menu-icon">🚪</span> Déconnexion
-            </a></li>
-        </ul>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>🧾 Facture Pro</h2>
+        <p>Générateur de factures</p>
     </div>
-
-    <!-- MAIN -->
-    <div class="main-content">
-
-        <!-- TOP BAR -->
-        <div class="top-bar">
-            <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
-                <h1>➕ Nouvelle Facture</h1>
-            </div>
-            <div class="nav-bar">
-                <button class="btn-nav" id="btnBack">⬅️ Retour</button>
-                <button class="btn-nav" id="btnForward">Avant ➡️</button>
-            </div>
-        </div>
-
-        <!-- MODELES -->
-        <div class="modeles-bar">
-            <label>📋 Modèle :</label>
-            <button class="modele-btn active"
-                    onclick="changerModele('classique', this)">
-                📄 Classique
-            </button>
-            <button class="modele-btn"
-                    onclick="changerModele('moderne', this)">
-                🎨 Moderne
-            </button>
-            <button class="modele-btn"
-                    onclick="changerModele('minimal', this)">
-                ✨ Minimal
-            </button>
-            <button class="modele-btn"
-                    onclick="changerModele('professionnel', this)">
-                💼 Professionnel
-            </button>
-        </div>
-
-        <!-- ACTION BAR -->
-        <div class="action-bar">
-            <button id="btnSave" class="btn-action btn-save">
-                💾 Sauvegarder
-            </button>
-<button id="btnCancel" class="btn-action btn-cancel"
-        style="display:none; background:#95a5a6; color:white;">
-    ❌ Annuler
-</button>
-            <button id="btnPrint" class="btn-action btn-print">
-                🖨️ Imprimer
-            </button>
-            <button id="exportPDF" class="btn-action btn-pdf">
-                📄 PDF
-            </button>
-            <button id="exportWord" class="btn-action btn-word">
-                📝 Word
-            </button>
-            <button id="btnClear" class="btn-action btn-clear">
-                🗑️ Effacer tout
-            </button>
-        </div>
-
-        <!-- FACTURE -->
-        <div class="facture-container" id="factureContainer">
-
-            <!-- INFO FACTURE -->
-            <div class="section">
-                <h2>📋 Informations de la facture</h2>
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Numéro de facture</label>
-                        <input type="text" id="factureNumber"
-                               value="FAC-001">
-                    </div>
-                    <div class="input-group">
-                        <label>Date</label>
-                        <input type="date" id="factureDate">
-                    </div>
-                    <div class="input-group">
-                        <label>Échéance</label>
-                        <input type="date" id="factureEcheance">
-                    </div>
-                </div>
-
-                <div class="devise-selector">
-                    <label>💱 Devise :</label>
-                    <select id="devise">
-                        <option value="$">$ - Dollar USD</option>
-                        <option value="€">€ - Euro</option>
-                        <option value="£">£ - Livre Sterling</option>
-                        <option value="FCFA">FCFA - Franc CFA</option>
-                        <option value="MAD">MAD - Dirham</option>
-                        <option value="DZD">DZD - Dinar Algérien</option>
-                        <option value="TND">TND - Dinar Tunisien</option>
-                        <option value="GNF">GNF - Franc Guinéen</option>
-                        <option value="CDF">CDF - Franc Congolais</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- INFO CLIENT -->
-            <div class="section">
-                <h2>👤 Informations du client</h2>
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Nom du client</label>
-                        <input type="text" id="clientName"
-                               placeholder="Nom ou entreprise">
-                    </div>
-                    <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="clientEmail"
-                               placeholder="email@exemple.com">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="input-group">
-                        <label>Téléphone</label>
-                        <input type="text" id="clientPhone"
-                               placeholder="+000 00 00 00 00">
-                    </div>
-                    <div class="input-group">
-                        <label>Adresse</label>
-                        <input type="text" id="clientAddress"
-                               placeholder="Adresse complète">
-                    </div>
-                </div>
-            </div>
-
-           <!-- ARTICLES -->
-<div class="section">
-    <h2>📦 Articles / Services</h2>
-
-    <!-- VERSION DESKTOP : Table -->
-    <div class="table-wrapper desktop-only">
-        <table id="articlesTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Description</th>
-                    <th>Prix Unitaire</th>
-                    <th>Qté</th>
-                    <th>Total</th>
-                    <th>❌</th>
-                </tr>
-            </thead>
-            <tbody id="articlesBody"></tbody>
-        </table>
+    <div class="user-info">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <h3 id="userName">Chargement...</h3>
+        <p id="userEmail">...</p>
+        <span class="user-plan plan-gratuit" id="userPlan">Gratuit</span>
     </div>
-
-    <!-- VERSION MOBILE : Cards -->
-    <div class="mobile-articles" id="mobileArticles" style="display:none;">
-        <div id="mobileArticlesContainer"></div>
-    </div>
-
-    <button id="addArticle" class="btn-add">
-        + Ajouter un article
-    </button>
+    <ul class="nav-menu">
+        <li><a href="dashboard.html"><span class="menu-icon">📊</span> Tableau de bord</a></li>
+        <li><a href="new-facture.html" class="active"><span class="menu-icon">➕</span> Nouvelle facture</a></li>
+        <li><a href="history.html"><span class="menu-icon">📋</span> Mes factures</a></li>
+        <li><a href="profile.html"><span class="menu-icon">🏢</span> Mon entreprise</a></li>
+        <div class="nav-separator"></div>
+        <li><a href="payment.html"><span class="menu-icon">💳</span> Abonnement</a></li>
+        <li><a href="#" id="contactWhatsapp"><span class="menu-icon">📞</span> Nous contacter</a></li>
+        <div class="nav-separator"></div>
+        <div style="padding: 5px 15px; margin-bottom: 5px;">
+            <button onclick="DarkMode.toggle(); updateDarkBtn()" id="darkModeBtn" style="width:100%; padding:10px 15px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:10px; cursor:pointer; font-size:0.9em; display:flex; align-items:center; gap:10px;">
+                <span id="darkModeIcon">🌙</span>
+                <span id="darkModeText">Mode sombre</span>
+            </button>
+        </div>
+        <div class="nav-separator"></div>
+        <li><a href="#" class="logout-btn" id="logoutBtn"><span class="menu-icon">🚪</span> Déconnexion</a></li>
+    </ul>
 </div>
-            
-            <!-- CALCULS -->
-            <div class="section calculs-section">
-                <div class="calculs-wrapper">
-                    <div class="notes-box">
-                        <label>📝 Notes / Conditions</label>
-                        <textarea id="factureNotes"
-                                  placeholder="Conditions de paiement, notes..."></textarea>
-                    </div>
 
-                    <div class="totaux-box">
-                        <div class="calcul-row">
-                            <span>Sous-total :</span>
-                            <strong id="sousTotal" class="amount">
-                                0.00
-                            </strong>
-                        </div>
-                        <div class="calcul-row">
-                            <span>TVA (%) :</span>
-                            <div class="calcul-input">
-                                <input type="number" id="tvaPercent"
-                                       value="18" min="0" max="100">
-                                <span id="tvaAmount" class="amount">
-                                    0.00
-                                </span>
-                            </div>
-                        </div>
-                        <div class="calcul-row">
-                            <span>Réduction (%) :</span>
-                            <div class="calcul-input">
-                                <input type="number"
-                                       id="reductionPercent"
-                                       value="0" min="0" max="100">
-                                <span id="reductionAmount" class="amount">
-                                    -0.00
-                                </span>
-                            </div>
-                        </div>
-                        <div class="calcul-row total-row">
-                            <span>TOTAL :</span>
-                            <strong id="totalFinal">0.00</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SIGNATURES -->
-            <div class="section">
-                <h2>✍️ Signatures</h2>
-                <div class="signatures-container">
-
-                    <div class="signature-box">
-                        <label>Signature de l'émetteur</label>
-                        <div class="canvas-wrapper">
-                            <canvas id="signatureEmetteur"></canvas>
-                            <div class="canvas-placeholder"
-                                 id="placeholderEmetteur">
-                                ✍️ Signez ici
-                            </div>
-                        </div>
-                        <div class="signature-actions">
-                            <button class="btn-clear-sign"
-                                    id="clearSignEmetteur">
-                                🗑️ Effacer
-                            </button>
-                            <button class="btn-save-sign"
-                                    id="saveSignEmetteur">
-                                💾 Sauvegarder
-                            </button>
-                        </div>
-                        <input type="text" id="nomEmetteur"
-                               placeholder="Nom de l'émetteur"
-                               class="nom-signature">
-                        <input type="date" id="dateEmetteur"
-                               class="date-signature">
-                    </div>
-
-                    <div class="signature-box">
-                        <label>Signature du client</label>
-                        <div class="canvas-wrapper">
-                            <canvas id="signatureClient"></canvas>
-                            <div class="canvas-placeholder"
-                                 id="placeholderClient">
-                                ✍️ Signez ici
-                            </div>
-                        </div>
-                        <div class="signature-actions">
-                            <button class="btn-clear-sign"
-                                    id="clearSignClient">
-                                🗑️ Effacer
-                            </button>
-                            <button class="btn-save-sign"
-                                    id="saveSignClient">
-                                💾 Sauvegarder
-                            </button>
-                        </div>
-                        <input type="text" id="nomClient"
-                               placeholder="Nom du client"
-                               class="nom-signature">
-                        <input type="date" id="dateClient"
-                               class="date-signature">
-                    </div>
-
-                </div>
-            </div>
-
+<div class="main-content">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h1 id="pageTitle">➕ Nouvelle Facture</h1>
+        </div>
+        <div class="nav-bar">
+            <button class="btn-nav" id="btnBack">⬅️ Retour</button>
+            <button class="btn-nav" id="btnForward">Avant ➡️</button>
         </div>
     </div>
 
-    <!-- MODAL EFFACER -->
-    <div id="modalClear" class="modal">
-        <div class="modal-content">
-            <h2>⚠️ Confirmation</h2>
-            <p>Voulez-vous vraiment effacer toutes les données ?</p>
-            <p style="color:#e74c3c; font-size:0.9em;">
-                Cette action est irréversible !
-            </p>
-            <div class="modal-actions">
-                <button id="confirmClear" class="btn-confirm-clear">
-                    🗑️ Oui, effacer
-                </button>
-                <button id="cancelClear" class="btn-cancel">
-                    ❌ Annuler
-                </button>
+    <div class="modeles-bar">
+        <label>📋 Modèle :</label>
+        <button class="modele-btn active" id="modele-classique" onclick="changerModele('classique', this)">📄 Classique</button>
+        <button class="modele-btn" id="modele-moderne" onclick="changerModele('moderne', this)">🎨 Moderne</button>
+        <button class="modele-btn" id="modele-minimal" onclick="changerModele('minimal', this)">✨ Minimal</button>
+        <button class="modele-btn" id="modele-professionnel" onclick="changerModele('professionnel', this)">💼 Professionnel</button>
+    </div>
+
+    <div class="action-bar">
+        <button id="btnSave" class="btn-action btn-save">💾 Sauvegarder</button>
+        <button id="btnCancel" class="btn-action btn-cancel-edit">❌ Annuler</button>
+        <button id="btnPrint" class="btn-action btn-print">🖨️ Imprimer</button>
+        <button id="exportPDF" class="btn-action btn-pdf">📄 PDF</button>
+        <button id="exportWord" class="btn-action btn-word">📝 Word</button>
+        <button id="btnClear" class="btn-action btn-clear">🗑️ Effacer tout</button>
+    </div>
+
+    <div class="facture-container" id="factureContainer">
+
+        <div class="section">
+            <h2>📋 Informations de la facture</h2>
+            <div class="form-row">
+                <div class="input-group"><label>Numéro de facture</label><input type="text" id="factureNumber" value="FAC-001"></div>
+                <div class="input-group"><label>Date</label><input type="date" id="factureDate"></div>
+                <div class="input-group"><label>Échéance</label><input type="date" id="factureEcheance"></div>
+            </div>
+            <div class="devise-selector">
+                <label>💱 Devise :</label>
+                <select id="devise">
+                    <option value="$">$ - Dollar USD</option>
+                    <option value="€">€ - Euro</option>
+                    <option value="£">£ - Livre Sterling</option>
+                    <option value="FCFA">FCFA - Franc CFA</option>
+                    <option value="MAD">MAD - Dirham</option>
+                    <option value="DZD">DZD - Dinar Algérien</option>
+                    <option value="TND">TND - Dinar Tunisien</option>
+                    <option value="GNF">GNF - Franc Guinéen</option>
+                    <option value="CDF">CDF - Franc Congolais</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>👤 Informations du client</h2>
+            <div class="form-row">
+                <div class="input-group"><label>Nom du client</label><input type="text" id="clientName" placeholder="Nom ou entreprise"></div>
+                <div class="input-group"><label>Email</label><input type="email" id="clientEmail" placeholder="email@exemple.com"></div>
+            </div>
+            <div class="form-row">
+                <div class="input-group"><label>Téléphone</label><input type="text" id="clientPhone" placeholder="+000 00 00 00 00"></div>
+                <div class="input-group"><label>Adresse</label><input type="text" id="clientAddress" placeholder="Adresse complète"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📦 Articles / Services</h2>
+            <div class="table-wrapper desktop-only">
+                <table id="articlesTable">
+                    <thead><tr><th>#</th><th>Description</th><th>Prix Unitaire</th><th>Qté</th><th>Total</th><th>❌</th></tr></thead>
+                    <tbody id="articlesBody"></tbody>
+                </table>
+            </div>
+            <div class="mobile-articles" id="mobileArticles">
+                <div id="mobileArticlesContainer"></div>
+            </div>
+            <button id="addArticle" class="btn-add">+ Ajouter un article</button>
+        </div>
+
+        <div class="section calculs-section">
+            <div class="calculs-wrapper">
+                <div class="notes-box">
+                    <label>📝 Notes / Conditions</label>
+                    <textarea id="factureNotes" placeholder="Conditions de paiement, notes..."></textarea>
+                </div>
+                <div class="totaux-box">
+                    <div class="calcul-row"><span>Sous-total :</span><strong id="sousTotal" class="amount">0.00</strong></div>
+                    <div class="calcul-row"><span>TVA (%) :</span><div class="calcul-input"><input type="number" id="tvaPercent" value="18" min="0" max="100"><span id="tvaAmount" class="amount">0.00</span></div></div>
+                    <div class="calcul-row"><span>Réduction (%) :</span><div class="calcul-input"><input type="number" id="reductionPercent" value="0" min="0" max="100"><span id="reductionAmount" class="amount">-0.00</span></div></div>
+                    <div class="calcul-row total-row"><span>TOTAL :</span><strong id="totalFinal">0.00</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✍️ Signatures</h2>
+            <div class="signatures-container">
+                <div class="signature-box">
+                    <label>Signature de l'émetteur</label>
+                    <div class="canvas-wrapper"><canvas id="signatureEmetteur"></canvas><div class="canvas-placeholder" id="placeholderEmetteur">✍️ Signez ici</div></div>
+                    <div class="signature-actions">
+                        <button class="btn-clear-sign" id="clearSignEmetteur">🗑️ Effacer</button>
+                        <button class="btn-save-sign" id="saveSignEmetteur">💾 Sauvegarder</button>
+                    </div>
+                    <input type="text" id="nomEmetteur" placeholder="Nom de l'émetteur" class="nom-signature">
+                    <input type="date" id="dateEmetteur" class="date-signature">
+                </div>
+                <div class="signature-box">
+                    <label>Signature du client</label>
+                    <div class="canvas-wrapper"><canvas id="signatureClient"></canvas><div class="canvas-placeholder" id="placeholderClient">✍️ Signez ici</div></div>
+                    <div class="signature-actions">
+                        <button class="btn-clear-sign" id="clearSignClient">🗑️ Effacer</button>
+                        <button class="btn-save-sign" id="saveSignClient">💾 Sauvegarder</button>
+                    </div>
+                    <input type="text" id="nomClient" placeholder="Nom du client" class="nom-signature">
+                    <input type="date" id="dateClient" class="date-signature">
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast"></div>
+<div id="modalClear" class="modal">
+    <div class="modal-content">
+        <h2>⚠️ Confirmation</h2>
+        <p>Voulez-vous vraiment effacer toutes les données ?</p>
+        <p style="color:#e74c3c; font-size:0.9em;">Cette action est irréversible !</p>
+        <div class="modal-actions">
+            <button id="confirmClear" class="btn-confirm-clear">🗑️ Oui, effacer</button>
+            <button id="cancelClear" class="btn-cancel">❌ Annuler</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script type="module">
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-    getAuth, onAuthStateChanged, signOut
-} from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-    getFirestore, doc, getDoc,
-    collection, addDoc, updateDoc,
-    increment, serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCuX3t2Ax1mZbtj6Co9zpZZvXMRmFOd6go",
@@ -1080,50 +377,243 @@ let userData = null;
 let companyData = null;
 let settings = {};
 let modeleActuel = 'classique';
+let isEditMode = false;
+let editFactureId = null;
+
+// ============================
+// 🔒 AUTH
+// ============================
+onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = "../login.html"; return; }
+    currentUser = user;
+
+    try {
+        let cached = Cache.get('userData_' + user.uid);
+        if (!cached) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (!userDoc.exists()) { window.location.href = "../login.html"; return; }
+            cached = userDoc.data();
+            Cache.set('userData_' + user.uid, cached);
+        }
+        userData = cached;
+        companyData = userData.company || {};
+
+        let cachedSettings = Cache.get('settings');
+        if (!cachedSettings) {
+            const settingsDoc = await getDoc(doc(db, "settings", "global"));
+            cachedSettings = settingsDoc.exists() ? settingsDoc.data() : {};
+            Cache.set('settings', cachedSettings);
+        }
+        settings = cachedSettings;
+
+        document.getElementById('userName').textContent = userData.fullName;
+        document.getElementById('userEmail').textContent = userData.email;
+        document.getElementById('userAvatar').textContent = userData.fullName.charAt(0).toUpperCase();
+
+        if (userData.isPaid) {
+            document.getElementById('userPlan').textContent = "Pro ⭐";
+            document.getElementById('userPlan').className = "user-plan plan-pro";
+        }
+
+        if (settings.devise) document.getElementById('devise').value = settings.devise;
+        if (settings.tva) document.getElementById('tvaPercent').value = settings.tva;
+        if (companyData.name) document.getElementById('nomEmetteur').value = companyData.name;
+
+        const whatsappNum = settings.whatsapp || "000000000";
+        const whatsappMsg = settings.whatsappMessage || "Bonjour, j'utilise Facture Pro.";
+        document.getElementById('contactWhatsapp').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(whatsappMsg)}`, '_blank');
+        });
+
+        // Vérifier mode édition
+        await verifierModeEdition();
+
+    } catch (error) { console.error("Erreur:", error); }
+});
+
+// ============================
+// 📅 DATES
+// ============================
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('factureDate').value = today;
+document.getElementById('dateEmetteur').value = today;
+const echeance = new Date();
+echeance.setDate(echeance.getDate() + 30);
+document.getElementById('factureEcheance').value = echeance.toISOString().split('T')[0];
+
+// ============================
+// 🎨 MODÈLES
+// ============================
+window.changerModele = function(modele, btn) {
+    modeleActuel = modele;
+    document.querySelectorAll('.modele-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast(`✅ Modèle "${modele}" appliqué !`, "success");
+};
+
+// ============================
+// ⬅️➡️ NAVIGATION
+// ============================
+document.getElementById('btnBack').addEventListener('click', () => { window.history.back(); });
+document.getElementById('btnForward').addEventListener('click', () => { window.history.forward(); });
+
+// ============================
+// 📦 ARTICLES
+// ============================
+const articlesBody = document.getElementById('articlesBody');
+const mobileContainer = document.getElementById('mobileArticlesContainer');
+let articleCount = 0;
+
+function ajouterArticle() {
+    articleCount++;
+    const num = articleCount;
+
+    // Desktop
+    const row = document.createElement('tr');
+    row.setAttribute('data-id', num);
+    row.innerHTML = `
+        <td class="num-col">${num}</td>
+        <td><input type="text" class="desc" placeholder="Description"></td>
+        <td><input type="number" class="prix" placeholder="0.00" min="0" step="0.01"></td>
+        <td><input type="number" class="qty" placeholder="1" min="1" value="1"></td>
+        <td class="ligne-total">0.00</td>
+        <td><button class="btn-delete-row" onclick="supprimerLigne(${num})">🗑️</button></td>
+    `;
+    articlesBody.appendChild(row);
+    row.querySelector('.prix').addEventListener('input', calculerTotal);
+    row.querySelector('.qty').addEventListener('input', calculerTotal);
+
+    // Mobile
+    const card = document.createElement('div');
+    card.className = 'mobile-article-card';
+    card.setAttribute('data-id', num);
+    card.innerHTML = `
+        <div class="card-number">${num}</div>
+        <button class="btn-delete-card" onclick="supprimerLigne(${num})">🗑️</button>
+        <div class="card-field"><label>📝 Description</label><input type="text" class="m-desc" placeholder="Description de l'article" data-id="${num}"></div>
+        <div class="card-row">
+            <div class="card-field"><label>💰 Prix unitaire</label><input type="number" class="m-prix" placeholder="0.00" min="0" step="0.01" data-id="${num}"></div>
+            <div class="card-field"><label>🔢 Quantité</label><input type="number" class="m-qty" placeholder="1" min="1" value="1" data-id="${num}"></div>
+        </div>
+        <div class="card-total" id="m-total-${num}">Total : 0.00</div>
+    `;
+    mobileContainer.appendChild(card);
+
+    // Sync mobile → desktop
+    card.querySelector('.m-desc').addEventListener('input', (e) => {
+        const r = articlesBody.querySelector(`tr[data-id="${e.target.getAttribute('data-id')}"]`);
+        if (r) r.querySelector('.desc').value = e.target.value;
+        calculerTotal();
+    });
+    card.querySelector('.m-prix').addEventListener('input', (e) => {
+        const r = articlesBody.querySelector(`tr[data-id="${e.target.getAttribute('data-id')}"]`);
+        if (r) r.querySelector('.prix').value = e.target.value;
+        calculerTotal();
+    });
+    card.querySelector('.m-qty').addEventListener('input', (e) => {
+        const r = articlesBody.querySelector(`tr[data-id="${e.target.getAttribute('data-id')}"]`);
+        if (r) r.querySelector('.qty').value = e.target.value;
+        calculerTotal();
+    });
+
+    // Sync desktop → mobile
+    row.querySelector('.desc').addEventListener('input', () => {
+        const c = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (c) c.querySelector('.m-desc').value = row.querySelector('.desc').value;
+    });
+    row.querySelector('.prix').addEventListener('input', () => {
+        const c = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (c) c.querySelector('.m-prix').value = row.querySelector('.prix').value;
+    });
+    row.querySelector('.qty').addEventListener('input', () => {
+        const c = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
+        if (c) c.querySelector('.m-qty').value = row.querySelector('.qty').value;
+    });
+
+    return { row, card };
+}
+
+window.supprimerLigne = function(id) {
+    const row = articlesBody.querySelector(`tr[data-id="${id}"]`);
+    if (row) row.remove();
+    const card = mobileContainer.querySelector(`.mobile-article-card[data-id="${id}"]`);
+    if (card) card.remove();
+    numeroterLignes();
+    calculerTotal();
+};
+
+function numeroterLignes() {
+    articlesBody.querySelectorAll('tr').forEach((row, i) => { row.querySelector('.num-col').textContent = i + 1; });
+    mobileContainer.querySelectorAll('.mobile-article-card').forEach((card, i) => { card.querySelector('.card-number').textContent = i + 1; });
+    articleCount = articlesBody.querySelectorAll('tr').length;
+}
+
+ajouterArticle();
+document.getElementById('addArticle').addEventListener('click', () => { ajouterArticle(); });
+
+// ============================
+// 🧮 CALCULS
+// ============================
+function calculerTotal() {
+    const rows = articlesBody.querySelectorAll('tr');
+    const devise = document.getElementById('devise').value;
+    let sousTotal = 0;
+
+    rows.forEach(row => {
+        const prix = parseFloat(row.querySelector('.prix').value) || 0;
+        const qty = parseInt(row.querySelector('.qty').value) || 0;
+        const ligneTotal = prix * qty;
+        row.querySelector('.ligne-total').textContent = ligneTotal.toFixed(2);
+        sousTotal += ligneTotal;
+
+        const id = row.getAttribute('data-id');
+        const mTotal = document.getElementById('m-total-' + id);
+        if (mTotal) mTotal.textContent = 'Total : ' + ligneTotal.toFixed(2) + ' ' + devise;
+    });
+
+    const tva = parseFloat(document.getElementById('tvaPercent').value) || 0;
+    const reduction = parseFloat(document.getElementById('reductionPercent').value) || 0;
+    const tvaAmount = sousTotal * (tva / 100);
+    const reductionAmount = sousTotal * (reduction / 100);
+    const totalFinal = sousTotal + tvaAmount - reductionAmount;
+
+    document.getElementById('sousTotal').textContent = sousTotal.toFixed(2) + ' ' + devise;
+    document.getElementById('tvaAmount').textContent = tvaAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('reductionAmount').textContent = '-' + reductionAmount.toFixed(2) + ' ' + devise;
+    document.getElementById('totalFinal').textContent = totalFinal.toFixed(2) + ' ' + devise;
+}
+
+document.getElementById('tvaPercent').addEventListener('input', calculerTotal);
+document.getElementById('reductionPercent').addEventListener('input', calculerTotal);
+document.getElementById('devise').addEventListener('change', calculerTotal);
 
 // ============================
 // 📝 MODE ÉDITION
 // ============================
 async function verifierModeEdition() {
     const urlParams = new URLSearchParams(window.location.search);
-    const editId = urlParams.get('edit');
+    editFactureId = urlParams.get('edit');
+    if (!editFactureId) return;
 
-    if (!editId) return;
-// Afficher bouton annuler
-const btnCancel = document.getElementById('btnCancel');
-if (btnCancel) {
-    btnCancel.style.display = 'flex';
-    btnCancel.addEventListener('click', () => {
-        window.location.href = 'history.html';
-    });
-}
-    // Mode édition
-    document.querySelector('.top-bar h1').textContent = '✏️ Modifier la Facture';
+    isEditMode = true;
+    document.getElementById('pageTitle').textContent = '✏️ Modifier la Facture';
     document.getElementById('btnSave').textContent = '💾 Mettre à jour';
+    document.getElementById('btnCancel').style.display = 'flex';
 
     showToast("⏳ Chargement de la facture...", "success");
 
     try {
-        const factureDoc = await getDoc(doc(db, "factures", editId));
-        if (!factureDoc.exists()) {
-            showToast("❌ Facture introuvable", "error");
-            return;
-        }
+        const factureDoc = await getDoc(doc(db, "factures", editFactureId));
+        if (!factureDoc.exists()) { showToast("❌ Facture introuvable", "error"); return; }
 
         const f = factureDoc.data();
 
-        // Remplir les champs
         document.getElementById('factureNumber').value = f.factureNumber || '';
         document.getElementById('factureDate').value = f.date || '';
         document.getElementById('factureEcheance').value = f.echeance || '';
+        if (f.devise) document.getElementById('devise').value = f.devise;
 
-        // Devise
-        if (f.devise) {
-            const deviseSelect = document.getElementById('devise');
-            deviseSelect.value = f.devise;
-        }
-
-        // Client
         document.getElementById('clientName').value = f.client?.name || '';
         document.getElementById('clientEmail').value = f.client?.email || '';
         document.getElementById('clientPhone').value = f.client?.phone || '';
@@ -1131,71 +621,97 @@ if (btnCancel) {
 
         // Articles
         articlesBody.innerHTML = '';
-        if (typeof mobileContainer !== 'undefined') mobileContainer.innerHTML = '';
+        mobileContainer.innerHTML = '';
         articleCount = 0;
 
         (f.articles || []).forEach(a => {
-            ajouterArticle();
-            const lastRow = articlesBody.lastElementChild;
-            if (lastRow) {
-                lastRow.querySelector('.desc').value = a.description || '';
-                lastRow.querySelector('.prix').value = a.prixUnitaire || 0;
-                lastRow.querySelector('.qty').value = a.quantite || 1;
-            }
-
-            // Mobile
-            if (typeof mobileContainer !== 'undefined') {
-                const lastCard = mobileContainer.lastElementChild;
-                if (lastCard) {
-                    const mDesc = lastCard.querySelector('.m-desc');
-                    const mPrix = lastCard.querySelector('.m-prix');
-                    const mQty = lastCard.querySelector('.m-qty');
-                    if (mDesc) mDesc.value = a.description || '';
-                    if (mPrix) mPrix.value = a.prixUnitaire || 0;
-                    if (mQty) mQty.value = a.quantite || 1;
-                }
+            const { row, card } = ajouterArticle();
+            row.querySelector('.desc').value = a.description || '';
+            row.querySelector('.prix').value = a.prixUnitaire || 0;
+            row.querySelector('.qty').value = a.quantite || 1;
+            if (card) {
+                const mDesc = card.querySelector('.m-desc');
+                const mPrix = card.querySelector('.m-prix');
+                const mQty = card.querySelector('.m-qty');
+                if (mDesc) mDesc.value = a.description || '';
+                if (mPrix) mPrix.value = a.prixUnitaire || 0;
+                if (mQty) mQty.value = a.quantite || 1;
             }
         });
 
-        // TVA et Réduction
         document.getElementById('tvaPercent').value = f.tvaPercent || 18;
         document.getElementById('reductionPercent').value = f.reductionPercent || 0;
-
-        // Notes
         document.getElementById('factureNotes').value = f.notes || '';
 
-        // Modèle
         if (f.modele) {
-            const btn = document.querySelector(`.modele-btn[onclick*="${f.modele}"]`);
+            const btn = document.getElementById('modele-' + f.modele);
             if (btn) changerModele(f.modele, btn);
         }
 
-        // Calculer les totaux
         calculerTotal();
-
-        // Changer le comportement du bouton save
-        document.getElementById('btnSave').onclick = async () => {
-            await mettreAJourFacture(editId);
-        };
-
         showToast("✅ Facture chargée !", "success");
 
     } catch (error) {
-        console.error("Erreur chargement facture:", error);
+        console.error("Erreur:", error);
         showToast("❌ Erreur : " + error.message, "error");
     }
 }
 
+// Bouton Annuler
+document.getElementById('btnCancel').addEventListener('click', () => {
+    window.location.href = 'history.html';
+});
+
 // ============================
-// 💾 METTRE À JOUR FACTURE
+// 🖨️ IMPRIMER
 // ============================
-async function mettreAJourFacture(factureId) {
+document.getElementById('btnPrint').addEventListener('click', () => { window.print(); });
+
+// ============================
+// 🗑️ EFFACER
+// ============================
+const modal = document.getElementById('modalClear');
+document.getElementById('btnClear').addEventListener('click', () => { modal.style.display = 'flex'; });
+document.getElementById('cancelClear').addEventListener('click', () => { modal.style.display = 'none'; });
+document.getElementById('confirmClear').addEventListener('click', () => {
+    document.getElementById('factureNumber').value = 'FAC-001';
+    document.getElementById('factureDate').value = today;
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientEmail').value = '';
+    document.getElementById('clientPhone').value = '';
+    document.getElementById('clientAddress').value = '';
+    articlesBody.innerHTML = '';
+    mobileContainer.innerHTML = '';
+    articleCount = 0;
+    ajouterArticle();
+    document.getElementById('tvaPercent').value = settings.tva || 18;
+    document.getElementById('reductionPercent').value = '0';
+    calculerTotal();
+    document.getElementById('factureNotes').value = '';
+    clearCanvas('signatureEmetteur', 'placeholderEmetteur');
+    clearCanvas('signatureClient', 'placeholderClient');
+    document.getElementById('nomClient').value = '';
+    document.getElementById('dateClient').value = '';
+    modal.style.display = 'none';
+    showToast("✅ Facture effacée !", "success");
+});
+
+// ============================
+// 💾 SAUVEGARDER / METTRE À JOUR
+// ============================
+document.getElementById('btnSave').addEventListener('click', async () => {
     if (!currentUser) return;
 
     const clientName = document.getElementById('clientName').value.trim();
-    if (!clientName) {
-        showToast("❌ Entrez le nom du client", "error");
-        return;
+    if (!clientName) { showToast("❌ Entrez le nom du client", "error"); return; }
+
+    // Vérifier limites (seulement en mode création)
+    if (!isEditMode && userData && !userData.isPaid) {
+        const now = new Date();
+        const trialEnd = userData.trialEnd?.toDate ? userData.trialEnd.toDate() : new Date(userData.trialEnd);
+        if (now > trialEnd) { showToast("⏰ Période d'essai terminée !", "warning"); setTimeout(() => { window.location.href = "payment.html"; }, 2000); return; }
+        const maxF = settings.maxFactures || 10;
+        if ((userData.facturesCount || 0) >= maxF) { showToast("📊 Limite atteinte ! Passez au Pro", "warning"); setTimeout(() => { window.location.href = "payment.html"; }, 2000); return; }
     }
 
     const articles = [];
@@ -1229,580 +745,68 @@ async function mettreAJourFacture(factureId) {
         reductionPercent: parseFloat(document.getElementById('reductionPercent').value) || 0,
         reductionAmount: parseFloat(document.getElementById('reductionAmount').textContent.replace('-', '').split(' ')[0]) || 0,
         totalFinal: parseFloat(document.getElementById('totalFinal').textContent.split(' ')[0]) || 0,
-        notes: document.getElementById('factureNotes').value,
-        updatedAt: serverTimestamp()
+        notes: document.getElementById('factureNotes').value
     };
 
     try {
-        // Importer updateDoc
-import {
-    getFirestore, doc, getDoc,
-    collection, addDoc, updateDoc,
-    increment, serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-        await updateDoc(doc(db, "factures", factureId), factureData);
-
-        showToast("✅ Facture mise à jour !", "success");
-
-        // Retourner à l'historique après 2 secondes
-        setTimeout(() => {
-            window.location.href = 'history.html';
-        }, 2000);
-
-    } catch (error) {
-        showToast("❌ Erreur : " + error.message, "error");
-    }
-}
-
-// ============================
-// 🔒 VÉRIFIER CONNEXION
-// ============================
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "../login.html";
-        return;
-    }
-
-    currentUser = user;
-
-    try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (!userDoc.exists()) {
-            window.location.href = "../login.html";
-            return;
+        if (isEditMode && editFactureId) {
+            // MODE ÉDITION
+            factureData.updatedAt = serverTimestamp();
+            await updateDoc(doc(db, "factures", editFactureId), factureData);
+            showToast("✅ Facture mise à jour !", "success");
+            setTimeout(() => { window.location.href = 'history.html'; }, 2000);
+        } else {
+            // MODE CRÉATION
+            factureData.userId = currentUser.uid;
+            factureData.createdAt = serverTimestamp();
+            await addDoc(collection(db, "factures"), factureData);
+            await updateDoc(doc(db, "users", currentUser.uid), { facturesCount: increment(1) });
+            Cache.remove('userData_' + currentUser.uid);
+            showToast("✅ Facture sauvegardée !", "success");
         }
-
-        userData = userDoc.data();
-        companyData = userData.company || {};
-
-        // Charger settings
-        const settingsDoc = await getDoc(
-            doc(db, "settings", "global")
-        );
-        settings = settingsDoc.exists() ? settingsDoc.data() : {};
-
-        // Sidebar
-        document.getElementById('userName').textContent =
-            userData.fullName;
-        document.getElementById('userEmail').textContent =
-            userData.email;
-        document.getElementById('userAvatar').textContent =
-            userData.fullName.charAt(0).toUpperCase();
-
-        const planEl = document.getElementById('userPlan');
-        if (userData.isPaid) {
-            planEl.textContent = "Pro ⭐";
-            planEl.className = "user-plan plan-pro";
-        }
-
-        // Devise par défaut depuis settings
-        const deviseDefault = settings.devise || '$';
-        const deviseSelect = document.getElementById('devise');
-        deviseSelect.value = deviseDefault;
-
-        // TVA par défaut depuis settings
-        const tvaDefault = settings.tva || 18;
-        document.getElementById('tvaPercent').value = tvaDefault;
-
-        // Pré-remplir nom émetteur
-        if (companyData.name) {
-            document.getElementById('nomEmetteur').value =
-                companyData.name;
-        }
-
-        // WhatsApp
-        const whatsappNum = settings.whatsapp || "000000000";
-        const whatsappMsg = settings.whatsappMessage ||
-            "Bonjour, j'utilise Facture Pro.";
-
-        document.getElementById('contactWhatsapp')
-            .addEventListener('click', (e) => {
-            e.preventDefault();
-            window.open(
-                `https://wa.me/${whatsappNum}` +
-                `?text=${encodeURIComponent(whatsappMsg)}`,
-                '_blank'
-            );
-        });
-
-    } catch (error) {
-        console.error("Erreur:", error);
-// Vérifier mode édition après chargement
-await verifierModeEdition();
-    }
-});
-
-// ============================
-// 📅 DATES
-// ============================
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('factureDate').value = today;
-document.getElementById('dateEmetteur').value = today;
-
-const echeance = new Date();
-echeance.setDate(echeance.getDate() + 30);
-document.getElementById('factureEcheance').value =
-    echeance.toISOString().split('T')[0];
-
-// ============================
-// 🎨 MODÈLES DE FACTURES
-// ============================
-window.changerModele = function(modele, btn) {
-    modeleActuel = modele;
-
-    // Mettre à jour boutons
-    document.querySelectorAll('.modele-btn')
-        .forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const container = document.getElementById('factureContainer');
-
-    // Réinitialiser styles
-    container.style.cssText = '';
-
-    switch(modele) {
-        case 'classique':
-            container.style.background = 'white';
-            container.style.borderTop = '5px solid #6c63ff';
-            break;
-
-        case 'moderne':
-            container.style.background =
-                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-            container.style.color = 'white';
-            container.style.padding = '30px';
-
-            // Adapter les inputs
-            container.querySelectorAll('input, textarea, select')
-                .forEach(el => {
-                el.style.background = 'rgba(255,255,255,0.2)';
-                el.style.color = 'white';
-                el.style.border = '1px solid rgba(255,255,255,0.3)';
-            });
-
-            // Adapter thead
-            container.querySelectorAll('thead tr')
-                .forEach(el => {
-                el.style.background = 'rgba(255,255,255,0.2)';
-            });
-            break;
-
-        case 'minimal':
-            container.style.background = 'white';
-            container.style.border = '1px solid #eee';
-            container.style.borderRadius = '5px';
-
-            // Headers minimaux
-            container.querySelectorAll('.section h2')
-                .forEach(el => {
-                el.style.borderBottom = '1px solid #eee';
-                el.style.color = '#999';
-                el.style.fontSize = '0.8em';
-                el.style.letterSpacing = '2px';
-                el.style.textTransform = 'uppercase';
-            });
-            break;
-
-        case 'professionnel':
-            container.style.background = 'white';
-            container.style.borderLeft = '8px solid #2c3e50';
-
-            container.querySelectorAll('thead tr')
-                .forEach(el => {
-                el.style.background = '#2c3e50';
-            });
-
-            container.querySelectorAll('.section h2')
-                .forEach(el => {
-                el.style.color = '#2c3e50';
-                el.style.borderBottomColor = '#2c3e50';
-            });
-
-            document.querySelector('.total-row strong')
-                .style.color = '#2c3e50';
-            break;
-    }
-
-    showToast(`✅ Modèle "${modele}" appliqué !`, "success");
-};
-
-// ============================
-// ⬅️➡️ NAVIGATION
-// ============================
-document.getElementById('btnBack').addEventListener('click', () => {
-    window.history.back();
-});
-
-document.getElementById('btnForward').addEventListener('click', () => {
-    window.history.forward();
-});
-
-// ============================
-// 📦 ARTICLES
-// ============================
-const articlesBody = document.getElementById('articlesBody');
-let articleCount = 0;
-
-function ajouterArticle() 
-const articlesBody = document.getElementById('articlesBody');
-const mobileContainer = document.getElementById('mobileArticlesContainer');
-let articleCount = 0;
-
-function ajouterArticle() {
-    articleCount++;
-    const num = articleCount;
-
-    // VERSION DESKTOP
-    const row = document.createElement('tr');
-    row.setAttribute('data-id', num);
-    row.innerHTML = `
-        <td class="num-col">${num}</td>
-        <td><input type="text" class="desc" placeholder="Description"></td>
-        <td><input type="number" class="prix" placeholder="0.00" min="0" step="0.01"></td>
-        <td><input type="number" class="qty" placeholder="1" min="1" value="1"></td>
-        <td class="ligne-total">0.00</td>
-        <td><button class="btn-delete-row" onclick="supprimerLigne(${num})">🗑️</button></td>
-    `;
-    articlesBody.appendChild(row);
-    row.querySelector('.prix').addEventListener('input', calculerTotal);
-    row.querySelector('.qty').addEventListener('input', calculerTotal);
-
-    // VERSION MOBILE
-    const card = document.createElement('div');
-    card.className = 'mobile-article-card';
-    card.setAttribute('data-id', num);
-    card.innerHTML = `
-        <div class="card-number">${num}</div>
-        <button class="btn-delete-card" onclick="supprimerLigne(${num})">🗑️</button>
-        <div class="card-field">
-            <label>📝 Description</label>
-            <input type="text" class="m-desc" placeholder="Description de l'article ou service" data-id="${num}">
-        </div>
-        <div class="card-row">
-            <div class="card-field">
-                <label>💰 Prix unitaire</label>
-                <input type="number" class="m-prix" placeholder="0.00" min="0" step="0.01" data-id="${num}">
-            </div>
-            <div class="card-field">
-                <label>🔢 Quantité</label>
-                <input type="number" class="m-qty" placeholder="1" min="1" value="1" data-id="${num}">
-            </div>
-        </div>
-        <div class="card-total" id="m-total-${num}">Total : 0.00</div>
-    `;
-    mobileContainer.appendChild(card);
-
-    // Synchroniser mobile → desktop
-    card.querySelector('.m-desc').addEventListener('input', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
-        if (desktopRow) desktopRow.querySelector('.desc').value = e.target.value;
-        calculerTotal();
-    });
-
-    card.querySelector('.m-prix').addEventListener('input', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
-        if (desktopRow) desktopRow.querySelector('.prix').value = e.target.value;
-        calculerTotal();
-    });
-
-    card.querySelector('.m-qty').addEventListener('input', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const desktopRow = articlesBody.querySelector(`tr[data-id="${id}"]`);
-        if (desktopRow) desktopRow.querySelector('.qty').value = e.target.value;
-        calculerTotal();
-    });
-
-    // Synchroniser desktop → mobile
-    row.querySelector('.desc').addEventListener('input', () => {
-        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
-        if (mCard) mCard.querySelector('.m-desc').value = row.querySelector('.desc').value;
-    });
-
-    row.querySelector('.prix').addEventListener('input', () => {
-        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
-        if (mCard) mCard.querySelector('.m-prix').value = row.querySelector('.prix').value;
-    });
-
-    row.querySelector('.qty').addEventListener('input', () => {
-        const mCard = mobileContainer.querySelector(`.mobile-article-card[data-id="${num}"]`);
-        if (mCard) mCard.querySelector('.m-qty').value = row.querySelector('.qty').value;
-    });
-}
-
-window.supprimerLigne = function(id) {
-    // Supprimer desktop
-    const row = articlesBody.querySelector(`tr[data-id="${id}"]`);
-    if (row) row.remove();
-
-    // Supprimer mobile
-    const card = mobileContainer.querySelector(`.mobile-article-card[data-id="${id}"]`);
-    if (card) card.remove();
-
-    numeroterLignes();
-    calculerTotal();
-};
-
-function numeroterLignes() {
-    const rows = articlesBody.querySelectorAll('tr');
-    rows.forEach((row, i) => {
-        row.querySelector('.num-col').textContent = i + 1;
-    });
-
-    const cards = mobileContainer.querySelectorAll('.mobile-article-card');
-    cards.forEach((card, i) => {
-        card.querySelector('.card-number').textContent = i + 1;
-    });
-
-    articleCount = rows.length;
-}
-
-
-// ============================
-// 🧮 CALCULS
-// ============================
-function calculerTotal() {
-    const rows = articlesBody.querySelectorAll('tr');
-    const devise = document.getElementById('devise').value;
-    let sousTotal = 0;
-
-    rows.forEach(row => {
-        const prix = parseFloat(row.querySelector('.prix').value) || 0;
-        const qty = parseInt(row.querySelector('.qty').value) || 0;
-        const ligneTotal = prix * qty;
-        row.querySelector('.ligne-total').textContent = ligneTotal.toFixed(2);
-        sousTotal += ligneTotal;
-
-        // Mettre à jour le total mobile
-        const id = row.getAttribute('data-id');
-        const mTotal = document.getElementById('m-total-' + id);
-        if (mTotal) mTotal.textContent = 'Total : ' + ligneTotal.toFixed(2) + ' ' + devise;
-    });
-
-    const tva = parseFloat(document.getElementById('tvaPercent').value) || 0;
-    const reduction = parseFloat(document.getElementById('reductionPercent').value) || 0;
-    const tvaAmount = sousTotal * (tva / 100);
-    const reductionAmount = sousTotal * (reduction / 100);
-    const totalFinal = sousTotal + tvaAmount - reductionAmount;
-
-    document.getElementById('sousTotal').textContent = sousTotal.toFixed(2) + ' ' + devise;
-    document.getElementById('tvaAmount').textContent = tvaAmount.toFixed(2) + ' ' + devise;
-    document.getElementById('reductionAmount').textContent = '-' + reductionAmount.toFixed(2) + ' ' + devise;
-    document.getElementById('totalFinal').textContent = totalFinal.toFixed(2) + ' ' + devise;
-}
-// ============================
-// 🖨️ IMPRIMER
-// ============================
-document.getElementById('btnPrint').addEventListener('click', () => {
-    window.print();
-});
-
-// ============================
-// 🗑️ EFFACER
-// ============================
-const modal = document.getElementById('modalClear');
-
-document.getElementById('btnClear').addEventListener('click', () => {
-    modal.style.display = 'flex';
-});
-
-document.getElementById('cancelClear').addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-document.getElementById('confirmClear').addEventListener('click', () => {
-    effacerTout();
-    modal.style.display = 'none';
-});
-
-function effacerTout() {
-    document.getElementById('factureNumber').value = 'FAC-001';
-    document.getElementById('factureDate').value = today;
-    document.getElementById('clientName').value = '';
-    document.getElementById('clientEmail').value = '';
-    document.getElementById('clientPhone').value = '';
-    document.getElementById('clientAddress').value = '';
-    articlesBody.innerHTML = '';
-    articleCount = 0;
-    ajouterArticle();
-    document.getElementById('tvaPercent').value =
-        settings.tva || 18;
-    document.getElementById('reductionPercent').value = '0';
-    calculerTotal();
-    document.getElementById('factureNotes').value = '';
-    clearCanvas('signatureEmetteur', 'placeholderEmetteur');
-    clearCanvas('signatureClient', 'placeholderClient');
-    document.getElementById('nomClient').value = '';
-    document.getElementById('dateClient').value = '';
-    showToast("✅ Facture effacée !", "success");
-}
-
-// ============================
-// 💾 SAUVEGARDER
-// ============================
-document.getElementById('btnSave').addEventListener('click', async () => {
-    if (!currentUser) return;
-
-    // Vérifier limites
-    if (userData && !userData.isPaid) {
-        const now = new Date();
-        const trialEnd = userData.trialEnd?.toDate
-            ? userData.trialEnd.toDate()
-            : new Date(userData.trialEnd);
-
-        if (now > trialEnd) {
-            showToast("⏰ Période d'essai terminée !", "warning");
-            setTimeout(() => {
-                window.location.href = "payment.html";
-            }, 2000);
-            return;
-        }
-
-        const maxF = settings.maxFactures || 10;
-        if ((userData.facturesCount || 0) >= maxF) {
-            showToast(
-                "📊 Limite atteinte ! Passez au Pro",
-                "warning"
-            );
-            setTimeout(() => {
-                window.location.href = "payment.html";
-            }, 2000);
-            return;
-        }
-    }
-
-    const clientName =
-        document.getElementById('clientName').value.trim();
-    if (!clientName) {
-        showToast("❌ Entrez le nom du client", "error");
-        return;
-    }
-
-    const articles = [];
-    articlesBody.querySelectorAll('tr').forEach(row => {
-        articles.push({
-            description: row.querySelector('.desc').value,
-            prixUnitaire:
-                parseFloat(row.querySelector('.prix').value) || 0,
-            quantite:
-                parseInt(row.querySelector('.qty').value) || 0,
-            total:
-                parseFloat(
-                    row.querySelector('.ligne-total').textContent
-                ) || 0
-        });
-    });
-
-    const devise = document.getElementById('devise').value;
-
-    const facture = {
-        userId: currentUser.uid,
-        factureNumber:
-            document.getElementById('factureNumber').value,
-        date: document.getElementById('factureDate').value,
-        echeance:
-            document.getElementById('factureEcheance').value,
-        devise: devise,
-        modele: modeleActuel,
-        client: {
-            name: clientName,
-            address:
-                document.getElementById('clientAddress').value,
-            phone:
-                document.getElementById('clientPhone').value,
-            email:
-                document.getElementById('clientEmail').value
-        },
-        articles: articles,
-        sousTotal: parseFloat(
-            document.getElementById('sousTotal')
-                .textContent.split(' ')[0]
-        ) || 0,
-        tvaPercent: parseFloat(
-            document.getElementById('tvaPercent').value
-        ) || 0,
-        tvaAmount: parseFloat(
-            document.getElementById('tvaAmount')
-                .textContent.split(' ')[0]
-        ) || 0,
-        reductionPercent: parseFloat(
-            document.getElementById('reductionPercent').value
-        ) || 0,
-        reductionAmount: parseFloat(
-            document.getElementById('reductionAmount')
-                .textContent.replace('-', '').split(' ')[0]
-        ) || 0,
-        totalFinal: parseFloat(
-            document.getElementById('totalFinal')
-                .textContent.split(' ')[0]
-        ) || 0,
-        notes: document.getElementById('factureNotes').value,
-        createdAt: serverTimestamp()
-    };
-
-    try {
-        await addDoc(collection(db, "factures"), facture);
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            facturesCount: increment(1)
-        });
-        showToast("✅ Facture sauvegardée !", "success");
     } catch (error) {
         showToast("❌ Erreur : " + error.message, "error");
     }
 });
 
 // ============================
-// 📄 EXPORT PDF
+// 📄 PDF
 // ============================
 document.getElementById('exportPDF').addEventListener('click', () => {
     const content = genererFactureHTML();
     const container = document.createElement('div');
     container.innerHTML = content;
     document.body.appendChild(container);
-
-    const options = {
+    html2pdf().set({
         margin: [8, 8, 8, 8],
-        filename: 'facture_' +
-            document.getElementById('factureNumber').value +
-            '.pdf',
+        filename: 'facture_' + document.getElementById('factureNumber').value + '.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: {
-            unit: 'mm', format: 'a4',
-            orientation: 'portrait'
-        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: 'avoid-all' }
-    };
-
-    html2pdf().set(options).from(container).save().then(() => {
+    }).from(container).save().then(() => {
         document.body.removeChild(container);
         showToast("✅ PDF exporté !", "success");
     });
 });
 
 // ============================
-// 📝 EXPORT WORD
+// 📝 WORD
 // ============================
 document.getElementById('exportWord').addEventListener('click', () => {
     const content = genererFactureHTML();
-    const blob = new Blob(['\ufeff', content], {
-        type: 'application/msword'
-    });
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'facture_' +
-        document.getElementById('factureNumber').value + '.doc';
+    link.download = 'facture_' + document.getElementById('factureNumber').value + '.doc';
     link.click();
     URL.revokeObjectURL(url);
     showToast("✅ Word exporté !", "success");
 });
 
 // ============================
-// 📋 GÉNÉRER HTML FACTURE
+// 📋 GÉNÉRER HTML
 // ============================
 function genererFactureHTML() {
     const rows = articlesBody.querySelectorAll('tr');
@@ -1814,284 +818,34 @@ function genererFactureHTML() {
         const prix = row.querySelector('.prix').value || '0';
         const qty = row.querySelector('.qty').value || '1';
         const total = row.querySelector('.ligne-total').textContent;
-
-        articlesHTML += `
-            <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:8px; text-align:center;
-                           color:#888;">${i + 1}</td>
-                <td style="padding:8px;">${desc}</td>
-                <td style="padding:8px; text-align:center;">
-                    ${parseFloat(prix).toFixed(2)} ${devise}
-                </td>
-                <td style="padding:8px; text-align:center;">
-                    ${qty}
-                </td>
-                <td style="padding:8px; text-align:right;
-                           font-weight:700;">
-                    ${parseFloat(total).toFixed(2)} ${devise}
-                </td>
-            </tr>
-        `;
+        articlesHTML += `<tr style="border-bottom:1px solid #eee;"><td style="padding:8px; text-align:center; color:#888;">${i + 1}</td><td style="padding:8px;">${desc}</td><td style="padding:8px; text-align:center;">${parseFloat(prix).toFixed(2)} ${devise}</td><td style="padding:8px; text-align:center;">${qty}</td><td style="padding:8px; text-align:right; font-weight:700;">${parseFloat(total).toFixed(2)} ${devise}</td></tr>`;
     });
 
-    // Couleurs selon modèle
     let headerColor = '#6c63ff';
-    let headerTextColor = 'white';
-    let borderColor = '#6c63ff';
-    let bgColor = 'white';
-
-    switch(modeleActuel) {
-        case 'moderne':
-            headerColor = '#764ba2';
-            borderColor = '#764ba2';
-            break;
-        case 'minimal':
-            headerColor = '#f8f9fa';
-            headerTextColor = '#333';
-            borderColor = '#eee';
-            break;
-        case 'professionnel':
-            headerColor = '#2c3e50';
-            borderColor = '#2c3e50';
-            break;
-    }
+    switch(modeleActuel) { case 'moderne': headerColor = '#764ba2'; break; case 'minimal': headerColor = '#95a5a6'; break; case 'professionnel': headerColor = '#2c3e50'; break; }
 
     const compName = companyData?.name || 'Mon Entreprise';
     const compAddress = companyData?.address || '';
     const compPhone = companyData?.phone || '';
     const compEmail = companyData?.email || '';
     const compLogo = companyData?.logo || '';
-    const footerText = settings.footer ||
-        'Merci pour votre confiance !';
-    const mentions = settings.mentions || '';
+    const footerText = settings.footer || 'Merci pour votre confiance !';
 
-    const signEmetteur =
-        document.getElementById('signatureEmetteur')
-            .toDataURL('image/png');
-    const signClient =
-        document.getElementById('signatureClient')
-            .toDataURL('image/png');
+    const signEmetteur = document.getElementById('signatureEmetteur').toDataURL('image/png');
+    const signClient = document.getElementById('signatureClient').toDataURL('image/png');
 
-    return `
-    <div style="font-family:Arial,sans-serif; padding:20px;
-                max-width:800px; margin:0 auto;
-                background:${bgColor};">
-
-        <!-- EN-TÊTE -->
-        <div style="display:flex; justify-content:space-between;
-                    align-items:flex-start;
-                    border-bottom:3px solid ${borderColor};
-                    padding-bottom:15px; margin-bottom:20px;">
-            <div>
-                ${compLogo
-                    ? `<img src="${compLogo}"
-                            style="max-height:50px;
-                            margin-bottom:8px; display:block;">`
-                    : ''
-                }
-                <h1 style="color:${borderColor};
-                           font-size:2em; margin:0;">
-                    FACTURE
-                </h1>
-                <p style="color:#666; margin:3px 0; font-size:0.9em;">
-                    <strong>N°:</strong>
-                    ${document.getElementById('factureNumber').value}
-                </p>
-                <p style="color:#666; margin:3px 0; font-size:0.9em;">
-                    <strong>Date:</strong>
-                    ${document.getElementById('factureDate').value}
-                </p>
-                <p style="color:#666; margin:3px 0; font-size:0.9em;">
-                    <strong>Échéance:</strong>
-                    ${document.getElementById('factureEcheance').value}
-                </p>
-            </div>
-            <div style="text-align:right;">
-                <h2 style="color:#333; margin:0; font-size:1.2em;">
-                    ${compName}
-                </h2>
-                <p style="color:#666; margin:3px 0; font-size:0.85em;">
-                    ${compAddress}
-                </p>
-                <p style="color:#666; margin:3px 0; font-size:0.85em;">
-                    📞 ${compPhone}
-                </p>
-                <p style="color:#666; margin:3px 0; font-size:0.85em;">
-                    📧 ${compEmail}
-                </p>
-            </div>
+    return `<div style="font-family:Arial,sans-serif; padding:20px; max-width:800px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:3px solid ${headerColor}; padding-bottom:15px; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <div>${compLogo ? `<img src="${compLogo}" style="max-height:50px; margin-bottom:8px; display:block;">` : ''}<h1 style="color:${headerColor}; font-size:2em; margin:0;">FACTURE</h1><p style="color:#666; margin:3px 0; font-size:0.9em;"><strong>N°:</strong> ${document.getElementById('factureNumber').value}</p><p style="color:#666; margin:3px 0; font-size:0.9em;"><strong>Date:</strong> ${document.getElementById('factureDate').value}</p><p style="color:#666; margin:3px 0; font-size:0.9em;"><strong>Échéance:</strong> ${document.getElementById('factureEcheance').value}</p></div>
+            <div style="text-align:right;"><h2 style="color:#333; margin:0; font-size:1.2em;">${compName}</h2><p style="color:#666; margin:3px 0; font-size:0.85em;">${compAddress}</p><p style="color:#666; margin:3px 0; font-size:0.85em;">📞 ${compPhone}</p><p style="color:#666; margin:3px 0; font-size:0.85em;">📧 ${compEmail}</p></div>
         </div>
-
-        <!-- CLIENT -->
-        <div style="background:#f8f9fa; padding:12px;
-                    border-radius:8px; margin-bottom:15px;">
-            <h3 style="color:#333; margin:0 0 8px 0;
-                       font-size:0.95em;">
-                Facturé à :
-            </h3>
-            <p style="margin:2px 0; font-weight:700;">
-                ${document.getElementById('clientName').value}
-            </p>
-            <p style="margin:2px 0; color:#666; font-size:0.85em;">
-                ${document.getElementById('clientAddress').value}
-            </p>
-            <p style="margin:2px 0; color:#666; font-size:0.85em;">
-                📞 ${document.getElementById('clientPhone').value}
-            </p>
-            <p style="margin:2px 0; color:#666; font-size:0.85em;">
-                📧 ${document.getElementById('clientEmail').value}
-            </p>
-        </div>
-
-        <!-- ARTICLES -->
-        <table style="width:100%; border-collapse:collapse;
-                      margin-bottom:15px; font-size:0.9em;">
-            <thead>
-                <tr style="background:${headerColor};
-                           color:${headerTextColor};">
-                    <th style="padding:10px; text-align:center;
-                               width:40px;">#</th>
-                    <th style="padding:10px; text-align:left;">
-                        Description</th>
-                    <th style="padding:10px; text-align:center;
-                               width:120px;">Prix Unit.</th>
-                    <th style="padding:10px; text-align:center;
-                               width:60px;">Qté</th>
-                    <th style="padding:10px; text-align:right;
-                               width:120px;">Total</th>
-                </tr>
-            </thead>
-            <tbody>${articlesHTML}</tbody>
-        </table>
-
-        <!-- TOTAUX -->
-        <div style="display:flex; justify-content:flex-end;
-                    margin-bottom:15px;">
-            <div style="width:280px; background:#f8f9fa;
-                        padding:15px; border-radius:8px;
-                        font-size:0.9em;">
-                <div style="display:flex;
-                            justify-content:space-between;
-                            margin-bottom:6px;">
-                    <span>Sous-total :</span>
-                    <strong>
-                        ${document.getElementById('sousTotal')
-                            .textContent}
-                    </strong>
-                </div>
-                <div style="display:flex;
-                            justify-content:space-between;
-                            margin-bottom:6px;">
-                    <span>TVA
-                        (${document.getElementById('tvaPercent')
-                            .value}%) :</span>
-                    <span>
-                        ${document.getElementById('tvaAmount')
-                            .textContent}
-                    </span>
-                </div>
-                <div style="display:flex;
-                            justify-content:space-between;
-                            margin-bottom:6px; color:#e74c3c;">
-                    <span>Réduction
-                        (${document.getElementById('reductionPercent')
-                            .value}%) :</span>
-                    <span>
-                        ${document.getElementById('reductionAmount')
-                            .textContent}
-                    </span>
-                </div>
-                <div style="display:flex;
-                            justify-content:space-between;
-                            border-top:2px solid ${borderColor};
-                            padding-top:8px; margin-top:8px;">
-                    <strong style="font-size:1.1em;">TOTAL :</strong>
-                    <strong style="font-size:1.1em;
-                                   color:${borderColor};">
-                        ${document.getElementById('totalFinal')
-                            .textContent}
-                    </strong>
-                </div>
-            </div>
-        </div>
-
-        <!-- NOTES -->
-        ${document.getElementById('factureNotes').value ? `
-        <div style="background:#fff3cd; padding:12px;
-                    border-radius:8px; margin-bottom:15px;
-                    border-left:4px solid #ffc107;
-                    font-size:0.85em;">
-            <strong>📝 Notes :</strong>
-            <p style="margin:5px 0; white-space:pre-wrap;">
-                ${document.getElementById('factureNotes').value}
-            </p>
-        </div>
-        ` : ''}
-
-        <!-- MENTIONS -->
-        ${mentions ? `
-        <div style="font-size:0.8em; color:#888;
-                    margin-bottom:15px;">
-            ${mentions}
-        </div>
-        ` : ''}
-
-        <!-- SIGNATURES -->
-        <div style="display:flex; justify-content:space-between;
-                    margin-top:20px; gap:20px;">
-            <div style="flex:1; text-align:center;
-                        border-top:2px solid #333;
-                        padding-top:10px;">
-                <p style="font-weight:bold; margin:0 0 5px;
-                          font-size:0.85em;">
-                    Signature émetteur
-                </p>
-                <img src="${signEmetteur}"
-                     style="max-width:150px; height:60px;
-                            object-fit:contain;">
-                <p style="margin:5px 0 0; color:#666;
-                          font-size:0.8em;">
-                    ${document.getElementById('nomEmetteur').value}
-                </p>
-                <p style="margin:2px 0 0; color:#888;
-                          font-size:0.75em;">
-                    ${document.getElementById('dateEmetteur').value}
-                </p>
-            </div>
-            <div style="flex:1; text-align:center;
-                        border-top:2px solid #333;
-                        padding-top:10px;">
-                <p style="font-weight:bold; margin:0 0 5px;
-                          font-size:0.85em;">
-                    Signature client
-                </p>
-                <img src="${signClient}"
-                     style="max-width:150px; height:60px;
-                            object-fit:contain;">
-                <p style="margin:5px 0 0; color:#666;
-                          font-size:0.8em;">
-                    ${document.getElementById('nomClient').value}
-                </p>
-                <p style="margin:2px 0 0; color:#888;
-                          font-size:0.75em;">
-                    ${document.getElementById('dateClient').value}
-                </p>
-            </div>
-        </div>
-
-        <!-- PIED DE PAGE -->
-        <div style="margin-top:20px; text-align:center;
-                    color:#aaa; border-top:1px solid #eee;
-                    padding-top:10px; font-size:0.8em;">
-            <p>${footerText}</p>
-            <p>${compName}
-                ${compAddress ? '— ' + compAddress : ''}
-                ${compPhone ? '— ' + compPhone : ''}
-            </p>
-        </div>
-
-    </div>
-    `;
+        <div style="background:#f8f9fa; padding:12px; border-radius:8px; margin-bottom:15px;"><h3 style="margin:0 0 8px; font-size:0.95em;">Facturé à :</h3><p style="margin:2px 0; font-weight:700;">${document.getElementById('clientName').value}</p><p style="margin:2px 0; color:#666; font-size:0.85em;">${document.getElementById('clientAddress').value}</p><p style="margin:2px 0; color:#666; font-size:0.85em;">📞 ${document.getElementById('clientPhone').value}</p><p style="margin:2px 0; color:#666; font-size:0.85em;">📧 ${document.getElementById('clientEmail').value}</p></div>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:0.9em;"><thead><tr style="background:${headerColor}; color:white;"><th style="padding:10px; text-align:center; width:40px;">#</th><th style="padding:10px; text-align:left;">Description</th><th style="padding:10px; text-align:center; width:120px;">Prix Unit.</th><th style="padding:10px; text-align:center; width:60px;">Qté</th><th style="padding:10px; text-align:right; width:120px;">Total</th></tr></thead><tbody>${articlesHTML}</tbody></table>
+        <div style="display:flex; justify-content:flex-end; margin-bottom:15px;"><div style="width:280px; background:#f8f9fa; padding:15px; border-radius:8px; font-size:0.9em;"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Sous-total :</span><strong>${document.getElementById('sousTotal').textContent}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>TVA (${document.getElementById('tvaPercent').value}%) :</span><span>${document.getElementById('tvaAmount').textContent}</span></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#e74c3c;"><span>Réduction (${document.getElementById('reductionPercent').value}%) :</span><span>${document.getElementById('reductionAmount').textContent}</span></div><div style="display:flex; justify-content:space-between; border-top:2px solid ${headerColor}; padding-top:8px; margin-top:8px;"><strong style="font-size:1.1em;">TOTAL :</strong><strong style="font-size:1.1em; color:${headerColor};">${document.getElementById('totalFinal').textContent}</strong></div></div></div>
+        ${document.getElementById('factureNotes').value ? `<div style="background:#fff3cd; padding:12px; border-radius:8px; margin-bottom:15px; border-left:4px solid #ffc107; font-size:0.85em;"><strong>📝 Notes :</strong><p style="margin:5px 0; white-space:pre-wrap;">${document.getElementById('factureNotes').value}</p></div>` : ''}
+        <div style="display:flex; justify-content:space-between; margin-top:20px; gap:20px; flex-wrap:wrap;"><div style="flex:1; text-align:center; border-top:2px solid #333; padding-top:10px; min-width:200px;"><p style="font-weight:bold; margin:0 0 5px; font-size:0.85em;">Signature émetteur</p><img src="${signEmetteur}" style="max-width:150px; height:60px; object-fit:contain;"><p style="margin:5px 0 0; color:#666; font-size:0.8em;">${document.getElementById('nomEmetteur').value}</p></div><div style="flex:1; text-align:center; border-top:2px solid #333; padding-top:10px; min-width:200px;"><p style="font-weight:bold; margin:0 0 5px; font-size:0.85em;">Signature client</p><img src="${signClient}" style="max-width:150px; height:60px; object-fit:contain;"><p style="margin:5px 0 0; color:#666; font-size:0.8em;">${document.getElementById('nomClient').value}</p></div></div>
+        <div style="margin-top:20px; text-align:center; color:#aaa; border-top:1px solid #eee; padding-top:10px; font-size:0.8em;"><p>${footerText}</p><p>${compName} ${compAddress ? '— ' + compAddress : ''}</p></div>
+    </div>`;
 }
 
 // ============================
@@ -2107,18 +861,15 @@ function showToast(message, type) {
 // ============================
 // 🚪 DÉCONNEXION
 // ============================
-document.getElementById('logoutBtn')
-    .addEventListener('click', async (e) => {
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (confirm("Voulez-vous vous déconnecter ?")) {
+        Cache.clear();
         await signOut(auth);
         window.location.href = "../login.html";
     }
 });
 
-// ============================
-// ☰ MENU MOBILE
-// ============================
 document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
 });
@@ -2131,13 +882,10 @@ function initSignature(canvasId, placeholderId) {
     const ctx = canvas.getContext('2d');
     const placeholder = document.getElementById(placeholderId);
     const wrapper = canvas.parentElement;
-
     canvas.width = wrapper.offsetWidth || 300;
     canvas.height = 150;
-
     let isDrawing = false;
     let hasDrawn = false;
-
     ctx.strokeStyle = '#1a1a2e';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
@@ -2145,77 +893,21 @@ function initSignature(canvasId, placeholderId) {
 
     function getPos(e) {
         const rect = canvas.getBoundingClientRect();
-        return {
-            x: (e.clientX - rect.left) *
-                (canvas.width / rect.width),
-            y: (e.clientY - rect.top) *
-                (canvas.height / rect.height)
-        };
+        return { x: (e.clientX - rect.left) * (canvas.width / rect.width), y: (e.clientY - rect.top) * (canvas.height / rect.height) };
     }
-
     function getTouchPos(e) {
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
-        return {
-            x: (touch.clientX - rect.left) *
-                (canvas.width / rect.width),
-            y: (touch.clientY - rect.top) *
-                (canvas.height / rect.height)
-        };
+        return { x: (touch.clientX - rect.left) * (canvas.width / rect.width), y: (touch.clientY - rect.top) * (canvas.height / rect.height) };
     }
 
-    canvas.addEventListener('mousedown', (e) => {
-        isDrawing = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        if (!hasDrawn) {
-            hasDrawn = true;
-            placeholder.style.display = 'none';
-        }
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-        if (!isDrawing) return;
-        const pos = getPos(e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    });
-
-    canvas.addEventListener('mouseup', () => {
-        isDrawing = false;
-        ctx.beginPath();
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        isDrawing = false;
-        ctx.beginPath();
-    });
-
-    canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        isDrawing = true;
-        const pos = getTouchPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        if (!hasDrawn) {
-            hasDrawn = true;
-            placeholder.style.display = 'none';
-        }
-    }, { passive: false });
-
-    canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (!isDrawing) return;
-        const pos = getTouchPos(e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', () => {
-        isDrawing = false;
-        ctx.beginPath();
-    });
+    canvas.addEventListener('mousedown', (e) => { isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); if (!hasDrawn) { hasDrawn = true; placeholder.style.display = 'none'; } });
+    canvas.addEventListener('mousemove', (e) => { if (!isDrawing) return; const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
+    canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mouseleave', () => { isDrawing = false; ctx.beginPath(); });
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; const pos = getTouchPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); if (!hasDrawn) { hasDrawn = true; placeholder.style.display = 'none'; } }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!isDrawing) return; const pos = getTouchPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }, { passive: false });
+    canvas.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); });
 }
 
 function clearCanvas(canvasId, placeholderId) {
@@ -2231,40 +923,18 @@ window.addEventListener('load', () => {
     initSignature('signatureEmetteur', 'placeholderEmetteur');
     initSignature('signatureClient', 'placeholderClient');
 });
-
 window.addEventListener('resize', () => {
     initSignature('signatureEmetteur', 'placeholderEmetteur');
     initSignature('signatureClient', 'placeholderClient');
 });
 
-document.getElementById('clearSignEmetteur')
-    .addEventListener('click', () => {
-    clearCanvas('signatureEmetteur', 'placeholderEmetteur');
-});
-
-document.getElementById('clearSignClient')
-    .addEventListener('click', () => {
-    clearCanvas('signatureClient', 'placeholderClient');
-});
-
-document.getElementById('saveSignEmetteur')
-    .addEventListener('click', () => {
-    const data = document.getElementById('signatureEmetteur')
-        .toDataURL('image/png');
-    localStorage.setItem('signature_emetteur', data);
-    alert('✅ Signature sauvegardée !');
-});
-
-document.getElementById('saveSignClient')
-    .addEventListener('click', () => {
-    const data = document.getElementById('signatureClient')
-        .toDataURL('image/png');
-    localStorage.setItem('signature_client', data);
-    alert('✅ Signature sauvegardée !');
-});
+document.getElementById('clearSignEmetteur').addEventListener('click', () => { clearCanvas('signatureEmetteur', 'placeholderEmetteur'); });
+document.getElementById('clearSignClient').addEventListener('click', () => { clearCanvas('signatureClient', 'placeholderClient'); });
+document.getElementById('saveSignEmetteur').addEventListener('click', () => { localStorage.setItem('signature_emetteur', document.getElementById('signatureEmetteur').toDataURL('image/png')); alert('✅ Signature sauvegardée !'); });
+document.getElementById('saveSignClient').addEventListener('click', () => { localStorage.setItem('signature_client', document.getElementById('signatureClient').toDataURL('image/png')); alert('✅ Signature sauvegardée !'); });
 </script>
 
-<!-- Dark Mode -->
+<script src="../js/cache.js"></script>
 <script src="../js/darkmode.js"></script>
 <script>
     function updateDarkBtn() {
@@ -2272,8 +942,7 @@ document.getElementById('saveSignClient')
         const icon = document.getElementById('darkModeIcon');
         const text = document.getElementById('darkModeText');
         if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-        if (text) text.textContent = isDark
-            ? 'Mode clair' : 'Mode sombre';
+        if (text) text.textContent = isDark ? 'Mode clair' : 'Mode sombre';
     }
     window.addEventListener('load', updateDarkBtn);
 </script>
